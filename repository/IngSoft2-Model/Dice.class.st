@@ -10,36 +10,28 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #adding }
-Dice class >> addDice: aDie [ 
-	dice add: aDie.
+{ #category : #creation }
+Dice class >> initializeNewGroup [
+	self shouldBeImplemented.
 ]
 
 { #category : #instanceCreation }
 Dice class >> newGroup [
-	dice := OrderedCollection new.
+	^ self initializeNewGroup
+]
+
+{ #category : #instanceCreation }
+Dice class >> newGroup: aDieGroup [
+	^ self new initializeWithGroup: aDieGroup
+]
+
+{ #category : #initialize }
+Dice >> initializeWithGroup: aDieGroup [
+	dice := aDieGroup
 ]
 
 { #category : #rolling }
-Dice class >> roll [
-	|sum|
-	sum:=0.
-	dice do: [:die | sum := sum + (die roll). ].
-	^sum
-]
-
-{ #category : #'instance creation - old' }
-Dice class >> withAmount: anInteger [ 
-	dice := Array new:anInteger.
-]
-
-{ #category : #'instance creation' }
-Dice class >> withDie: aDie withDie: aDie2 [ 
-	self shouldBeImplemented.
-]
-
-{ #category : #adding }
-Dice >> addDice: aDie [ 
-	dice add: aDie.
+Dice >> roll [
+	^dice sum: [:die | die roll ].
 	
 ]

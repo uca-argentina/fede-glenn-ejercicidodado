@@ -24,11 +24,20 @@ Board >> addPlayer: aPlayer [
 	players add: aPlayer.
 ]
 
+{ #category : #action }
+Board >> advance: aPlayer [
+	self skipTurn.
+	^ aPlayer rollAndAdvance: dice
+]
+
+{ #category : #action }
+Board >> canPlay: aPlayer [
+	^ (players at: 1) = aPlayer
+]
+
 { #category : #state }
 Board >> hasFinished [
-	^players detect: [ :aPlayer | aPlayer position >= spaces ]
-		ifFound: [true]
-	ifNone: [false]
+	^players anySatisfy: [ :aPlayer | aPlayer position >= spaces ]
 
 	
 ]
@@ -46,17 +55,25 @@ Board >> initializeWithSpaces: anInteger initialiazeWithDice: aDie [
    dice:= aDie.
 ]
 
-{ #category : #length }
-Board >> length [
-	^spaces
+{ #category : #action }
+Board >> play: aPlayer [
+	(self canPlay: aPlayer)
+		ifTrue: [ ^ self advance: aPlayer ]
+		ifFalse: [ TurnError signal: 'This is not the player turn' ]
 ]
 
-{ #category : #counting }
-Board >> numOfPlayers [
-	^players size
+{ #category : #position }
+Board >> scoreBoard [
+	^players sort: [ :aPlayer :otherPlayer | aPlayer position >= otherPlayer position ].
 ]
 
 { #category : #action }
-Board >> play: aPlayer [ 
-	^aPlayer rollAndAdvance: dice.
+Board >> skipTurn [
+  players addLast: (players removeFirst)
+	
+]
+
+{ #category : #winner }
+Board >> winner [
+	^players detect: [ :aPlayer | aPlayer position >= spaces].
 ]
