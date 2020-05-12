@@ -9,7 +9,7 @@ Class {
 
 { #category : #'instance creation' }
 Die class >> withSides: anInteger [ 
-	^Die new initializeWithSides: anInteger.
+	^self new initializeWithSides: anInteger.
 ]
 
 { #category : #initialization }

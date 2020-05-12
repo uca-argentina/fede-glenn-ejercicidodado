@@ -14,7 +14,7 @@ LoadedDie class >> withSides: anInteger [
 
 { #category : #'instance creation - old' }
 LoadedDie class >> withValue: anInteger [ 
-  ^LoadedDie new initializeWithValue: anInteger.
+  ^self new initializeWithValue: anInteger.
 ]
 
 { #category : #initialization }
