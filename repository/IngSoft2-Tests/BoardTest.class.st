@@ -12,27 +12,18 @@ BoardTest >> testAddManyPlayers [
   board := Board withSpaces: 10.
   playerOne := Player called: 'Fede'.
   playerTwo := Player called: 'Glenn'.
-  self assert: board numOfPlayers equals: 0.
+  self assert: board numberOfPlayers equals: 0.
   board addPlayer: playerOne.
   board addPlayer: playerTwo.
-  self assert: board numOfPlayers equals: 2.
+  self assert: board numberOfPlayers equals: 2.
 ]
 
 { #category : #tests }
 BoardTest >> testCreateBoard [
-
 	| board result |
-	
 	board := Board withSpaces: 6.
 	result := board length.
-	
-	self assert: result equals: 6.
-	
-	
-	
-	
-	"dice:= LoadedDie withValue:2."
-	
+	self assert: result equals: 6
 ]
 
 { #category : #tests }

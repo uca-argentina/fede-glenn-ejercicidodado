@@ -27,13 +27,13 @@ Player >> position [
 	^position.
 ]
 
-{ #category : #rolling }
+{ #category : #action }
 Player >> roll: aDie [ 
 	^aDie roll 
 ]
 
-{ #category : #advancing }
-Player >> rollAndAdvance: aDie [
+{ #category : #action }
+Player >> rollAndReturnPosition: aDie [
 	position:= position + (self roll: aDie).
 	^position
 ]

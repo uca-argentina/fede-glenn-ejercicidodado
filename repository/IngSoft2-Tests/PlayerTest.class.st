@@ -51,11 +51,11 @@ dieOne := LoadedDie withValue: 6.
 
 self assert: playerOne position equals: 0.
 
-playerOne rollAndAdvance: dieOne.
+playerOne rollAndReturnPosition: dieOne.
 
 self assert: playerOne position equals: 6.
 
-playerOne rollAndAdvance: dieOne.
+playerOne rollAndReturnPosition: dieOne.
 
 self assert: playerOne position equals: 12.
 

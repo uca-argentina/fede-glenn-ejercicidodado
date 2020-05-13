@@ -33,7 +33,7 @@ Board >> hasFinished [
 	
 ]
 
-{ #category : #objectCreation }
+{ #category : #initialization }
 Board >> initializeWithSpaces: anInteger [
      players := OrderedCollection new.
      spaces:= anInteger.
@@ -46,17 +46,17 @@ Board >> initializeWithSpaces: anInteger initialiazeWithDice: aDie [
    dice:= aDie.
 ]
 
-{ #category : #length }
+{ #category : #information }
 Board >> length [
 	^spaces
 ]
 
-{ #category : #counting }
-Board >> numOfPlayers [
+{ #category : #information }
+Board >> numberOfPlayers [
 	^players size
 ]
 
 { #category : #action }
 Board >> play: aPlayer [ 
-	^aPlayer rollAndAdvance: dice.
+	^aPlayer rollAndReturnPosition: dice.
 ]

@@ -22,7 +22,7 @@ LoadedDie >> initializeWithValue: anInteger [
 	value:= anInteger .
 ]
 
-{ #category : #rolling }
+{ #category : #action }
 LoadedDie >> roll [
 	^value.
 ]

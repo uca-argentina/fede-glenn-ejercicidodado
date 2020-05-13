@@ -17,7 +17,7 @@ Die >> initializeWithSides: anInteger [
 	sides:=anInteger.
 ]
 
-{ #category : #rolling }
+{ #category : #action }
 Die >> roll [
 	^(Random new nextInt:sides).
 ]
