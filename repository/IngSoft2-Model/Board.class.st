@@ -10,22 +10,24 @@ Class {
 }
 
 { #category : #'instance creation' }
-Board class >> withSpaces: anInteger withDice: aDie [ 
-	^self new initializeWithSpaces: anInteger initialiazeWithDice: aDie
-]
-
-{ #category : #adding }
-Board >> addPlayer: aPlayer [ 
-	players add: aPlayer.
+Board class >> withSpaces: anInteger withDice: aDie withPlayers: somePlayers [
+	^ self new
+		initializeWithSpaces: anInteger
+		initialiazeWithDice: aDie
+		initializeWithPlayers: somePlayers
 ]
 
 { #category : #action }
 Board >> advance: aPlayer [
-	self skipTurn.
-	^ aPlayer rollAndAdvance: dice
+	| result |
+	result := dice roll.
+	result + aPlayer position > spaces
+		ifTrue: [ aPlayer move: spaces - aPlayer position ]
+		ifFalse: [ aPlayer move: result ].
+	self skipTurn
 ]
 
-{ #category : #action }
+{ #category : #testing }
 Board >> canPlay: aPlayer [
 	^ (players at: 1) = aPlayer
 ]
@@ -38,8 +40,8 @@ Board >> hasFinished [
 ]
 
 { #category : #initialization }
-Board >> initializeWithSpaces: anInteger initialiazeWithDice: aDie [ 
-	players := OrderedCollection new.
+Board >> initializeWithSpaces: anInteger initialiazeWithDice: aDie initializeWithPlayers: somePlayers [
+   players:= somePlayers asOrderedCollection.
    spaces:= anInteger.
    dice:= aDie.
 ]
@@ -47,11 +49,11 @@ Board >> initializeWithSpaces: anInteger initialiazeWithDice: aDie [
 { #category : #action }
 Board >> play: aPlayer [
 	(self canPlay: aPlayer)
-		ifTrue: [ ^ self advance: aPlayer ]
+		ifTrue: [self advance: aPlayer ]
 		ifFalse: [ TurnError signal: 'This is not the player turn' ]
 ]
 
-{ #category : #position }
+{ #category : #information }
 Board >> scoreBoard [
 	^players sort: [ :aPlayer :otherPlayer | aPlayer position >= otherPlayer position ].
 ]
@@ -62,7 +64,7 @@ Board >> skipTurn [
 	
 ]
 
-{ #category : #winner }
+{ #category : #state }
 Board >> winner [
 	^players detect: [ :aPlayer | aPlayer position >= spaces].
 ]

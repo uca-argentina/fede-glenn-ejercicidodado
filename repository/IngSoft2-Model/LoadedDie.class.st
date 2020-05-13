@@ -8,13 +8,11 @@ Class {
 }
 
 { #category : #'instance creation' }
-LoadedDie class >> withSides: anInteger [ 
-	self shouldBeImplemented.
-]
-
-{ #category : #'instance creation - old' }
-LoadedDie class >> withValue: anInteger [ 
-  ^LoadedDie new initializeWithValue: anInteger.
+LoadedDie class >> withValue: anInteger [
+	anInteger > 0
+		ifTrue: [ ^ LoadedDie new initializeWithValue: anInteger ]
+		ifFalse: [ CreationError
+				signal: 'You cannot create a die with a negative values' ].
 ]
 
 { #category : #initialization }
@@ -22,7 +20,7 @@ LoadedDie >> initializeWithValue: anInteger [
 	value:= anInteger .
 ]
 
-{ #category : #rolling }
+{ #category : #action }
 LoadedDie >> roll [
 	^value.
 ]

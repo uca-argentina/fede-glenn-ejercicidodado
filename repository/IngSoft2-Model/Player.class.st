@@ -11,7 +11,7 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #rolling }
+{ #category : #'instance creation' }
 Player class >> called: aString [
  ^self new initializeWithName: aString. 
 ]
@@ -22,18 +22,17 @@ Player >> initializeWithName: aString [
 	position:=0.
 ]
 
-{ #category : #position }
+{ #category : #action }
+Player >> move: anInteger [
+	position := position + anInteger
+]
+
+{ #category : #information }
 Player >> position [
 	^position.
 ]
 
-{ #category : #rolling }
+{ #category : #action }
 Player >> roll: aDie [ 
 	^aDie roll 
-]
-
-{ #category : #advancing }
-Player >> rollAndAdvance: aDie [
-	position:= position + (self roll: aDie).
-	^position
 ]

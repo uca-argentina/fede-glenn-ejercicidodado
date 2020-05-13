@@ -45,8 +45,8 @@ PlayerTest >> testPlayerRollsLoadedDieAndAdvances [
 	playerOne := Player called: 'Fede'.
 	dieOne := LoadedDie withValue: 6.
 	self assert: playerOne position equals: 0.
-	playerOne rollAndAdvance: dieOne.
+	playerOne move: dieOne roll.
 	self assert: playerOne position equals: 6.
-	playerOne rollAndAdvance: dieOne.
-	self assert: playerOne position equals: 12
+	playerOne move: dieOne roll.
+	self assert: playerOne position equals: 12.
 ]

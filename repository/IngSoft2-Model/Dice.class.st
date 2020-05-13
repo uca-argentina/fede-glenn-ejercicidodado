@@ -16,11 +16,6 @@ Dice class >> initializeNewGroup [
 ]
 
 { #category : #instanceCreation }
-Dice class >> newGroup [
-	^ self initializeNewGroup
-]
-
-{ #category : #instanceCreation }
 Dice class >> newGroup: aDieGroup [
 	^ self new initializeWithGroup: aDieGroup
 ]
@@ -30,7 +25,7 @@ Dice >> initializeWithGroup: aDieGroup [
 	dice := aDieGroup
 ]
 
-{ #category : #rolling }
+{ #category : #action }
 Dice >> roll [
 	^dice sum: [:die | die roll ].
 	

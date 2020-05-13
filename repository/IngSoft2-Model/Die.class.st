@@ -8,8 +8,11 @@ Class {
 }
 
 { #category : #'instance creation' }
-Die class >> withSides: anInteger [ 
-	^self new initializeWithSides: anInteger.
+Die class >> withSides: anInteger [
+	anInteger > 0
+		ifTrue: [ ^ self new initializeWithSides: anInteger ]
+		ifFalse: [ CreationError
+				signal: 'You cannot create a die with a negative values' ].
 ]
 
 { #category : #initialization }
@@ -17,7 +20,7 @@ Die >> initializeWithSides: anInteger [
 	sides:=anInteger.
 ]
 
-{ #category : #rolling }
+{ #category : #action }
 Die >> roll [
 	^(Random new nextInt:sides).
 ]

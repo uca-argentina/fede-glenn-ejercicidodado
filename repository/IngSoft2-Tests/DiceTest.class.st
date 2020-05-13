@@ -5,6 +5,14 @@ Class {
 }
 
 { #category : #tests }
+DiceTest >> testNoNegativeDie [
+	self should: [LoadedDie withValue:-2] raise: CreationError description: 'You cannot create a die with negative values'.
+	self should: [Die withSides:-2] raise: CreationError description: 'You cannot create a die with a negative values'.
+	
+	
+]
+
+{ #category : #tests }
 DiceTest >> testRollDice [ 
 	|result dice dieOne dieTwo dieGroup |
 	dieOne := Die withSides: 6.

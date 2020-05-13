@@ -8,11 +8,12 @@ Class {
 BoardTest >> testAPlayerPlaysTwiceFails [
 	| board playerOne playerTwo die |
 	die := LoadedDie withValue: 6.
-	board := Board withSpaces: 10 withDice: die.
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
-	board addPlayer: playerOne.
-	board addPlayer: playerTwo.
+	board := Board
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne with: playerTwo).
 	board play: playerOne.
 	self
 		should: [ board play: playerOne ]
@@ -21,29 +22,16 @@ BoardTest >> testAPlayerPlaysTwiceFails [
 ]
 
 { #category : #tests }
-BoardTest >> testPlayerCanPlay [
-
+BoardTest >> testPlayerCanWinOverTheLimit [
 	| board playerOne die |
-	
-  die := LoadedDie withValue: 5.
-  board := Board withSpaces: 10 withDice: die.
-  playerOne := Player called: 'Fede'.
-  board addPlayer: playerOne.
-  board play: playerOne.
-  self assert: playerOne position equals: 5.
-  
-  
-]
-
-{ #category : #tests }
-BoardTest >> testPlayerCanWin [
-	| board playerOne die |
-	die := LoadedDie withValue: 5.
-	board := Board withSpaces: 10 withDice: die.
+	die := LoadedDie withValue: 6.
 	playerOne := Player called: 'Fede'.
-	board addPlayer: playerOne.
+	board := Board
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne).
 	board play: playerOne.
-	self assert: playerOne position equals: 5.
+	self assert: playerOne position equals: 6.
 	self assert: board hasFinished not.
 	board play: playerOne.
 	self assert: playerOne position equals: 10.
@@ -51,31 +39,46 @@ BoardTest >> testPlayerCanWin [
 ]
 
 { #category : #tests }
-BoardTest >> testPlayerCanWinOverTheLimit [
+BoardTest >> testPlayerEndInLastPosition [
 	| board playerOne die |
 	die := LoadedDie withValue: 6.
-	board := Board withSpaces: 10 withDice: die.
 	playerOne := Player called: 'Fede'.
-	board addPlayer: playerOne.
+	board := Board
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne).
 	board play: playerOne.
 	self assert: playerOne position equals: 6.
 	self assert: board hasFinished not.
 	board play: playerOne.
-	self assert: playerOne position equals: 12.
+	self assert: playerOne position equals: 10.
 	self assert: board hasFinished
+]
+
+{ #category : #tests }
+BoardTest >> testPlayerPlays [
+	| board playerOne die |
+	die := LoadedDie withValue: 5.
+	playerOne := Player called: 'Fede'.
+	board := Board
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne).
+	board play: playerOne.
+	self assert: playerOne position equals: 5
 ]
 
 { #category : #tests }
 BoardTest >> testPlayerPosition [
 	| board playerOne playerTwo playerThree die result |
 	die := LoadedDie withValue: 6.
-	board := Board withSpaces: 10 withDice: die.
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
 	playerThree := Player called: 'Nicky'.
-	board addPlayer: playerOne.
-	board addPlayer: playerTwo.
-	board addPlayer: playerThree.
+	board := Board
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne with: playerTwo with: playerThree).
 	board play: playerOne.
 	board play: playerTwo.
 	board play: playerThree.
@@ -88,14 +91,32 @@ BoardTest >> testPlayerPosition [
 ]
 
 { #category : #tests }
+BoardTest >> testPlayerWins [
+	| board playerOne die |
+	die := LoadedDie withValue: 5.
+	playerOne := Player called: 'Fede'.
+	board := Board
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne).
+	board play: playerOne.
+	self assert: playerOne position equals: 5.
+	self assert: board hasFinished not.
+	board play: playerOne.
+	self assert: playerOne position equals: 10.
+	self assert: board hasFinished
+]
+
+{ #category : #tests }
 BoardTest >> testPlayingWithTurns [
 	| board playerOne playerTwo die |
 	die := LoadedDie withValue: 6.
-	board := Board withSpaces: 10 withDice: die.
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
-	board addPlayer: playerOne.
-	board addPlayer: playerTwo.
+	board := Board
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne with: playerTwo).
 	board play: playerOne.
 	self assert: playerOne position equals: 6.
 	board play: playerTwo.
@@ -107,14 +128,14 @@ BoardTest >> testPlayingWithTurns [
 { #category : #tests }
 BoardTest >> testPlayingWithTurnsWithThreePlayers [
 	| board playerOne playerTwo playerThree die |
-	die := LoadedDie withValue: 6.
-	board := Board withSpaces: 10 withDice: die.
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
 	playerThree := Player called: 'Nicky'.
-	board addPlayer: playerOne.
-	board addPlayer: playerTwo.
-	board addPlayer: playerThree.
+	die := LoadedDie withValue: 6.
+	board := Board
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne with: playerTwo with: playerThree).
 	board play: playerOne.
 	self assert: playerOne position equals: 6.
 	board play: playerTwo.
