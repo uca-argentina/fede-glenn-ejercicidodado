@@ -5,28 +5,6 @@ Class {
 }
 
 { #category : #tests }
-BoardTest >> testAddManyPlayers [
-
-	| board playerOne playerTwo |
-	
-  board := Board withSpaces: 10.
-  playerOne := Player called: 'Fede'.
-  playerTwo := Player called: 'Glenn'.
-  self assert: board numberOfPlayers equals: 0.
-  board addPlayer: playerOne.
-  board addPlayer: playerTwo.
-  self assert: board numberOfPlayers equals: 2.
-]
-
-{ #category : #tests }
-BoardTest >> testCreateBoard [
-	| board result |
-	board := Board withSpaces: 6.
-	result := board length.
-	self assert: result equals: 6
-]
-
-{ #category : #tests }
 BoardTest >> testPlayerCanPlay [
 
 	| board playerOne die |

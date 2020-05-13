@@ -46,16 +46,6 @@ Board >> initializeWithSpaces: anInteger initialiazeWithDice: aDie [
    dice:= aDie.
 ]
 
-{ #category : #information }
-Board >> length [
-	^spaces
-]
-
-{ #category : #information }
-Board >> numberOfPlayers [
-	^players size
-]
-
 { #category : #action }
 Board >> play: aPlayer [ 
 	^aPlayer rollAndReturnPosition: dice.
