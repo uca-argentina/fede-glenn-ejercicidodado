@@ -9,11 +9,6 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #definition }
-Board class >> withSpaces: anInteger [
-^self new initializeWithSpaces: anInteger
-]
-
 { #category : #'instance creation' }
 Board class >> withSpaces: anInteger withDice: aDie [ 
 	^self new initializeWithSpaces: anInteger initialiazeWithDice: aDie
@@ -40,12 +35,6 @@ Board >> hasFinished [
 	^players anySatisfy: [ :aPlayer | aPlayer position >= spaces ]
 
 	
-]
-
-{ #category : #objectCreation }
-Board >> initializeWithSpaces: anInteger [
-     players := OrderedCollection new.
-     spaces:= anInteger.
 ]
 
 { #category : #initialization }
