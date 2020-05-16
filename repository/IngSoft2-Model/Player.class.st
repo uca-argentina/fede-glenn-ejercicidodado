@@ -3,7 +3,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'name',
-		'position'
+		'position',
+		'actualBoard'
 	],
 	#classInstVars : [
 		'position'
@@ -14,6 +15,20 @@ Class {
 { #category : #'instance creation' }
 Player class >> called: aString [
  ^self new initializeWithName: aString. 
+]
+
+{ #category : #adding }
+Player >> addGame: aBoard [
+	actualBoard := aBoard
+]
+
+{ #category : #'as yet unclassified' }
+Player >> currentLap [
+	| result |
+	result := (position / actualBoard boardSpaces) asInteger.
+	position = actualBoard boardSpaces
+		ifTrue: [ ^ result ]
+		ifFalse: [ ^result + 1 ]
 ]
 
 { #category : #'instance creation' }
@@ -29,7 +44,9 @@ Player >> move: anInteger [
 
 { #category : #information }
 Player >> position [
-	^position.
+	position = (actualBoard boardSpaces * actualBoard boardLaps)
+		ifTrue: [ ^ actualBoard boardSpaces  ]
+		ifFalse: [ ^ position % actualBoard boardSpaces ]
 ]
 
 { #category : #action }

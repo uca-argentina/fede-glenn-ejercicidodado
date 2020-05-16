@@ -4,27 +4,40 @@ Class {
 	#instVars : [
 		'spaces',
 		'players',
-		'dice'
+		'dice',
+		'laps'
 	],
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #'instance creation' }
-Board class >> withSpaces: anInteger withDice: aDie withPlayers: somePlayers [
+Board class >> withSpaces: anInteger withDice: aDie withPlayers: somePlayers withLaps: aLapNumber [
 	^ self new
 		initializeWithSpaces: anInteger
 		initialiazeWithDice: aDie
 		initializeWithPlayers: somePlayers
+		initializeWithLaps: aLapNumber
 ]
 
 { #category : #action }
 Board >> advance: aPlayer [
 	| result |
 	result := dice roll.
-	result + aPlayer position > spaces
+	(aPlayer currentLap = laps)
+		& (result + aPlayer position > spaces)
 		ifTrue: [ aPlayer move: spaces - aPlayer position ]
 		ifFalse: [ aPlayer move: result ].
 	self skipTurn
+]
+
+{ #category : #'as yet unclassified' }
+Board >> boardLaps [
+	^ laps
+]
+
+{ #category : #'as yet unclassified' }
+Board >> boardSpaces [
+	^ spaces
 ]
 
 { #category : #testing }
@@ -40,10 +53,14 @@ Board >> hasFinished [
 ]
 
 { #category : #initialization }
-Board >> initializeWithSpaces: anInteger initialiazeWithDice: aDie initializeWithPlayers: somePlayers [
-   players:= somePlayers asOrderedCollection.
-   spaces:= anInteger.
-   dice:= aDie.
+Board >> initializeWithSpaces: anInteger initialiazeWithDice: aDie initializeWithPlayers: somePlayers initializeWithLaps: aLapNumber [
+	players := somePlayers asOrderedCollection.
+	spaces := anInteger.
+	dice := aDie.
+	laps := aLapNumber.
+	somePlayers do: [ :aPlayer | aPlayer addGame: self ].
+	
+	
 ]
 
 { #category : #action }
@@ -55,7 +72,10 @@ Board >> play: aPlayer [
 
 { #category : #information }
 Board >> scoreBoard [
-	^players sort: [ :aPlayer :otherPlayer | aPlayer position >= otherPlayer position ].
+	^ players
+		sort: [ :aPlayer :otherPlayer | 
+			(aPlayer position + (aPlayer currentLap * spaces))
+				>= (otherPlayer position + (otherPlayer currentLap * spaces)) ]
 ]
 
 { #category : #action }
@@ -66,5 +86,6 @@ Board >> skipTurn [
 
 { #category : #state }
 Board >> winner [
-	^players detect: [ :aPlayer | aPlayer position >= spaces].
+	^ players
+		detect: [ :aPlayer | (aPlayer currentLap = laps) & (aPlayer position = spaces) ]
 ]

@@ -13,12 +13,29 @@ BoardTest >> testAPlayerPlaysTwiceFails [
 	board := Board
 		withSpaces: 10
 		withDice: die
-		withPlayers: (Array with: playerOne with: playerTwo).
+		withPlayers: (Array with: playerOne with: playerTwo)
+		withLaps: 2.
 	board play: playerOne.
 	self
 		should: [ board play: playerOne ]
 		raise: TurnError
 		description: 'This is not the player turn'
+]
+
+{ #category : #tests }
+BoardTest >> testCircularBoard [
+	| board playerOne die |
+	die := LoadedDie withValue: 6.
+	playerOne := Player called: 'Fede'.
+	board := Board
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne)
+		withLaps: 2.
+	board play: playerOne.
+	board play: playerOne.
+	self assert: board hasFinished not.
+	self assert: playerOne position equals: 2.
 ]
 
 { #category : #tests }
@@ -29,7 +46,8 @@ BoardTest >> testPlayerCanWinOverTheLimit [
 	board := Board
 		withSpaces: 10
 		withDice: die
-		withPlayers: (Array with: playerOne).
+		withPlayers: (Array with: playerOne)
+		withLaps: 1.
 	board play: playerOne.
 	self assert: playerOne position equals: 6.
 	self assert: board hasFinished not.
@@ -46,7 +64,8 @@ BoardTest >> testPlayerEndInLastPosition [
 	board := Board
 		withSpaces: 10
 		withDice: die
-		withPlayers: (Array with: playerOne).
+		withPlayers: (Array with: playerOne)
+		withLaps: 1.
 	board play: playerOne.
 	self assert: playerOne position equals: 6.
 	self assert: board hasFinished not.
@@ -63,7 +82,8 @@ BoardTest >> testPlayerPlays [
 	board := Board
 		withSpaces: 10
 		withDice: die
-		withPlayers: (Array with: playerOne).
+		withPlayers: (Array with: playerOne)
+		withLaps: 2.
 	board play: playerOne.
 	self assert: playerOne position equals: 5
 ]
@@ -78,7 +98,8 @@ BoardTest >> testPlayerPosition [
 	board := Board
 		withSpaces: 10
 		withDice: die
-		withPlayers: (Array with: playerOne with: playerTwo with: playerThree).
+		withPlayers: (Array with: playerOne with: playerTwo with: playerThree)
+		withLaps: 2.
 	board play: playerOne.
 	board play: playerTwo.
 	board play: playerThree.
@@ -98,7 +119,8 @@ BoardTest >> testPlayerWins [
 	board := Board
 		withSpaces: 10
 		withDice: die
-		withPlayers: (Array with: playerOne).
+		withPlayers: (Array with: playerOne)
+		withLaps: 1.
 	board play: playerOne.
 	self assert: playerOne position equals: 5.
 	self assert: board hasFinished not.
@@ -116,7 +138,8 @@ BoardTest >> testPlayingWithTurns [
 	board := Board
 		withSpaces: 10
 		withDice: die
-		withPlayers: (Array with: playerOne with: playerTwo).
+		withPlayers: (Array with: playerOne with: playerTwo)
+		withLaps: 1.
 	board play: playerOne.
 	self assert: playerOne position equals: 6.
 	board play: playerTwo.
@@ -135,7 +158,8 @@ BoardTest >> testPlayingWithTurnsWithThreePlayers [
 	board := Board
 		withSpaces: 10
 		withDice: die
-		withPlayers: (Array with: playerOne with: playerTwo with: playerThree).
+		withPlayers: (Array with: playerOne with: playerTwo with: playerThree)
+		withLaps: 1.
 	board play: playerOne.
 	self assert: playerOne position equals: 6.
 	board play: playerTwo.
