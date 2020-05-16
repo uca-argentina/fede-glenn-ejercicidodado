@@ -49,6 +49,11 @@ Player >> position [
 		ifFalse: [ ^ position % actualBoard boardSpaces ]
 ]
 
+{ #category : #information }
+Player >> rank [
+	^actualBoard scoreBoard indexOf: self.
+]
+
 { #category : #action }
 Player >> roll: aDie [ 
 	^aDie roll 

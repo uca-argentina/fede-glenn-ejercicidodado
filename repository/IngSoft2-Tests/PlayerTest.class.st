@@ -38,15 +38,3 @@ result := playerOne roll: dieOne.
 
 self assert: result equals: 6.
 ]
-
-{ #category : #tests }
-PlayerTest >> testPlayerRollsLoadedDieAndAdvances [
-	| playerOne dieOne |
-	playerOne := Player called: 'Fede'.
-	dieOne := LoadedDie withValue: 6.
-	self assert: playerOne position equals: 0.
-	playerOne move: dieOne roll.
-	self assert: playerOne position equals: 6.
-	playerOne move: dieOne roll.
-	self assert: playerOne position equals: 12.
-]

@@ -112,6 +112,26 @@ BoardTest >> testPlayerPosition [
 ]
 
 { #category : #tests }
+BoardTest >> testPlayerRank [
+	| board playerOne playerTwo die |
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	die := LoadedDie withValue: 6.
+	board := Board
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne with: playerTwo )
+		withLaps: 1.
+	board play: playerOne.
+	self assert: playerOne position equals: 6.
+	board play: playerTwo.
+	self assert: playerTwo position equals: 6.
+	board play: playerOne.
+	self assert: playerOne rank equals: 1.
+	self assert: playerTwo rank equals: 2.
+]
+
+{ #category : #tests }
 BoardTest >> testPlayerWins [
 	| board playerOne die |
 	die := LoadedDie withValue: 5.
