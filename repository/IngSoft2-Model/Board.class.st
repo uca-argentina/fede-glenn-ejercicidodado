@@ -5,7 +5,8 @@ Class {
 		'spaces',
 		'players',
 		'dice',
-		'laps'
+		'laps',
+		'effects'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -17,16 +18,29 @@ Board class >> withSpaces: anInteger withDice: aDie withPlayers: somePlayers wit
 		initialiazeWithDice: aDie
 		initializeWithPlayers: somePlayers
 		initializeWithLaps: aLapNumber
+		initializeWithEffects: NoEffect.
+]
+
+{ #category : #'instance creation' }
+Board class >> withSpaces: anInteger withDice: aDie withPlayers: somePlayers withLaps: aLapNumber withEffect: anEffect [ 
+	^ self new
+		initializeWithSpaces: anInteger
+		initialiazeWithDice: aDie
+		initializeWithPlayers: somePlayers
+		initializeWithLaps: aLapNumber
+		initializeWithEffects: anEffect.
+		
 ]
 
 { #category : #action }
 Board >> advance: aPlayer [
-	| result |
-	result := dice roll.
-	(aPlayer currentLap = laps)
-		& (result + aPlayer position > spaces)
+	| rolled effect |
+	rolled := dice roll.
+	effect := self selectEffect.
+	(self isAboutToWin: aPlayer havingRolled: rolled)
 		ifTrue: [ aPlayer move: spaces - aPlayer position ]
-		ifFalse: [ aPlayer move: result ].
+		ifFalse: [ aPlayer move: rolled ].
+	effect applyTo: players.
 	self skipTurn
 ]
 
@@ -53,14 +67,18 @@ Board >> hasFinished [
 ]
 
 { #category : #initialization }
-Board >> initializeWithSpaces: anInteger initialiazeWithDice: aDie initializeWithPlayers: somePlayers initializeWithLaps: aLapNumber [
+Board >> initializeWithSpaces: anInteger initialiazeWithDice: aDie initializeWithPlayers: somePlayers initializeWithLaps: aLapNumber initializeWithEffects: anEffect [
 	players := somePlayers asOrderedCollection.
 	spaces := anInteger.
 	dice := aDie.
 	laps := aLapNumber.
-	somePlayers do: [ :aPlayer | aPlayer addGame: self ].
-	
-	
+	effects := anEffect.
+	somePlayers do: [ :aPlayer | aPlayer addGame: self ]
+]
+
+{ #category : #action }
+Board >> isAboutToWin: aPlayer havingRolled: result [
+	^ aPlayer currentLap = laps & (result + aPlayer position > spaces)
 ]
 
 { #category : #action }
@@ -76,6 +94,11 @@ Board >> scoreBoard [
 		sort: [ :aPlayer :otherPlayer | 
 			(aPlayer position + (aPlayer currentLap * spaces))
 				>= (otherPlayer position + (otherPlayer currentLap * spaces)) ]
+]
+
+{ #category : #selection }
+Board >> selectEffect [
+	^effects
 ]
 
 { #category : #action }

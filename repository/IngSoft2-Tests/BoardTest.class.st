@@ -39,6 +39,43 @@ BoardTest >> testCircularBoard [
 ]
 
 { #category : #tests }
+BoardTest >> testMoonWalkEffect [
+	| board playerOne playerTwo die |
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	die := LoadedDie withValue: 6.
+	
+	board := PracticeBoard
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne with: playerTwo)
+		withLaps: 1
+		withEffect: MoonWalkEffect.
+	board set: playerOne toPosition: 0 toLap: 1.
+	board set: playerTwo toPosition: 8 toLap: 1.
+	
+	board play: playerOne.
+	self assert: playerOne position equals: 6.
+	self assert: playerTwo position equals: 5.
+
+]
+
+{ #category : #tests }
+BoardTest >> testNoEffect [
+	| board playerOne die |
+	die := LoadedDie withValue: 3.
+	playerOne := Player called: 'Fede'.
+	board := Board
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne)
+		withLaps: 1
+		withEffect: NoEffect.
+	board play: playerOne.
+	self assert: playerOne position equals: 3.
+]
+
+{ #category : #tests }
 BoardTest >> testPlayerCanWinOverTheLimit [
 	| board playerOne die |
 	die := LoadedDie withValue: 6.
@@ -188,4 +225,34 @@ BoardTest >> testPlayingWithTurnsWithThreePlayers [
 	self assert: playerThree position equals: 6.
 	board play: playerOne.
 	self assert: board winner equals: playerOne
+]
+
+{ #category : #tests }
+BoardTest >> testSpeedUp [
+	| board playerOne die |
+	die := LoadedDie withValue: 3.
+	playerOne := Player called: 'Fede'.
+	board := Board
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne)
+		withLaps: 1
+		withEffect: SpeedUpEffect.
+	board play: playerOne.
+	self assert: playerOne position equals: 7.
+]
+
+{ #category : #tests }
+BoardTest >> testWarmHoleEffect [
+	| board playerOne die |
+	die := LoadedDie withValue: 6.
+	playerOne := Player called: 'Fede'.
+	board := Board
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne)
+		withLaps: 1
+		withEffect: WarmHoleEffect.
+	board play: playerOne.
+	self assert: playerOne position equals: 2.
 ]

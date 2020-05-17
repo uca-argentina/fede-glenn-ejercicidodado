@@ -42,6 +42,11 @@ Player >> move: anInteger [
 	position := position + anInteger
 ]
 
+{ #category : #movement }
+Player >> moveBackwards: anInteger [ 
+	position := position - anInteger
+]
+
 { #category : #information }
 Player >> position [
 	position = (actualBoard boardSpaces * actualBoard boardLaps)
@@ -57,4 +62,9 @@ Player >> rank [
 { #category : #action }
 Player >> roll: aDie [ 
 	^aDie roll 
+]
+
+{ #category : #placement }
+Player >> takeToPosition: aPosition [ 
+	position := aPosition.
 ]
