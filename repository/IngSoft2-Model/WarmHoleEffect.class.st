@@ -1,7 +1,7 @@
 Class {
 	#name : #WarmHoleEffect,
 	#superclass : #Object,
-	#category : #'IngSoft2-Tests'
+	#category : #'IngSoft2-Model'
 }
 
 { #category : #apply }

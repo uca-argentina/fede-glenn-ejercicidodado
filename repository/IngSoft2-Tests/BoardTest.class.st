@@ -23,6 +23,50 @@ BoardTest >> testAPlayerPlaysTwiceFails [
 ]
 
 { #category : #tests }
+BoardTest >> testAtomicBombEffectStaysSameLaps [
+	| board playerOne playerTwo die |
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	die := LoadedDie withValue: 6.
+	
+	board := PracticeBoard
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne with: playerTwo)
+		withLaps: 3
+		withEffect: AtomicBombEffect.
+	board set: playerOne toPosition: 0 toLap: 1.
+	board set: playerTwo toPosition: 8 toLap: 3.
+	
+	board play: playerOne.
+	self assert: playerOne currentLap equals: 1.
+	self assert: playerTwo currentLap equals: 3.
+
+]
+
+{ #category : #tests }
+BoardTest >> testAtomicBombEffectToStartingPosition [
+	| board playerOne playerTwo die |
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	die := LoadedDie withValue: 6.
+	
+	board := PracticeBoard
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne with: playerTwo)
+		withLaps: 1
+		withEffect: AtomicBombEffect.
+	board set: playerOne toPosition: 0 toLap: 1.
+	board set: playerTwo toPosition: 8 toLap: 1.
+	
+	board play: playerOne.
+	self assert: playerOne position equals: 0.
+	self assert: playerTwo position equals: 0.
+
+]
+
+{ #category : #tests }
 BoardTest >> testCircularBoard [
 	| board playerOne die |
 	die := LoadedDie withValue: 6.

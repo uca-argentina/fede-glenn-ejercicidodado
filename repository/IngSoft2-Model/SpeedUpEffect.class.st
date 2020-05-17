@@ -1,7 +1,7 @@
 Class {
 	#name : #SpeedUpEffect,
 	#superclass : #Object,
-	#category : #'IngSoft2-Tests'
+	#category : #'IngSoft2-Model'
 }
 
 { #category : #'as yet unclassifiedapply' }
