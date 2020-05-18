@@ -44,12 +44,12 @@ Board >> advance: aPlayer [
 	self skipTurn
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #information }
 Board >> boardLaps [
 	^ laps
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #information }
 Board >> boardSpaces [
 	^ spaces
 ]
@@ -68,11 +68,15 @@ Board >> hasFinished [
 
 { #category : #initialization }
 Board >> initializeWithSpaces: anInteger initialiazeWithDice: aDie initializeWithPlayers: somePlayers initializeWithLaps: aLapNumber initializeWithEffects: anEffect [
+	| totalProbability |
 	players := somePlayers asOrderedCollection.
 	spaces := anInteger.
 	dice := aDie.
 	laps := aLapNumber.
-	effects := anEffect.
+	totalProbability := anEffect
+		sum: [ :oneEffect | oneEffect probability ].
+	effects := anEffect asOrderedCollection.
+	effects add: (NoEffect withProbability: 1 - 0.4).
 	somePlayers do: [ :aPlayer | aPlayer addGame: self ]
 ]
 
@@ -101,12 +105,12 @@ Board >> selectEffect [
 	| probability base |
 	probability := Random new next.
 	base := 0.
-	^effects
+	^ effects
 		detect: [ :anEffect | 
 			base := base + anEffect probability.
-			probability <= (anEffect probability + base) ]
+			probability <= anEffect probability ]
 		ifFound: [ :anEffect | anEffect ]
-		ifNone: [ NoEffect  ]
+		ifNone: [ NoEffect withProbability: 1 ]
 ]
 
 { #category : #action }

@@ -329,3 +329,27 @@ BoardTest >> testWormHoleEffect [
 	board play: playerOne.
 	self assert: playerOne position equals: 2.
 ]
+
+{ #category : #tests }
+BoardTest >> testWormholeEffectProbability [
+	| board playerOne die lastPosition wormHoleCounter noEffectCounter |
+	die := LoadedDie withValue: 4.
+	wormHoleCounter := 0.
+	noEffectCounter := 0.
+	playerOne := Player called: 'Fede'.
+	board := Board
+		withSpaces: 1000
+		withDice: die
+		withPlayers: (Array with: playerOne)
+		withLaps: 10
+		withEffect: (Array with: (WormHoleEffect withProbability: 0.4)).
+	lastPosition := 0.
+	1000
+		timesRepeat: [ board play: playerOne.
+			playerOne position = lastPosition
+				ifTrue: [ wormHoleCounter := wormHoleCounter + 1 ]
+				ifFalse: [ noEffectCounter := noEffectCounter + 1 ].
+			lastPosition := playerOne position ].
+	self assert: (wormHoleCounter between: 350 and: 450).
+	self assert: 1000 - wormHoleCounter equals: noEffectCounter
+]

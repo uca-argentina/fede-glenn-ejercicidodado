@@ -22,7 +22,7 @@ Player >> addGame: aBoard [
 	actualBoard := aBoard
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #information }
 Player >> currentLap [
 	| result |
 	result := (position / actualBoard boardSpaces) asInteger.
