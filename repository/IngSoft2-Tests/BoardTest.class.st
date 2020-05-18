@@ -34,7 +34,7 @@ BoardTest >> testAtomicBombEffectStaysSameLaps [
 		withDice: die
 		withPlayers: (Array with: playerOne with: playerTwo)
 		withLaps: 3
-		withEffect: AtomicBombEffect.
+		withEffect: (Array with: (AtomicBombEffect withProbability: 1)).
 	board set: playerOne toPosition: 0 toLap: 1.
 	board set: playerTwo toPosition: 8 toLap: 3.
 	
@@ -56,7 +56,7 @@ BoardTest >> testAtomicBombEffectToStartingPosition [
 		withDice: die
 		withPlayers: (Array with: playerOne with: playerTwo)
 		withLaps: 1
-		withEffect: AtomicBombEffect.
+		withEffect: (Array with: (AtomicBombEffect withProbability: 1)).
 	board set: playerOne toPosition: 0 toLap: 1.
 	board set: playerTwo toPosition: 8 toLap: 1.
 	
@@ -94,7 +94,7 @@ BoardTest >> testMoonWalkEffect [
 		withDice: die
 		withPlayers: (Array with: playerOne with: playerTwo)
 		withLaps: 1
-		withEffect: MoonWalkEffect.
+		withEffect: (Array with: (MoonWalkEffect withProbability: 1)).
 	board set: playerOne toPosition: 0 toLap: 1.
 	board set: playerTwo toPosition: 8 toLap: 1.
 	
@@ -114,7 +114,7 @@ BoardTest >> testNoEffect [
 		withDice: die
 		withPlayers: (Array with: playerOne)
 		withLaps: 1
-		withEffect: NoEffect.
+		withEffect: (Array with: (NoEffect withProbability: 1)).
 	board play: playerOne.
 	self assert: playerOne position equals: 3.
 ]
@@ -272,6 +272,35 @@ BoardTest >> testPlayingWithTurnsWithThreePlayers [
 ]
 
 { #category : #tests }
+BoardTest >> testSetAPlayerInSpecificPosition [
+	| board playerOne playerTwo die |
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	die := LoadedDie withValue: 6.
+	
+	board := PracticeBoard
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne with: playerTwo)
+		withLaps: 5.
+	board set: playerOne toPosition: 3 toLap: 1.
+	board set: playerTwo toPosition: 8 toLap: 1.
+
+	self assert: playerOne position equals: 3.
+	self assert: playerTwo position equals: 8.
+	
+	board play: playerOne.
+	board play: playerTwo.
+	
+	self assert: playerOne position equals: 9.
+	self assert: playerTwo position equals: 4.
+	self assert: playerTwo currentLap equals: 2.
+	
+	
+
+]
+
+{ #category : #tests }
 BoardTest >> testSpeedUp [
 	| board playerOne die |
 	die := LoadedDie withValue: 3.
@@ -281,13 +310,13 @@ BoardTest >> testSpeedUp [
 		withDice: die
 		withPlayers: (Array with: playerOne)
 		withLaps: 1
-		withEffect: SpeedUpEffect.
+		withEffect: (Array with: (SpeedUpEffect withProbability: 1)).
 	board play: playerOne.
 	self assert: playerOne position equals: 7.
 ]
 
 { #category : #tests }
-BoardTest >> testWarmHoleEffect [
+BoardTest >> testWormHoleEffect [
 	| board playerOne die |
 	die := LoadedDie withValue: 6.
 	playerOne := Player called: 'Fede'.
@@ -296,7 +325,7 @@ BoardTest >> testWarmHoleEffect [
 		withDice: die
 		withPlayers: (Array with: playerOne)
 		withLaps: 1
-		withEffect: WarmHoleEffect.
+		withEffect: (Array with: (WormHoleEffect withProbability: 1)).
 	board play: playerOne.
 	self assert: playerOne position equals: 2.
 ]

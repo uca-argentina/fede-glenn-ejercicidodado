@@ -1,10 +1,10 @@
 Class {
 	#name : #SpeedUpEffect,
-	#superclass : #Object,
+	#superclass : #GameEffect,
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #'as yet unclassifiedapply' }
-SpeedUpEffect class >> applyTo: somePlayer [ 
-	(somePlayer at: 1) move: 4.
+{ #category : #operations }
+SpeedUpEffect >> applyTo: somePlayers [
+	(somePlayers at: 1) move: 4.
 ]

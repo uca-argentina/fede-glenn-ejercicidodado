@@ -18,7 +18,7 @@ Board class >> withSpaces: anInteger withDice: aDie withPlayers: somePlayers wit
 		initialiazeWithDice: aDie
 		initializeWithPlayers: somePlayers
 		initializeWithLaps: aLapNumber
-		initializeWithEffects: NoEffect.
+		initializeWithEffects: (Array with: (NoEffect withProbability: 1)).
 ]
 
 { #category : #'instance creation' }
@@ -98,7 +98,15 @@ Board >> scoreBoard [
 
 { #category : #selection }
 Board >> selectEffect [
+	| probability base |
+	probability := Random new next.
+	base := 0.
 	^effects
+		detect: [ :anEffect | 
+			base := base + anEffect probability.
+			probability <= (anEffect probability + base) ]
+		ifFound: [ :anEffect | anEffect ]
+		ifNone: [ NoEffect  ]
 ]
 
 { #category : #action }

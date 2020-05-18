@@ -1,9 +1,9 @@
 Class {
 	#name : #NoEffect,
-	#superclass : #Object,
+	#superclass : #GameEffect,
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #apply }
-NoEffect class >> applyTo: aPlayer [
+{ #category : #operations }
+NoEffect >> applyTo: somePlayers [
 ]
