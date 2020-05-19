@@ -1,9 +1,6 @@
 Class {
 	#name : #GameEffect,
 	#superclass : #Object,
-	#instVars : [
-		'probability'
-	],
 	#category : #'IngSoft2-Model'
 }
 
