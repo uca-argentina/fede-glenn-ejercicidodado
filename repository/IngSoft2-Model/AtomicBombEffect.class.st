@@ -1,9 +1,6 @@
 Class {
 	#name : #AtomicBombEffect,
 	#superclass : #GameEffect,
-	#instVars : [
-		'probability'
-	],
 	#category : #'IngSoft2-Model'
 }
 
