@@ -31,13 +31,13 @@ Player >> currentLap [
 		ifFalse: [ ^result + 1 ]
 ]
 
-{ #category : #'instance creation' }
+{ #category : #initialization }
 Player >> initializeWithName: aString [ 
 	name := aString.
 	position:=0.
 ]
 
-{ #category : #action }
+{ #category : #movement }
 Player >> move: anInteger [
 	position := position + anInteger
 ]
@@ -47,7 +47,7 @@ Player >> moveBackwards: anInteger [
 	position := position - anInteger
 ]
 
-{ #category : #movement }
+{ #category : #placement }
 Player >> moveToZero [
 	position := position - self position.
 ]

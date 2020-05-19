@@ -15,7 +15,7 @@ Dice class >> newGroup: aDieGroup [
 	^ self new initializeWithGroup: aDieGroup
 ]
 
-{ #category : #initialize }
+{ #category : #initialization }
 Dice >> initializeWithGroup: aDieGroup [
 	dice := aDieGroup
 ]
