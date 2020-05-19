@@ -4,7 +4,7 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #operations }
+{ #category : #apply }
 SpeedUpEffect >> applyTo: somePlayers [
 	(somePlayers at: 1) move: 4.
 ]

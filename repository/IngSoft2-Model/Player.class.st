@@ -47,6 +47,11 @@ Player >> moveBackwards: anInteger [
 	position := position - anInteger
 ]
 
+{ #category : #movement }
+Player >> moveToZero [
+	position := position - self position.
+]
+
 { #category : #information }
 Player >> position [
 	position = (actualBoard boardSpaces * actualBoard boardLaps)

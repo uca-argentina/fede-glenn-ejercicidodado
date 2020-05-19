@@ -7,8 +7,8 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #effect }
+{ #category : #apply }
 AtomicBombEffect >> applyTo: somePlayers [
 	somePlayers
-		do: [ :aPlayer | aPlayer moveBackwards: aPlayer position ]
+		do: [ :aPlayer | aPlayer moveToZero ]
 ]

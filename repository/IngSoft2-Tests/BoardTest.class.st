@@ -83,6 +83,21 @@ BoardTest >> testCircularBoard [
 ]
 
 { #category : #tests }
+BoardTest >> testCreatingNegativeBoardFails [
+	| playerOne die |
+	self
+		should: [ die := LoadedDie withValue: 6.
+			playerOne := Player called: 'Fede'.
+				Board
+				withSpaces: -4
+				withDice: die
+				withPlayers: (Array with: playerOne)
+				withLaps: 1 ]
+		raise: CreationError
+		description: 'You cannot create a board with negative values'
+]
+
+{ #category : #tests }
 BoardTest >> testMoonWalkEffect [
 	| board playerOne playerTwo die |
 	playerOne := Player called: 'Fede'.
@@ -301,6 +316,22 @@ BoardTest >> testSetAPlayerInSpecificPosition [
 ]
 
 { #category : #tests }
+BoardTest >> testSeveralEffectsTooMuchProbability [
+	| playerOne die  |
+	self
+		should: [ die := LoadedDie withValue: 6.
+			playerOne := Player called: 'Fede'.
+			PracticeBoard
+				withSpaces: 10
+				withDice: die
+				withPlayers: (Array with: playerOne)
+				withLaps: 1
+				withEffect: (Array with: (MoonWalkEffect withProbability: 0.5) with: (WormHoleEffect withProbability: 0.6))]
+		raise: CreationError
+		description: 'The total effect probability percentage is more than 100%'.
+]
+
+{ #category : #tests }
 BoardTest >> testSpeedUp [
 	| board playerOne die |
 	die := LoadedDie withValue: 3.
@@ -328,6 +359,21 @@ BoardTest >> testWormHoleEffect [
 		withEffect: (Array with: (WormHoleEffect withProbability: 1)).
 	board play: playerOne.
 	self assert: playerOne position equals: 2.
+]
+
+{ #category : #tests }
+BoardTest >> testWormHoleEffectLimitMove [
+	| board playerOne die |
+	die := LoadedDie withValue: 3.
+	playerOne := Player called: 'Fede'.
+	board := Board
+		withSpaces: 10
+		withDice: die
+		withPlayers: (Array with: playerOne)
+		withLaps: 1
+		withEffect: (Array with: (WormHoleEffect withProbability: 1)).
+	board play: playerOne.
+	self assert: playerOne position equals: 0.
 ]
 
 { #category : #tests }

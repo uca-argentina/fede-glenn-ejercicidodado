@@ -10,11 +10,6 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #creation }
-Dice class >> initializeNewGroup [
-	self shouldBeImplemented.
-]
-
 { #category : #instanceCreation }
 Dice class >> newGroup: aDieGroup [
 	^ self new initializeWithGroup: aDieGroup

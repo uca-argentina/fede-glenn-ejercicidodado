@@ -4,7 +4,11 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #operations }
+{ #category : #apply }
 WormHoleEffect >> applyTo: somePlayers [
-	(somePlayers at: 1) moveBackwards: 4.
+	| actualTurn |
+	actualTurn := somePlayers at: 1.
+	actualTurn position >= 4
+		ifTrue:[ actualTurn  moveBackwards: 4]
+		ifFalse:[actualTurn moveToZero].
 ]

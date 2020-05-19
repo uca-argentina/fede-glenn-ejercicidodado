@@ -67,16 +67,22 @@ Board >> hasFinished [
 ]
 
 { #category : #initialization }
-Board >> initializeWithSpaces: anInteger initialiazeWithDice: aDie initializeWithPlayers: somePlayers initializeWithLaps: aLapNumber initializeWithEffects: anEffect [
+Board >> initializeWithSpaces: amountOfSpaces initialiazeWithDice: aDie initializeWithPlayers: somePlayers initializeWithLaps: aLapNumber initializeWithEffects: anEffect [
 	| totalProbability |
 	players := somePlayers asOrderedCollection.
-	spaces := anInteger.
+	amountOfSpaces < 0
+		ifTrue: [ CreationError
+				signal: 'You cannot create a board with a negative values' ]
+		ifFalse: [ spaces := amountOfSpaces ].
 	dice := aDie.
 	laps := aLapNumber.
 	totalProbability := anEffect
 		sum: [ :oneEffect | oneEffect probability ].
 	effects := anEffect asOrderedCollection.
-	effects add: (NoEffect withProbability: 1 - 0.4).
+	totalProbability > 1
+		ifTrue: [ CreationError
+				signal: 'The total effect probability percentage is more than 100%' ]
+		ifFalse: [ effects add: (NoEffect withProbability: 1 - 0.4) ].
 	somePlayers do: [ :aPlayer | aPlayer addGame: self ]
 ]
 

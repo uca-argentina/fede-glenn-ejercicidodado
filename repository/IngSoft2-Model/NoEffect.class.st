@@ -4,6 +4,6 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #operations }
+{ #category : #apply }
 NoEffect >> applyTo: somePlayers [
 ]
