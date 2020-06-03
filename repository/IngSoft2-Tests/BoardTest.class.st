@@ -19,7 +19,6 @@ BoardTest >> testAPlayerPlaysTwiceFails [
 	self
 		should: [ board play: playerOne ]
 		raise: TurnError
-		description: 'This is not the player turn'
 ]
 
 { #category : #tests }
@@ -83,21 +82,6 @@ BoardTest >> testCircularBoard [
 ]
 
 { #category : #tests }
-BoardTest >> testCreatingNegativeBoardFails [
-	| playerOne die |
-	self
-		should: [ die := LoadedDie withValue: 6.
-			playerOne := Player called: 'Fede'.
-				Board
-				withSpaces: -4
-				withDice: die
-				withPlayers: (Array with: playerOne)
-				withLaps: 1 ]
-		raise: CreationError
-		description: 'You cannot create a board with negative values'
-]
-
-{ #category : #tests }
 BoardTest >> testMoonWalkEffect [
 	| board playerOne playerTwo die |
 	playerOne := Player called: 'Fede'.
@@ -132,6 +116,20 @@ BoardTest >> testNoEffect [
 		withEffect: (Array with: (NoEffect withProbability: 1)).
 	board play: playerOne.
 	self assert: playerOne position equals: 3.
+]
+
+{ #category : #tests }
+BoardTest >> testNotAllowToCreateBoardWithNegativeSpaces [
+	| playerOne die |
+	self
+		should: [ die := LoadedDie withValue: 6.
+			playerOne := Player called: 'Fede'.
+				Board
+				withSpaces: -4
+				withDice: die
+				withPlayers: (Array with: playerOne)
+				withLaps: 1 ]
+		raise: CreationError
 ]
 
 { #category : #tests }
@@ -246,25 +244,6 @@ BoardTest >> testPlayerWins [
 ]
 
 { #category : #tests }
-BoardTest >> testPlayingWithTurns [
-	| board playerOne playerTwo die |
-	die := LoadedDie withValue: 6.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
-	board := Board
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne with: playerTwo)
-		withLaps: 1.
-	board play: playerOne.
-	self assert: playerOne position equals: 6.
-	board play: playerTwo.
-	self assert: playerTwo position equals: 6.
-	board play: playerOne.
-	self assert: board winner equals: playerOne
-]
-
-{ #category : #tests }
 BoardTest >> testPlayingWithTurnsWithThreePlayers [
 	| board playerOne playerTwo playerThree die |
 	playerOne := Player called: 'Fede'.
@@ -287,51 +266,6 @@ BoardTest >> testPlayingWithTurnsWithThreePlayers [
 ]
 
 { #category : #tests }
-BoardTest >> testSetAPlayerInSpecificPosition [
-	| board playerOne playerTwo die |
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
-	die := LoadedDie withValue: 6.
-	
-	board := PracticeBoard
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne with: playerTwo)
-		withLaps: 5.
-	board set: playerOne toPosition: 3 toLap: 1.
-	board set: playerTwo toPosition: 8 toLap: 1.
-
-	self assert: playerOne position equals: 3.
-	self assert: playerTwo position equals: 8.
-	
-	board play: playerOne.
-	board play: playerTwo.
-	
-	self assert: playerOne position equals: 9.
-	self assert: playerTwo position equals: 4.
-	self assert: playerTwo currentLap equals: 2.
-	
-	
-
-]
-
-{ #category : #tests }
-BoardTest >> testSeveralEffectsTooMuchProbability [
-	| playerOne die  |
-	self
-		should: [ die := LoadedDie withValue: 6.
-			playerOne := Player called: 'Fede'.
-			PracticeBoard
-				withSpaces: 10
-				withDice: die
-				withPlayers: (Array with: playerOne)
-				withLaps: 1
-				withEffect: (Array with: (MoonWalkEffect withProbability: 0.5) with: (WormHoleEffect withProbability: 0.6))]
-		raise: CreationError
-		description: 'The total effect probability percentage is more than 100%'.
-]
-
-{ #category : #tests }
 BoardTest >> testSpeedUp [
 	| board playerOne die |
 	die := LoadedDie withValue: 3.
@@ -344,6 +278,21 @@ BoardTest >> testSpeedUp [
 		withEffect: (Array with: (SpeedUpEffect withProbability: 1)).
 	board play: playerOne.
 	self assert: playerOne position equals: 7.
+]
+
+{ #category : #tests }
+BoardTest >> testSumOfEffectProbabilitiesNotOverOneHundred [
+	| playerOne die  |
+	self
+		should: [ die := LoadedDie withValue: 6.
+			playerOne := Player called: 'Fede'.
+			PracticeBoard
+				withSpaces: 10
+				withDice: die
+				withPlayers: (Array with: playerOne)
+				withLaps: 1
+				withEffect: (Array with: (MoonWalkEffect withProbability: 0.5) with: (WormHoleEffect withProbability: 0.6))]
+		raise: CreationError
 ]
 
 { #category : #tests }

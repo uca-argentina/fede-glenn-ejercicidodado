@@ -6,8 +6,8 @@ Class {
 
 { #category : #tests }
 DiceTest >> testNoNegativeDie [
-	self should: [LoadedDie withValue:-2] raise: CreationError description: 'You cannot create a die with negative values'.
-	self should: [Die withSides:-2] raise: CreationError description: 'You cannot create a die with a negative values'.
+	self should: [LoadedDie withValue:-2] raise: CreationError.
+	self should: [Die withSides:-2] raise: CreationError
 	
 	
 ]

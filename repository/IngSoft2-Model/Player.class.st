@@ -27,8 +27,9 @@ Player >> currentLap [
 	| result |
 	result := (position / actualBoard boardSpaces) asInteger.
 	position = actualBoard boardSpaces
-		ifTrue: [ ^ result ]
-		ifFalse: [ ^result + 1 ]
+		ifTrue: [ result ]
+		ifFalse: [ result + 1 ].
+	^ result
 ]
 
 { #category : #initialization }

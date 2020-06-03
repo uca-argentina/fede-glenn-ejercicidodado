@@ -6,9 +6,9 @@ Class {
 
 { #category : #apply }
 WormHoleEffect >> applyTo: somePlayers [
-	| actualTurn |
-	actualTurn := somePlayers at: 1.
-	actualTurn position >= 4
-		ifTrue:[ actualTurn  moveBackwards: 4]
-		ifFalse:[actualTurn moveToZero].
+	| currentPlayer |
+	currentPlayer := somePlayers first.
+	currentPlayer position >= 4
+		ifTrue:[ currentPlayer  moveBackwards: 4]
+		ifFalse:[currentPlayer moveToZero].
 ]

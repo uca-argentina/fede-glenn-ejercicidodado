@@ -6,5 +6,5 @@ Class {
 
 { #category : #apply }
 SpeedUpEffect >> applyTo: somePlayers [
-	(somePlayers at: 1) move: 4.
+	(somePlayers first) move: 4.
 ]
