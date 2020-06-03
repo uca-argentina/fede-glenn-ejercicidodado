@@ -12,11 +12,11 @@ Class {
 
 { #category : #instanceCreation }
 Dice class >> newGroup: aDieGroup [
-	^ self new initializeWithGroup: aDieGroup
+	^ self new initializeWith: aDieGroup
 ]
 
 { #category : #initialization }
-Dice >> initializeWithGroup: aDieGroup [
+Dice >> initializeWith: aDieGroup [
 	dice := aDieGroup
 ]
 

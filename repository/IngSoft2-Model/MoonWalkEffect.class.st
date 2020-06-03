@@ -7,6 +7,6 @@ Class {
 { #category : #apply }
 MoonWalkEffect >> applyTo: somePlayers [ 
 	|moonWalkDistance |
-	moonWalkDistance := ((somePlayers at: 1) position / 2) asInteger.
+	moonWalkDistance := ((somePlayers first) position / 2) asInteger.
 	somePlayers allButFirst do: [ :aPlayer | aPlayer moveBackwards: moonWalkDistance ]
 ]
