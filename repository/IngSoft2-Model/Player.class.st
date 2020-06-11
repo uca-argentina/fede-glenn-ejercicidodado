@@ -61,7 +61,7 @@ Player >> position [
 
 { #category : #information }
 Player >> rank [
-	^actualBoard scoreBoard indexOf: self.
+	^actualBoard oldScoreBoard indexOf: self.
 ]
 
 { #category : #action }

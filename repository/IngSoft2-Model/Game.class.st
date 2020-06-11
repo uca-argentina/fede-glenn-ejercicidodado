@@ -1,18 +1,29 @@
 Class {
-	#name : #Board,
+	#name : #Game,
 	#superclass : #Object,
 	#instVars : [
 		'spaces',
 		'players',
 		'dice',
 		'laps',
-		'effects'
+		'effects',
+		'board',
+		'positionTracker',
+		'turnManager'
 	],
 	#category : #'IngSoft2-Model'
 }
 
+{ #category : #initialization }
+Game class >> withBoard: aBoard Dice: aDie Players: somePlayers [ 
+	^ self new
+		initializeWithBoard: aBoard
+		dice: aDie
+		players: somePlayers.
+]
+
 { #category : #'instance creation' }
-Board class >> withSpaces: anInteger withDice: aDie withPlayers: somePlayers withLaps: aLapNumber [
+Game class >> withSpaces: anInteger withDice: aDie withPlayers: somePlayers withLaps: aLapNumber [
 	^ self new
 		initializeWithSpaces: anInteger
 		Dice: aDie
@@ -22,7 +33,7 @@ Board class >> withSpaces: anInteger withDice: aDie withPlayers: somePlayers wit
 ]
 
 { #category : #'instance creation' }
-Board class >> withSpaces: anInteger withDice: aDie withPlayers: somePlayers withLaps: aLapNumber withEffect: anEffect [ 
+Game class >> withSpaces: anInteger withDice: aDie withPlayers: somePlayers withLaps: aLapNumber withEffect: anEffect [ 
 	^ self new
 		initializeWithSpaces: anInteger
 		Dice: aDie
@@ -33,7 +44,13 @@ Board class >> withSpaces: anInteger withDice: aDie withPlayers: somePlayers wit
 ]
 
 { #category : #action }
-Board >> advance: aPlayer [
+Game >> OLDSkipToNextTurn [
+  players addLast: (players removeFirst)
+	
+]
+
+{ #category : #action }
+Game >> advance: aPlayer [
 	| rolled effect |
 	rolled := dice roll.
 	effect := self selectEffect.
@@ -41,34 +58,51 @@ Board >> advance: aPlayer [
 		ifTrue: [ aPlayer move: spaces - aPlayer position ]
 		ifFalse: [ aPlayer move: rolled ].
 	effect applyTo: players.
-	self skipToNextTurn
+	self OLDSkipToNextTurn
 ]
 
 { #category : #action }
-Board >> assertIsTurnOf: aPlayer [
+Game >> assertIsTurnOf: aPlayer [
 	(self isTurnOf: aPlayer)
 		ifFalse: [ TurnError signal: 'This is not the player turn' ]
 ]
 
 { #category : #information }
-Board >> boardLaps [
+Game >> boardLaps [
 	^ laps
 ]
 
 { #category : #information }
-Board >> boardSpaces [
+Game >> boardSpaces [
 	^ spaces
 ]
 
 { #category : #state }
-Board >> hasFinished [
+Game >> hasAWinner [
+	^ positionTracker isThereAWinner
+]
+
+{ #category : #state }
+Game >> hasFinished [
 	^players anySatisfy: [ :aPlayer | aPlayer position >= spaces ]
 
 	
 ]
 
+{ #category : #accessing }
+Game >> inWhichPositionIs: aPlayer [ 
+	^positionTracker inWhichPositionIs: aPlayer 
+]
+
+{ #category : #initializing }
+Game >> initializeWithBoard: aBoard dice: aDice players: somePlayers [ 
+	dice := aDice.
+	positionTracker := PositionTracker withBoard: aBoard Players: somePlayers.
+	turnManager := TurnManager organize: somePlayers asOrderedCollection.
+]
+
 { #category : #initialization }
-Board >> initializeWithSpaces: amountOfSpaces Dice: aDie Players: somePlayers Laps: aLapNumber Effects: someEffect [
+Game >> initializeWithSpaces: amountOfSpaces Dice: aDie Players: somePlayers Laps: aLapNumber Effects: someEffect [
 	players := somePlayers asOrderedCollection.
 	self verifyAndSetSpaces: amountOfSpaces.
 	dice := aDie.
@@ -78,31 +112,40 @@ Board >> initializeWithSpaces: amountOfSpaces Dice: aDie Players: somePlayers La
 ]
 
 { #category : #action }
-Board >> isAboutToWin: aPlayer havingRolled: result [
+Game >> isAboutToWin: aPlayer havingRolled: result [
 	^ aPlayer currentLap = laps and: (result + aPlayer position > spaces)
 ]
 
 { #category : #testing }
-Board >> isTurnOf: aPlayer [
+Game >> isTurnOf: aPlayer [
 	^ (players first) = aPlayer
 ]
 
-{ #category : #action }
-Board >> play: aPlayer [
-	self assertIsTurnOf: aPlayer.
-	self advance: aPlayer
-]
-
 { #category : #information }
-Board >> scoreBoard [
+Game >> oldScoreBoard [
 	^ players
 		sort: [ :aPlayer :otherPlayer | 
 			(aPlayer position + (aPlayer currentLap * spaces))
 				>= (otherPlayer position + (otherPlayer currentLap * spaces)) ]
 ]
 
+{ #category : #action }
+Game >> play: aPlayer [
+	turnManager isAllowedToPlay:  aPlayer.
+	self playTurn: aPlayer.
+]
+
+{ #category : #play }
+Game >> playTurn: aPlayer [ 
+	| rolled |
+	rolled := dice roll.
+	positionTracker move: aPlayer havingRolled: rolled.
+	turnManager alreadyPlayed: aPlayer.
+
+]
+
 { #category : #selection }
-Board >> selectEffect [
+Game >> selectEffect [
 	| probability base |
 	probability := Random new next.
 	base := 0.
@@ -114,14 +157,8 @@ Board >> selectEffect [
 		ifNone: [ NoEffect withProbability: 1 ]
 ]
 
-{ #category : #action }
-Board >> skipToNextTurn [
-  players addLast: (players removeFirst)
-	
-]
-
 { #category : #initialization }
-Board >> verifyAndSetEffectsProbability: anEffect [
+Game >> verifyAndSetEffectsProbability: anEffect [
 	| totalProbability |
 	totalProbability := anEffect
 		sum: [ :oneEffect | oneEffect probability ].
@@ -133,7 +170,7 @@ Board >> verifyAndSetEffectsProbability: anEffect [
 ]
 
 { #category : #initialization }
-Board >> verifyAndSetSpaces: amountOfSpaces [
+Game >> verifyAndSetSpaces: amountOfSpaces [
 	amountOfSpaces < 0
 		ifTrue: [ CreationError
 				signal: 'You cannot create a board with a negative values' ]
@@ -141,7 +178,7 @@ Board >> verifyAndSetSpaces: amountOfSpaces [
 ]
 
 { #category : #state }
-Board >> winner [
+Game >> winner [
 	^ players
 		detect: [ :aPlayer | (aPlayer currentLap = laps) and: (aPlayer position = spaces) ]
 ]

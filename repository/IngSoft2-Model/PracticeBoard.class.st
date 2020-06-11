@@ -1,6 +1,6 @@
 Class {
 	#name : #PracticeBoard,
-	#superclass : #Board,
+	#superclass : #Game,
 	#category : #'IngSoft2-Model'
 }
 
