@@ -13,6 +13,17 @@ PositionTracker class >> withBoard: aBoard Players: somePlayers [
 	^self new initializeWithBoard: aBoard players: somePlayers.
 ]
 
+{ #category : #classification }
+PositionTracker >> getPlayersInOrderByLocker [
+	| result |
+	result := OrderedCollection new.
+	(scoreBoard associations
+		sort:
+			[ :aAssociation :otherAssociation | otherAssociation value <= aAssociation value ])
+		do: [ :association | result add: association key ].
+	^ result
+]
+
 { #category : #accessing }
 PositionTracker >> inWhichPositionIs: aPlayer [ 
 	^scoreBoard at: aPlayer.

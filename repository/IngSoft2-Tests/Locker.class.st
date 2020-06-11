@@ -14,6 +14,16 @@ Locker class >> position: lockerNumber  lap: lapNumber [
 ]
 
 { #category : #comparing }
+Locker >> <= otherLocker [
+	lap > otherLocker lap
+		ifTrue: [ ^ false ]
+		ifFalse: [ lap < otherLocker lap
+				ifTrue: [ ^ true ]
+				ifFalse: [ ^ position <= otherLocker position ] ]
+			
+]
+
+{ #category : #comparing }
 Locker >> = otherLocker [
 	^ (position == otherLocker position) and: (lap == otherLocker lap)
 ]

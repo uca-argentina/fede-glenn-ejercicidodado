@@ -144,6 +144,16 @@ Game >> playTurn: aPlayer [
 
 ]
 
+{ #category : #ranking }
+Game >> rankOf: aPlayer [ 
+	^positionTracker getPlayersInOrderByLocker indexOf: aPlayer.
+]
+
+{ #category : #ranking }
+Game >> scoreBoard [
+	^positionTracker getPlayersInOrderByLocker  
+]
+
 { #category : #selection }
 Game >> selectEffect [
 	| probability base |

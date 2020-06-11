@@ -81,6 +81,31 @@ GameTest >> testCompleteOneLap [
 ]
 
 { #category : #tests }
+GameTest >> testGameScoreBoard [
+	| board playerOne playerTwo playerThree die result game|
+	die := LoadedDie withValue: 6.
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	playerThree := Player called: 'Nicky'.
+	board := Board withSpaces: 10 Laps: 2.
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne with: playerTwo with: playerThree).
+	game play: playerOne.
+	game play: playerTwo.
+	game play: playerThree.
+	game play: playerOne.
+	
+	result := OrderedCollection new.
+	result add: playerOne.
+	result add: playerTwo.
+	result add: playerThree.
+	
+	self assert: result equals: game scoreBoard
+]
+
+{ #category : #tests }
 GameTest >> testMoonWalkEffect [
 	| board playerOne playerTwo die |
 	playerOne := Player called: 'Fede'.
@@ -147,46 +172,22 @@ GameTest >> testPlayerPlays [
 ]
 
 { #category : #tests }
-GameTest >> testPlayerPosition [
-	| board playerOne playerTwo playerThree die result |
-	die := LoadedDie withValue: 6.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
-	playerThree := Player called: 'Nicky'.
-	board := Game
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne with: playerTwo with: playerThree)
-		withLaps: 2.
-	board play: playerOne.
-	board play: playerTwo.
-	board play: playerThree.
-	board play: playerOne.
-	result := OrderedCollection new.
-	result add: playerOne.
-	result add: playerTwo.
-	result add: playerThree.
-	self assert: result equals: board oldScoreBoard
-]
-
-{ #category : #tests }
 GameTest >> testPlayerRank [
-	| board playerOne playerTwo die |
+	| board playerOne playerTwo die game|
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
 	die := LoadedDie withValue: 6.
-	board := Game
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne with: playerTwo )
-		withLaps: 1.
-	board play: playerOne.
-	self assert: playerOne position equals: 6.
-	board play: playerTwo.
-	self assert: playerTwo position equals: 6.
-	board play: playerOne.
-	self assert: playerOne rank equals: 1.
-	self assert: playerTwo rank equals: 2.
+	board := Board withSpaces: 10 Laps: 1.
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne with:playerTwo).
+	game play: playerOne.
+	game play: playerTwo.
+	game play: playerOne.
+	
+	self assert: (game rankOf: playerOne) equals: 1.
+	self assert: (game rankOf: playerTwo) equals: 2.
 ]
 
 { #category : #tests }
@@ -210,24 +211,24 @@ GameTest >> testPlayerWins [
 
 { #category : #tests }
 GameTest >> testPlayingWithTurnsWithThreePlayers [
-	| board playerOne playerTwo playerThree die |
+	| board playerOne playerTwo playerThree die game |
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
 	playerThree := Player called: 'Nicky'.
 	die := LoadedDie withValue: 6.
-	board := Game
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne with: playerTwo with: playerThree)
-		withLaps: 1.
-	board play: playerOne.
-	self assert: playerOne position equals: 6.
-	board play: playerTwo.
-	self assert: playerTwo position equals: 6.
-	board play: playerThree.
-	self assert: playerThree position equals: 6.
-	board play: playerOne.
-	self assert: board winner equals: playerOne
+	board := Board withSpaces: 10 Laps: 1.
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne with:playerTwo with: playerThree ).
+	game play: playerOne.
+	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position:7 lap:1).
+	game play: playerTwo.
+	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position:7 lap:1).
+	game play: playerThree.
+	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position:7 lap:1).
+	game play: playerOne.
+	self assert: game hasAWinner 
 ]
 
 { #category : #tests }
