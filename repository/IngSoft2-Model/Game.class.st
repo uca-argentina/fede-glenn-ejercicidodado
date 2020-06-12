@@ -2,10 +2,7 @@ Class {
 	#name : #Game,
 	#superclass : #Object,
 	#instVars : [
-		'spaces',
-		'players',
 		'dice',
-		'laps',
 		'effects',
 		'board',
 		'positionTracker',
@@ -44,49 +41,14 @@ Game class >> withSpaces: anInteger withDice: aDie withPlayers: somePlayers with
 ]
 
 { #category : #action }
-Game >> OLDSkipToNextTurn [
-  players addLast: (players removeFirst)
-	
-]
-
-{ #category : #action }
-Game >> advance: aPlayer [
-	| rolled effect |
-	rolled := dice roll.
-	effect := self selectEffect.
-	(self isAboutToWin: aPlayer havingRolled: rolled)
-		ifTrue: [ aPlayer move: spaces - aPlayer position ]
-		ifFalse: [ aPlayer move: rolled ].
-	effect applyTo: players.
-	self OLDSkipToNextTurn
-]
-
-{ #category : #action }
 Game >> assertIsTurnOf: aPlayer [
 	(self isTurnOf: aPlayer)
 		ifFalse: [ TurnError signal: 'This is not the player turn' ]
 ]
 
-{ #category : #information }
-Game >> boardLaps [
-	^ laps
-]
-
-{ #category : #information }
-Game >> boardSpaces [
-	^ spaces
-]
-
 { #category : #state }
 Game >> hasAWinner [
 	^ positionTracker isThereAWinner
-]
-
-{ #category : #state }
-Game >> hasFinished [
-	^players anySatisfy: [ :aPlayer | aPlayer position >= spaces ]
-
-	
 ]
 
 { #category : #accessing }
@@ -99,34 +61,6 @@ Game >> initializeWithBoard: aBoard dice: aDice players: somePlayers [
 	dice := aDice.
 	positionTracker := PositionTracker withBoard: aBoard Players: somePlayers.
 	turnManager := TurnManager organize: somePlayers asOrderedCollection.
-]
-
-{ #category : #initialization }
-Game >> initializeWithSpaces: amountOfSpaces Dice: aDie Players: somePlayers Laps: aLapNumber Effects: someEffect [
-	players := somePlayers asOrderedCollection.
-	self verifyAndSetSpaces: amountOfSpaces.
-	dice := aDie.
-	laps := aLapNumber.
-	self verifyAndSetEffectsProbability: someEffect.
-	somePlayers do: [ :aPlayer | aPlayer addGame: self ]
-]
-
-{ #category : #action }
-Game >> isAboutToWin: aPlayer havingRolled: result [
-	^ aPlayer currentLap = laps and: (result + aPlayer position > spaces)
-]
-
-{ #category : #testing }
-Game >> isTurnOf: aPlayer [
-	^ (players first) = aPlayer
-]
-
-{ #category : #information }
-Game >> oldScoreBoard [
-	^ players
-		sort: [ :aPlayer :otherPlayer | 
-			(aPlayer position + (aPlayer currentLap * spaces))
-				>= (otherPlayer position + (otherPlayer currentLap * spaces)) ]
 ]
 
 { #category : #action }
@@ -177,18 +111,4 @@ Game >> verifyAndSetEffectsProbability: anEffect [
 		ifTrue: [ CreationError
 				signal: 'The total effect probability percentage is more than 100%' ]
 		ifFalse: [ effects add: (NoEffect withProbability: 1 - 0.4) ]
-]
-
-{ #category : #initialization }
-Game >> verifyAndSetSpaces: amountOfSpaces [
-	amountOfSpaces < 0
-		ifTrue: [ CreationError
-				signal: 'You cannot create a board with a negative values' ]
-		ifFalse: [ spaces := amountOfSpaces ]
-]
-
-{ #category : #state }
-Game >> winner [
-	^ players
-		detect: [ :aPlayer | (aPlayer currentLap = laps) and: (aPlayer position = spaces) ]
 ]
