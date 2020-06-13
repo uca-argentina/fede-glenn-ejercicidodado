@@ -6,7 +6,7 @@ Class {
 		'effect',
 		'lap'
 	],
-	#category : #'IngSoft2-Tests'
+	#category : #'IngSoft2-Model'
 }
 
 { #category : #'instance creation' }

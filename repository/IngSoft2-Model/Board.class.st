@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'board'
 	],
-	#category : #'IngSoft2-Tests'
+	#category : #'IngSoft2-Model'
 }
 
 { #category : #'instance creation' }
@@ -16,19 +16,25 @@ Board class >> withSpaces: amountOfSpaces Laps: amountOfLaps [
 ]
 
 { #category : #'instance creation - old' }
-Board class >> withSpaces: anInteger Laps: anInteger2 effects: anEffect [
+Board class >> withSpaces: anInteger Laps: numberOfLaps effects: arrayOfEffects [
 	^ self new
 		initializeWithSpaces: anInteger
-		laps: anInteger
-		effect: anEffect
+		laps: numberOfLaps
+		effect: arrayOfEffects
 ]
 
 { #category : #initialization }
-Board >> generateBoardWithSpaces: amountOfSpaces laps: anEffect effect: amountOfLaps [
+Board >> generateBoardWithSpaces: amountOfSpaces laps: amountOfLaps effect: arrayOfEffects [
+	| arrayOfShuffledEffects count |
 	board := OrderedCollection new.
+	arrayOfShuffledEffects := ProbabilityDistributor createArrayWith: arrayOfEffects size: amountOfLaps * amountOfSpaces.
+	count := 1.
 	1 to: amountOfLaps do: [ :lap | 
-		1 to: amountOfSpaces do:
-			[ :lockerNumber | board add: (Locker position: lockerNumber lap: lap effect: anEffect) ] ]
+		1 to: amountOfSpaces do: [ :lockerNumber | 
+			board
+				add:
+					(Locker position: lockerNumber lap: lap effect: (arrayOfShuffledEffects at: count)).
+			count := count + 1 ] ] 
 ]
 
 { #category : #accessing }
@@ -42,14 +48,14 @@ Board >> get: positionsToMove from: actualLocker [
 ]
 
 { #category : #initialization }
-Board >> initializeWithSpaces: amountOfSpaces laps: amountOfLaps effect: anEffect [
+Board >> initializeWithSpaces: amountOfSpaces laps: amountOfLaps effect: arrayOfEffects [
 	(amountOfSpaces < 0 or: amountOfLaps < 0)
 		ifTrue: [ CreationError
 				signal: 'You cannot create a board with a negative values' ]
 		ifFalse: [ self
 				generateBoardWithSpaces: amountOfSpaces
-				laps: anEffect
-				effect: amountOfLaps ]
+				laps: amountOfLaps
+				effect:  arrayOfEffects] 
 ]
 
 { #category : #'tree accessing' }

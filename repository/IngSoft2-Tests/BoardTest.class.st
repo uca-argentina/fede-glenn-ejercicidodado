@@ -10,17 +10,18 @@ BoardTest >> testCreateBoardWithNoEffects [
 	board := Board
 		withSpaces: 3
 		Laps: 2
-		effects: (NoEffect withProbability: 1).
+		effects: (Array with: (NoEffect withProbability: 1)).
 	starting := board startingLocker.
-	6 timesRepeat:
-			(self assert:
-					(starting := board get: 1 from: starting) effect
-						equals: NoEffect new)
+	6
+		timesRepeat:
+			(self
+				assert: (starting := board get: 1 from: starting) effect
+				equals: NoEffect new)
 ]
 
 { #category : #tests }
 BoardTest >> testCreateBoardWithSeveralEffects [
-	| board result starting |
+	| board result starting actualEffect counter|
 	board := Board
 		withSpaces: 2
 		Laps: 1
@@ -30,10 +31,19 @@ BoardTest >> testCreateBoardWithSeveralEffects [
 				with: (WormHoleEffect withProbability: 0.5)).
 	starting := board startingLocker.
 	result := OrderedCollection new.
+	counter := 0.
 	2
-		timesRepeat: [ result add: (board get: 1 from: starting) effect.
-			starting := board get: 1 from: starting ].
-	self assert: result removeDuplicates size equals: 2
+		timesRepeat:
+			[ 
+			actualEffect := (board get: counter from: starting) effect.
+			result add: actualEffect.
+			counter := counter +1].
+	self assert: (result anySatisfy:[:anEffect | anEffect = NoEffect new]).
+	self assert: (result anySatisfy:[:anEffect | anEffect = WormHoleEffect new]).
+
+
+
+
 ]
 
 { #category : #tests }
