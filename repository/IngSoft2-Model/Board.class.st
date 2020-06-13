@@ -12,7 +12,7 @@ Board class >> withSpaces: amountOfSpaces Laps: amountOfLaps [
 	^ self new
 		initializeWithSpaces: amountOfSpaces
 		laps: amountOfLaps
-		effect: (NoEffect withProbability: 1)
+		effect: (Array with: (NoEffect withProbability: 1))
 ]
 
 { #category : #'instance creation - old' }
