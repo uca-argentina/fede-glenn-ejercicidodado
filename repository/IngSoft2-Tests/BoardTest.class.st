@@ -47,6 +47,15 @@ BoardTest >> testCreateBoardWithSeveralEffects [
 ]
 
 { #category : #tests }
+BoardTest >> testGetFollowingLocker [
+	|board starting last|
+	board := Board withSpaces:2 Laps: 1.
+	starting := board startingLocker.
+	last := board lastLocker.
+	self assert: (board get: 1 from: starting) equals: last.
+]
+
+{ #category : #tests }
 BoardTest >> testNotAllowToCreateBoardWithNegativeLaps [
 	self
 		should: [ Board withSpaces:4 Laps: -2. ]

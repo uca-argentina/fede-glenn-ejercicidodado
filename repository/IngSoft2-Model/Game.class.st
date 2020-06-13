@@ -40,6 +40,16 @@ Game class >> withSpaces: anInteger withDice: aDie withPlayers: somePlayers with
 		
 ]
 
+{ #category : #'effect application' }
+Game >> applySpeedUpEffect [
+	positionTracker move: (turnManager currentTurnPlayer) havingRolled: 4.
+]
+
+{ #category : #'effect application' }
+Game >> applyWormHoleEffect [
+	positionTracker moveBackwards: turnManager currentTurnPlayer spaces: 4.
+]
+
 { #category : #action }
 Game >> assertIsTurnOf: aPlayer [
 	(self isTurnOf: aPlayer)
@@ -66,15 +76,18 @@ Game >> initializeWithBoard: aBoard dice: aDice players: somePlayers [
 { #category : #action }
 Game >> play: aPlayer [
 	turnManager isAllowedToPlay:  aPlayer.
-	self playTurn: aPlayer.
+	self playTurn: aPlayer. 
+	turnManager alreadyPlayed: aPlayer.
 ]
 
 { #category : #play }
 Game >> playTurn: aPlayer [ 
-	| rolled |
+	| rolled currentLocker|
 	rolled := dice roll.
 	positionTracker move: aPlayer havingRolled: rolled.
-	turnManager alreadyPlayed: aPlayer.
+	currentLocker := positionTracker inWhichPositionIs: aPlayer.
+	currentLocker effect applyTo: self.
+
 
 ]
 

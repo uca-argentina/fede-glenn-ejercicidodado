@@ -31,7 +31,7 @@ Locker >> <= otherLocker [
 
 { #category : #comparing }
 Locker >> = otherLocker [
-	^ position == otherLocker position and: (effect = otherLocker effect)
+	^ position == otherLocker position and: lap == otherLocker lap
 ]
 
 { #category : #comparing }

@@ -17,6 +17,11 @@ TurnManager >> alreadyPlayed: aPlayer [
 	players addLast: (players removeFirst)
 ]
 
+{ #category : #accessing }
+TurnManager >> currentTurnPlayer [
+	^players first
+]
+
 { #category : #initialization }
 TurnManager >> initializeWithPlayers: somePlayers [ 
 	players := somePlayers asOrderedCollection.

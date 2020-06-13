@@ -53,3 +53,11 @@ PositionTracker >> move: aPlayer havingRolled: anInteger [
 	newPosition := board get: anInteger from: actualPosition.
 	scoreBoard add: aPlayer -> newPosition
 ]
+
+{ #category : #movement }
+PositionTracker >> moveBackwards: aPlayer spaces: anInteger [ 
+	| actualPosition newPosition |
+	actualPosition := self inWhichPositionIs: aPlayer.
+	newPosition := board get: (anInteger negated) from: actualPosition.
+	scoreBoard add: aPlayer -> newPosition  
+]

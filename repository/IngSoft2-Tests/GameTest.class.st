@@ -129,17 +129,26 @@ GameTest >> testMoonWalkEffect [
 
 { #category : #tests }
 GameTest >> testNoEffect [
-	| board playerOne die |
+	| board playerOne die game |
 	die := LoadedDie withValue: 3.
 	playerOne := Player called: 'Fede'.
-	board := Game
+	board := Board
 		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne)
-		withLaps: 1
-		withEffect: (Array with: (NoEffect withProbability: 1)).
-	board play: playerOne.
-	self assert: playerOne position equals: 3.
+		Laps: 1
+		effects: (Array with: (NoEffect withProbability: 1)).
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne).
+		
+	game play: playerOne.
+	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position: 4 lap:1).
+	
+
+
+
+
+
 ]
 
 { #category : #tests }
@@ -233,17 +242,20 @@ GameTest >> testPlayingWithTurnsWithThreePlayers [
 
 { #category : #tests }
 GameTest >> testSpeedUp [
-	| board playerOne die |
-	die := LoadedDie withValue: 3.
+	| board playerOne die game |
+	die := LoadedDie withValue: 1.
 	playerOne := Player called: 'Fede'.
-	board := Game
+	board := Board
 		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne)
-		withLaps: 1
-		withEffect: (Array with: (SpeedUpEffect withProbability: 1)).
-	board play: playerOne.
-	self assert: playerOne position equals: 7.
+		Laps: 1
+		effects: (Array with: (SpeedUpEffect withProbability: 1)).
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne).
+	game play: playerOne.
+	
+	self assert: (game inWhichPositionIs: playerOne)  equals: (Locker position: 6 lap: 1).
 ]
 
 { #category : #tests }
@@ -263,17 +275,20 @@ GameTest >> testSumOfEffectProbabilitiesNotOverOneHundred [
 
 { #category : #tests }
 GameTest >> testWormHoleEffect [
-	| board playerOne die |
+	| board playerOne die game |
 	die := LoadedDie withValue: 6.
 	playerOne := Player called: 'Fede'.
-	board := Game
+	board := Board
 		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne)
-		withLaps: 1
-		withEffect: (Array with: (WormHoleEffect withProbability: 1)).
-	board play: playerOne.
-	self assert: playerOne position equals: 2.
+		Laps: 1
+		effects: (Array with: (WormHoleEffect withProbability: 1)).
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne).
+	game play: playerOne.
+	
+	self assert: (game inWhichPositionIs: playerOne)  equals: (Locker position: 3 lap: 1).
 ]
 
 { #category : #tests }
