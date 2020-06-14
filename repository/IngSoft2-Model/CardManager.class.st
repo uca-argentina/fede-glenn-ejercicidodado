@@ -3,7 +3,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'playerHands',
-		'deckOfCards'
+		'deckOfCards',
+		'permanentCardsPlayed'
 	],
 	#classInstVars : [
 		'playerHands'
@@ -12,8 +13,13 @@ Class {
 }
 
 { #category : #'instance creation' }
-CardManager class >> dealCardsTo: aCollectionOfPlayers with: aCollectionOfCards [
-	^self new initializeWithPlayers: aCollectionOfPlayers cards: aCollectionOfCards 
+CardManager class >> dealCardsTo: aCollectionOfPlayers with: aDeck [
+	^self new initializeWithPlayers: aCollectionOfPlayers cards: aDeck 
+]
+
+{ #category : #accessing }
+CardManager >> activeCardEffect [
+	^permanentCardsPlayed
 ]
 
 { #category : #accessig }
@@ -21,8 +27,17 @@ CardManager >> checkHandOf: aPlayer [
 	^playerHands at: aPlayer
 ]
 
+{ #category : #initialization }
+CardManager >> createInitialHand: aDeckOfCards [
+	| hand |
+	hand := OrderedCollection new.
+	hand add: aDeckOfCards drawCard.
+	hand add: aDeckOfCards drawCard.
+	^ hand
+]
+
 { #category : #action }
-CardManager >> drawCard: aPlayer [ 
+CardManager >> drawCardFor: aPlayer [ 
 	(self checkHandOf: aPlayer) add: (deckOfCards drawCard).
 
 
@@ -30,17 +45,22 @@ CardManager >> drawCard: aPlayer [
 
 { #category : #initialization }
 CardManager >> initializeWithPlayers: aCollectionOfPlayers cards: aDeckOfCards [
-	| hand randomCard |
 	deckOfCards := aDeckOfCards.
 	playerHands := Dictionary new.
-	hand := OrderedCollection new.
-	hand add: aDeckOfCards drawCard.
-	hand add: aDeckOfCards drawCard.
+	permanentCardsPlayed := OrderedCollection new. 
 	aCollectionOfPlayers
-		do: [ :aPlayer | playerHands add: aPlayer -> hand ]
+		do: [ :aPlayer | playerHands add: aPlayer -> (self createInitialHand: aDeckOfCards) ] 
+]
+
+{ #category : #checking }
+CardManager >> isCard: aCard inHandOf: aPlayer [ 
+	((playerHands at: aPlayer) includes: aCard)
+			ifFalse: [MissingCardError signal:'No esta en la mano del jugador']
 ]
 
 { #category : #playing }
 CardManager >> utilizeCard: aCard from: aPlayer [ 
-	(self checkHandOf: aPlayer) remove: aCard
+	self isCard: aCard inHandOf: aPlayer.
+	(self checkHandOf: aPlayer) remove: aCard.
+	permanentCardsPlayed add: aCard 
 ]

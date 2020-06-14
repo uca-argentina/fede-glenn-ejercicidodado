@@ -20,7 +20,13 @@ Game class >> withBoard: aBoard dice: aDie players: somePlayers [
 	^ self new
 		initializeWithBoard: aBoard
 		dice: aDie
-		players: somePlayers.
+		players: somePlayers
+		cards: (Deck withCards: (Array with: NoEffectCard new)).
+]
+
+{ #category : #'card application' }
+Game >> applyAccelerationCard [
+	positionTracker move: (turnManager currentTurnPlayer) havingRolled: 1.
 ]
 
 { #category : #'effect application' }
@@ -30,7 +36,7 @@ Game >> applyAtomicBombEffect [
 
 { #category : #'effect application' }
 Game >> applyDrawCardEffect [
-	cardManager drawCard: (turnManager currentTurnPlayer)
+	cardManager drawCardFor: (turnManager currentTurnPlayer)
 ]
 
 { #category : #'effect application' }
@@ -67,19 +73,12 @@ Game >> inWhichPositionIs: aPlayer [
 	^positionTracker inWhichPositionIs: aPlayer 
 ]
 
-{ #category : #initializing }
-Game >> initializeWithBoard: aBoard dice: aDice players: somePlayers [ 
-	dice := aDice.
-	positionTracker := PositionTracker withBoard: aBoard Players: somePlayers.
-	turnManager := TurnManager organize: somePlayers asOrderedCollection.
-]
-
 { #category : #initialization }
-Game >> initializeWithBoard: aBoard dice: aDice players: aCollectionOfPlayers cards: aCollectionOfCards [ 
+Game >> initializeWithBoard: aBoard dice: aDice players: aCollectionOfPlayers cards: aDeck [ 
 	dice := aDice.
 	positionTracker := PositionTracker withBoard: aBoard Players: aCollectionOfPlayers.
 	turnManager := TurnManager organize: aCollectionOfPlayers asOrderedCollection.
-	cardManager := CardManager dealCardsTo: aCollectionOfPlayers with: aCollectionOfCards. 
+	cardManager := CardManager dealCardsTo: aCollectionOfPlayers with: aDeck. 
 ]
 
 { #category : #action }
@@ -91,12 +90,18 @@ Game >> play: aPlayer [
 
 { #category : #playing }
 Game >> playCard: aCard from: aPlayer [ 
-	cardManager utilizeCard: aCard from: aPlayer
+	turnManager isTurnOf: aPlayer.
+	cardManager utilizeCard: aCard from: aPlayer.
+
+
+
+
 ]
 
 { #category : #play }
 Game >> playTurn: aPlayer [ 
 	| rolled currentLocker|
+	cardManager activeCardEffect do: [:aCard | aCard applyTo: self].
 	rolled := dice roll.
 	positionTracker move: aPlayer havingRolled: rolled.
 	currentLocker := positionTracker inWhichPositionIs: aPlayer.

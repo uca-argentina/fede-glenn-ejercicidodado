@@ -64,6 +64,43 @@ GameTest >> testAtomicBombEffectWithAnotherPlayerInStartingPosition [
 ]
 
 { #category : #tests }
+GameTest >> testCannotPlayCardOutOfTurn [
+	| board playerOne die game deckOfCards playerTwo |
+	die := LoadedDie withValue: 2.
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	deckOfCards := Deck withCards: (Array with: AccelerationCard new).
+	board := Board withSpaces: 5 Laps: 1.
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne with: playerTwo)
+		cards: deckOfCards.
+		self
+		should: [ game playCard: AccelerationCard new from: playerTwo ]
+		raise: TurnError
+]
+
+{ #category : #tests }
+GameTest >> testCannotPlayCardThatIsNotInHand [
+	| board playerOne die game deckOfCards |
+	die := LoadedDie withValue: 2.
+	playerOne := Player called: 'Fede'.
+	deckOfCards := Deck withCards:(Array with: NoEffectCard new).
+	board := Board
+		withSpaces: 5
+		Laps: 1.
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne)
+		cards: deckOfCards.
+		self
+		should: [ game playCard: AccelerationCard new from: playerOne ]
+		raise: MissingCardError
+]
+
+{ #category : #tests }
 GameTest >> testCompleteOneLap [
 	| board playerOne die game|
 	die := LoadedDie withValue: 6.
@@ -200,6 +237,30 @@ GameTest >> testPlayCard [
 ]
 
 { #category : #tests }
+GameTest >> testPlayCardAcceleration [
+	| board playerOne die game deckOfCards playerTwo |
+	die := LoadedDie withValue: 2.
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	deckOfCards := Deck withCards: (Array with: AccelerationCard new).
+	board := Board withSpaces: 5 Laps: 1.
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne with: playerTwo)
+		cards: deckOfCards.
+	game playCard: AccelerationCard new from: playerOne.
+	game play: playerOne.
+	game play: playerTwo.
+	self
+		assert: (game inWhichPositionIs: playerTwo)
+		equals: (Locker position: 4 lap: 1).
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 4 lap: 1)
+]
+
+{ #category : #tests }
 GameTest >> testPlayWithSeveralCards [
 	| board playerOne die game deckOfCards finalHand |
 	die := LoadedDie withValue: 1.
@@ -214,8 +275,9 @@ GameTest >> testPlayWithSeveralCards [
 		Dice: die
 		Players: (Array with: playerOne)
 		cards: deckOfCards.
-	90 timesRepeat: (game play: playerOne).
+	90 timesRepeat: [game play: playerOne].
 	finalHand := game checkHandOf: playerOne.
+	self assert: (finalHand size) equals: 92.
 	self
 		assert: (finalHand anySatisfy: [ :aCard | aCard = NoEffectCard new ]).
 	self
