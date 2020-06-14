@@ -62,7 +62,7 @@ Game >> initializeWithBoard: aBoard dice: aDice players: somePlayers [
 
 { #category : #action }
 Game >> play: aPlayer [
-	turnManager isAllowedToPlay:  aPlayer.
+	turnManager isTurnOf:  aPlayer.
 	self playTurn: aPlayer. 
 	turnManager alreadyPlayed: aPlayer.
 ]

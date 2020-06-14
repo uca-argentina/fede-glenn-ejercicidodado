@@ -17,7 +17,7 @@ TurnManager >> allPlayersButActual [
 	^players allButFirst.
 ]
 
-{ #category : #turning }
+{ #category : #turn }
 TurnManager >> alreadyPlayed: aPlayer [ 
 	players addLast: (players removeFirst)
 ]
@@ -33,7 +33,7 @@ TurnManager >> initializeWithPlayers: somePlayers [
 ]
 
 { #category : #turn }
-TurnManager >> isAllowedToPlay: aPlayer [
+TurnManager >> isTurnOf: aPlayer [
 	aPlayer = players first
 		ifFalse: [ TurnError signal: 'This is not the player turn'  ]
 ]

@@ -11,6 +11,8 @@ ProbabilityDistributor class >> createArrayWith: aCollection size: length [
 
 { #category : #creation }
 ProbabilityDistributor >> createShuffledCollection: aCollection size: length [
+	"Recieves a collection of objects that understand #probability and returns a shuffled OrderedCollection distributed with the probability of each object"
+
 	| result |
 	result := OrderedCollection new.
 	aCollection
@@ -18,5 +20,5 @@ ProbabilityDistributor >> createShuffledCollection: aCollection size: length [
 			result
 				add: anObject
 				withOccurrences: (anObject probability * length) truncated ].
-	^result shuffle.
+	^ result shuffle
 ]
