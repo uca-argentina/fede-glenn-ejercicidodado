@@ -80,25 +80,22 @@ GameTest >> testCompleteOneLap [
 
 { #category : #tests }
 GameTest >> testGameScoreBoard [
-	| board playerOne playerTwo playerThree die result game|
+	| board playerOne playerTwo die result game|
 	die := LoadedDie withValue: 6.
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
-	playerThree := Player called: 'Nicky'.
 	board := Board withSpaces: 10 Laps: 2.
 	game := Game
 		withBoard: board
 		Dice: die
-		Players: (Array with: playerOne with: playerTwo with: playerThree).
+		Players: (Array with: playerOne with: playerTwo).
 	game play: playerOne.
 	game play: playerTwo.
-	game play: playerThree.
 	game play: playerOne.
 	
 	result := OrderedCollection new.
 	result add: playerOne.
 	result add: playerTwo.
-	result add: playerThree.
 	
 	self assert: result equals: game scoreBoard
 ]

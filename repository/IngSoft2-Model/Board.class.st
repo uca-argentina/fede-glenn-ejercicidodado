@@ -78,7 +78,7 @@ Board >> initializeWithSpaces: amountOfSpaces laps: amountOfLaps effect: arrayOf
 				effect: arrayOfEffects asOrderedCollection  ]
 ]
 
-{ #category : #'tree accessing' }
+{ #category : #accessing }
 Board >> lastLocker [
 	^board last 
 ]
@@ -91,7 +91,7 @@ Board >> padEffects: arrayOfEffects [
 				withProbability: 1 - (arrayOfEffects sum: [ :anEffect | anEffect probability ]))
 ]
 
-{ #category : #accesing }
+{ #category : #accessing }
 Board >> startingLocker [
 	^ board first.
 ]
