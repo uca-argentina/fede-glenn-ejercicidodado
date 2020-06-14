@@ -13,8 +13,8 @@ GameTest >> testAPlayerPlaysTwiceFails [
 	board := Board withSpaces:10 Laps: 2.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with: playerTwo).
+		dice: die
+		players: (Array with: playerOne with: playerTwo).
 	game play: playerOne.
 	self
 		should: [ game play: playerOne ]
@@ -32,8 +32,8 @@ GameTest >> testAtomicBombEffect [
 		effects: (Array with: (AtomicBombEffect withProbability: 1)).
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne).
+		dice: die
+		players: (Array with: playerOne).
 	
 	game play: playerOne.
 	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position: 1 lap: 3).
@@ -53,8 +53,8 @@ GameTest >> testAtomicBombEffectWithAnotherPlayerInStartingPosition [
 		effects: (Array with: (AtomicBombEffect withProbability: 1)).
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with: playerTwo).
+		dice: die
+		players: (Array with: playerOne with: playerTwo).
 	
 	game play: playerOne.
 	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position: 1 lap: 2).
@@ -71,8 +71,8 @@ GameTest >> testCompleteOneLap [
 	board := Board withSpaces:10 Laps: 2.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne).
+		dice: die
+		players: (Array with: playerOne).
 	game play: playerOne.
 	game play: playerOne.
 	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position: 3 lap: 2).
@@ -87,8 +87,8 @@ GameTest >> testGameScoreBoard [
 	board := Board withSpaces: 10 Laps: 2.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with: playerTwo).
+		dice: die
+		players: (Array with: playerOne with: playerTwo).
 	game play: playerOne.
 	game play: playerTwo.
 	game play: playerOne.
@@ -98,6 +98,20 @@ GameTest >> testGameScoreBoard [
 	result add: playerTwo.
 	
 	self assert: result equals: game scoreBoard
+]
+
+{ #category : #tests }
+GameTest >> testHandOutTwoCardsInitially [
+	| game board playerOne die |
+	die := LoadedDie withValue: 5.
+	playerOne := Player called: 'Fede'.
+	board := Board withSpaces:10 Laps: 2.
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne)
+		cards: NoEffectCard new.
+	self assert: (game checkHandOf: playerOne) size equals: 2.
 ]
 
 { #category : #tests }
@@ -112,8 +126,8 @@ GameTest >> testMoonWalkEffect [
 		effects: (Array with: (MoonWalkEffect withProbability: 1 goBack: 2)).
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with: playerTwo).
+		dice: die
+		players: (Array with: playerOne with: playerTwo).
 	
 	game play: playerOne.
 	game play: playerTwo. 
@@ -133,8 +147,8 @@ GameTest >> testNoEffect [
 		effects: (Array with: (NoEffect withProbability: 1)).
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne).
+		dice: die
+		players: (Array with: playerOne).
 		
 	game play: playerOne.
 	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position: 4 lap:1).
@@ -154,8 +168,8 @@ GameTest >> testPlayerDoesNotCrossLastLocker [
 	board := Board withSpaces: 10 Laps: 1.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne).
+		dice: die
+		players: (Array with: playerOne).
 	game play: playerOne.
 	self assert: (game inWhichPositionIs: playerOne) equals: (board lastLocker).
 ]
@@ -168,8 +182,8 @@ GameTest >> testPlayerPlays [
 	board := Board withSpaces:10 Laps: 2.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne).
+		dice: die
+		players: (Array with: playerOne).
 	game play: playerOne.
 	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position: 6 lap: 1).
 	
@@ -184,8 +198,8 @@ GameTest >> testPlayerRank [
 	board := Board withSpaces: 10 Laps: 1.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with:playerTwo).
+		dice: die
+		players: (Array with: playerOne with:playerTwo).
 	game play: playerOne.
 	game play: playerTwo.
 	game play: playerOne.
@@ -202,8 +216,8 @@ GameTest >> testPlayerWins [
 	board := Board withSpaces: 10 Laps: 1.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne).
+		dice: die
+		players: (Array with: playerOne).
 	game play: playerOne.
 	self assert: game hasAWinner not.
 	game play: playerOne.
@@ -223,8 +237,8 @@ GameTest >> testPlayingWithTurnsWithThreePlayers [
 	board := Board withSpaces: 10 Laps: 1.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with:playerTwo with: playerThree ).
+		dice: die
+		players: (Array with: playerOne with:playerTwo with: playerThree ).
 	game play: playerOne.
 	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position:7 lap:1).
 	game play: playerTwo.
@@ -246,8 +260,8 @@ GameTest >> testSpeedUp [
 		effects: (Array with: (SpeedUpEffect withProbability: 1)).
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne).
+		dice: die
+		players: (Array with: playerOne).
 	game play: playerOne.
 	
 	self assert: (game inWhichPositionIs: playerOne)  equals: (Locker position: 6 lap: 1).
@@ -264,8 +278,8 @@ GameTest >> testWormHoleEffect [
 		effects: (Array with: (WormHoleEffect withProbability: 1)).
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne).
+		dice: die
+		players: (Array with: playerOne).
 	game play: playerOne.
 	
 	self assert: (game inWhichPositionIs: playerOne)  equals: (Locker position: 3 lap: 1).
@@ -282,8 +296,8 @@ GameTest >> testWormHoleEffectLimitMove [
 		effects: (Array with: (WormHoleEffect withProbability: 1)).
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne).
+		dice: die
+		players: (Array with: playerOne).
 	game play: playerOne.
 	
 	self assert: (game inWhichPositionIs: playerOne)  equals: (Locker position: 1 lap: 1).

@@ -3,16 +3,20 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'dice',
-		'effects',
-		'board',
 		'positionTracker',
-		'turnManager'
+		'turnManager',
+		'cardManager'
 	],
 	#category : #'IngSoft2-Model'
 }
 
+{ #category : #'instance creation' }
+Game class >> withBoard: aBoard Dice: dice Players: aCollectionOfPlayers cards: aCard [ 
+	^self new initializeWithBoard: aBoard dice: dice  players: aCollectionOfPlayers cards: aCard 
+]
+
 { #category : #initialization }
-Game class >> withBoard: aBoard Dice: aDie Players: somePlayers [ 
+Game class >> withBoard: aBoard dice: aDie players: somePlayers [ 
 	^ self new
 		initializeWithBoard: aBoard
 		dice: aDie
@@ -43,6 +47,11 @@ Game >> applyWormHoleEffect [
 	positionTracker moveBackwards: turnManager currentTurnPlayer spaces: 4.
 ]
 
+{ #category : #accessing }
+Game >> checkHandOf: aPlayer [ 
+	^cardManager checkHandOf: aPlayer
+]
+
 { #category : #state }
 Game >> hasAWinner [
 	^ positionTracker isThereAWinner
@@ -58,6 +67,14 @@ Game >> initializeWithBoard: aBoard dice: aDice players: somePlayers [
 	dice := aDice.
 	positionTracker := PositionTracker withBoard: aBoard Players: somePlayers.
 	turnManager := TurnManager organize: somePlayers asOrderedCollection.
+]
+
+{ #category : #initialization }
+Game >> initializeWithBoard: aBoard dice: aDice players: aCollectionOfPlayers cards: aCard [ 
+	dice := aDice.
+	positionTracker := PositionTracker withBoard: aBoard Players: aCollectionOfPlayers.
+	turnManager := TurnManager organize: aCollectionOfPlayers asOrderedCollection.
+	cardManager := CardManager dealCardsTo: aCollectionOfPlayers with: aCard. 
 ]
 
 { #category : #action }
