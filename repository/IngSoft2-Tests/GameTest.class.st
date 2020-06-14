@@ -42,24 +42,24 @@ GameTest >> testAtomicBombEffect [
 ]
 
 { #category : #tests }
-GameTest >> testAtomicBombEffectToStartingPosition [
-	| board playerOne playerTwo die |
+GameTest >> testAtomicBombEffectWithAnotherPlayerInStartingPosition [
+	| board playerOne die game playerTwo |
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
-	die := LoadedDie withValue: 6.
+	die := LoadedDie withValue: 7.
+	board := Board
+		withSpaces: 5
+		Laps: 2
+		effects: (Array with: (AtomicBombEffect withProbability: 1)).
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne with: playerTwo).
 	
-	board := PracticeBoard
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne with: playerTwo)
-		withLaps: 1
-		withEffect: (Array with: (AtomicBombEffect withProbability: 1)).
-	board set: playerOne toPosition: 0 toLap: 1.
-	board set: playerTwo toPosition: 8 toLap: 1.
-	
-	board play: playerOne.
-	self assert: playerOne position equals: 0.
-	self assert: playerTwo position equals: 0.
+	game play: playerOne.
+	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position: 1 lap: 2).
+	self assert: (game inWhichPositionIs: playerTwo) equals: (Locker position: 1 lap: 1).
+
 
 ]
 
@@ -257,21 +257,6 @@ GameTest >> testSpeedUp [
 ]
 
 { #category : #tests }
-GameTest >> testSumOfEffectProbabilitiesNotOverOneHundred [
-	| playerOne die  |
-	self
-		should: [ die := LoadedDie withValue: 6.
-			playerOne := Player called: 'Fede'.
-			PracticeBoard
-				withSpaces: 10
-				withDice: die
-				withPlayers: (Array with: playerOne)
-				withLaps: 1
-				withEffect: (Array with: (MoonWalkEffect withProbability: 0.5) with: (WormHoleEffect withProbability: 0.6))]
-		raise: CreationError
-]
-
-{ #category : #tests }
 GameTest >> testWormHoleEffect [
 	| board playerOne die game |
 	die := LoadedDie withValue: 6.
@@ -305,28 +290,4 @@ GameTest >> testWormHoleEffectLimitMove [
 	game play: playerOne.
 	
 	self assert: (game inWhichPositionIs: playerOne)  equals: (Locker position: 1 lap: 1).
-]
-
-{ #category : #tests }
-GameTest >> testWormholeEffectProbability [
-	| board playerOne die lastPosition wormHoleCounter noEffectCounter |
-	die := LoadedDie withValue: 4.
-	wormHoleCounter := 0.
-	noEffectCounter := 0.
-	playerOne := Player called: 'Fede'.
-	board := Game
-		withSpaces: 1000
-		withDice: die
-		withPlayers: (Array with: playerOne)
-		withLaps: 10
-		withEffect: (Array with: (WormHoleEffect withProbability: 0.4)).
-	lastPosition := 0.
-	1000
-		timesRepeat: [ board play: playerOne.
-			playerOne position = lastPosition
-				ifTrue: [ wormHoleCounter := wormHoleCounter + 1 ]
-				ifFalse: [ noEffectCounter := noEffectCounter + 1 ].
-			lastPosition := playerOne position ].
-	self assert: (wormHoleCounter between: 350 and: 450).
-	self assert: 1000 - wormHoleCounter equals: noEffectCounter
 ]

@@ -5,6 +5,19 @@ Class {
 }
 
 { #category : #tests }
+BoardTest >> testBoardWithProbabilityMoreThanOneHundredFails [
+	self
+		should: [ Board
+				withSpaces: 10
+				Laps: 1
+				effects:
+					(Array
+						with: (NoEffect withProbability: 0.6)
+						with: (WormHoleEffect withProbability: 0.5)) ]
+		raise: CreationError
+]
+
+{ #category : #tests }
 BoardTest >> testCreateBoardWithNoEffects [
 	| board starting |
 	board := Board
@@ -17,6 +30,32 @@ BoardTest >> testCreateBoardWithNoEffects [
 			(self
 				assert: (starting := board get: 1 from: starting) effect
 				equals: NoEffect new)
+]
+
+{ #category : #tests }
+BoardTest >> testCreateBoardWithNoEffectsByDefault [
+	| board result starting actualEffect counter|
+	board := Board
+		withSpaces: 10
+		Laps: 10
+		effects:
+			(Array
+				with: (WormHoleEffect withProbability: 0.15)).
+	starting := board startingLocker.
+	result := OrderedCollection new.
+	counter := 0.
+	100
+		timesRepeat:
+			[ 
+			actualEffect := (board get: counter from: starting) effect.
+			result add: actualEffect.
+			counter := counter +1].
+	self assert: (result anySatisfy:[:anEffect | anEffect = NoEffect new]).
+	self assert: (result anySatisfy:[:anEffect | anEffect = WormHoleEffect new]).
+
+
+
+
 ]
 
 { #category : #tests }
@@ -41,6 +80,34 @@ BoardTest >> testCreateBoardWithSeveralEffects [
 	self assert: (result anySatisfy:[:anEffect | anEffect = NoEffect new]).
 	self assert: (result anySatisfy:[:anEffect | anEffect = WormHoleEffect new]).
 
+
+
+
+]
+
+{ #category : #tests }
+BoardTest >> testDistribiutionOfEffects [
+	| board result starting actualEffect counter|
+	board := Board
+		withSpaces: 10
+		Laps: 10
+		effects:
+			(Array
+				with: (WormHoleEffect withProbability: 0.15)
+				with: (AtomicBombEffect withProbability: 0.02)).
+	starting := board startingLocker.
+	result := OrderedCollection new.
+	counter := 0.
+	100
+		timesRepeat:
+			[ 
+			actualEffect := (board get: counter from: starting) effect.
+			result add: actualEffect.
+			counter := counter +1].
+		
+	self assert:( result count: [ :anEffect | anEffect = NoEffect new ]) identicalTo: 83.
+	self assert: ( result count: [ :anEffect | anEffect = WormHoleEffect  new ]) identicalTo: 15.
+	self assert: ( result count: [ :anEffect | anEffect = AtomicBombEffect new ]) identicalTo: 2.
 
 
 

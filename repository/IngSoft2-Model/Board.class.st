@@ -26,6 +26,7 @@ Board class >> withSpaces: anInteger Laps: numberOfLaps effects: arrayOfEffects 
 { #category : #initialization }
 Board >> generateBoardWithSpaces: amountOfSpaces laps: amountOfLaps effect: arrayOfEffects [
 	| arrayOfShuffledEffects count |
+	self padEffects: arrayOfEffects.
 	board := OrderedCollection new.
 	arrayOfShuffledEffects := ProbabilityDistributor createArrayWith: arrayOfEffects size: amountOfLaps * amountOfSpaces.
 	count := 1.
@@ -33,8 +34,11 @@ Board >> generateBoardWithSpaces: amountOfSpaces laps: amountOfLaps effect: arra
 		1 to: amountOfSpaces do: [ :lockerNumber | 
 			board
 				add:
-					(Locker position: lockerNumber lap: lap effect: (arrayOfShuffledEffects at: count)).
-			count := count + 1 ] ] 
+					(Locker
+						position: lockerNumber
+						lap: lap
+						effect: (arrayOfShuffledEffects at: count)).
+			count := count + 1 ] ]
 ]
 
 { #category : #accessing }
@@ -59,18 +63,19 @@ Board >> getBack: positionsToMove from: actualLocker [
 
 { #category : #position }
 Board >> howFarFromStart: aLocker [ 
-	^(aLocker position -1) 
+	^(aLocker position - 1) 
 ]
 
 { #category : #initialization }
 Board >> initializeWithSpaces: amountOfSpaces laps: amountOfLaps effect: arrayOfEffects [
-	(amountOfSpaces < 0 or: amountOfLaps < 0)
+	((self validateSpaces: amountOfSpaces andLaps: amountOfLaps)
+		or: (self validateEffectProbabilities: arrayOfEffects))
 		ifTrue: [ CreationError
-				signal: 'You cannot create a board with a negative values' ]
+				signal: 'You cannot create a board with invalid values' ]
 		ifFalse: [ self
 				generateBoardWithSpaces: amountOfSpaces
 				laps: amountOfLaps
-				effect:  arrayOfEffects] 
+				effect: arrayOfEffects asOrderedCollection  ]
 ]
 
 { #category : #'tree accessing' }
@@ -78,7 +83,25 @@ Board >> lastLocker [
 	^board last 
 ]
 
+{ #category : #initialization }
+Board >> padEffects: arrayOfEffects [
+	arrayOfEffects
+		add:
+			(NoEffect
+				withProbability: 1 - (arrayOfEffects sum: [ :anEffect | anEffect probability ]))
+]
+
 { #category : #accesing }
 Board >> startingLocker [
 	^ board first.
+]
+
+{ #category : #verification }
+Board >> validateEffectProbabilities: aCollection [ 
+	 ^(aCollection sum: [ :anObject | anObject probability ]) > 1
+]
+
+{ #category : #initialization }
+Board >> validateSpaces: amountOfSpaces andLaps: amountOfLaps [
+	^ amountOfSpaces < 0 or: amountOfLaps < 0
 ]
