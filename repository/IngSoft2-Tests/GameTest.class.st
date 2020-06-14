@@ -79,6 +79,25 @@ GameTest >> testCompleteOneLap [
 ]
 
 { #category : #tests }
+GameTest >> testDrawCardEffect [
+	| board playerOne die game deckOfCards |
+	die := LoadedDie withValue: 2.
+	playerOne := Player called: 'Fede'.
+	deckOfCards := Deck withCards: (Array with: NoEffectCard new).
+	board := Board
+		withSpaces: 5
+		Laps: 1
+		effects: (Array with: (DrawCardEffect withProbability: 1)).
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne)
+		cards: deckOfCards.
+	game play: playerOne.
+	self assert: (game checkHandOf: playerOne) size equals: 3
+]
+
+{ #category : #tests }
 GameTest >> testGameScoreBoard [
 	| board playerOne playerTwo die result game|
 	die := LoadedDie withValue: 6.
@@ -102,15 +121,16 @@ GameTest >> testGameScoreBoard [
 
 { #category : #tests }
 GameTest >> testHandOutTwoCardsInitially [
-	| game board playerOne die |
+	| game board playerOne die deckOfCards |
 	die := LoadedDie withValue: 5.
 	playerOne := Player called: 'Fede'.
 	board := Board withSpaces:10 Laps: 2.
+	deckOfCards := Deck withCards:(Array with: NoEffectCard new).
 	game := Game
 		withBoard: board
 		Dice: die
 		Players: (Array with: playerOne)
-		cards: NoEffectCard new.
+		cards: deckOfCards.
 	self assert: (game checkHandOf: playerOne) size equals: 2.
 ]
 
@@ -158,6 +178,48 @@ GameTest >> testNoEffect [
 
 
 
+]
+
+{ #category : #tests }
+GameTest >> testPlayCard [
+	| board playerOne die game deckOfCards |
+	die := LoadedDie withValue: 2.
+	playerOne := Player called: 'Fede'.
+	deckOfCards := Deck withCards:(Array with: NoEffectCard new).
+	board := Board
+		withSpaces: 5
+		Laps: 1.
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne)
+		cards: deckOfCards.
+	game play: playerOne.
+	game playCard: NoEffectCard new from: playerOne.
+	self assert: (game checkHandOf: playerOne) size equals: 1
+]
+
+{ #category : #tests }
+GameTest >> testPlayWithSeveralCards [
+	| board playerOne die game deckOfCards finalHand |
+	die := LoadedDie withValue: 1.
+	deckOfCards := Deck withCards: (Array with: NoEffectCard new with: OverloadCard new).
+	playerOne := Player called: 'Fede'.
+	board := Board
+		withSpaces: 100
+		Laps: 1
+		effects: (Array with: (DrawCardEffect withProbability: 1)).
+	game := Game 
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne)
+		cards: deckOfCards.
+	90 timesRepeat: (game play: playerOne).
+	finalHand := game checkHandOf: playerOne.
+	self
+		assert: (finalHand anySatisfy: [ :aCard | aCard = NoEffectCard new ]).
+	self
+		assert: (finalHand anySatisfy: [ :aCard | aCard = OverloadCard new ])
 ]
 
 { #category : #tests }

@@ -2,7 +2,8 @@ Class {
 	#name : #CardManager,
 	#superclass : #Object,
 	#instVars : [
-		'playerHands'
+		'playerHands',
+		'deckOfCards'
 	],
 	#classInstVars : [
 		'playerHands'
@@ -11,8 +12,8 @@ Class {
 }
 
 { #category : #'instance creation' }
-CardManager class >> dealCardsTo: aCollectionOfPlayers with: aCard [
-	^self new initializeWithPlayers: aCollectionOfPlayers cards: aCard
+CardManager class >> dealCardsTo: aCollectionOfPlayers with: aCollectionOfCards [
+	^self new initializeWithPlayers: aCollectionOfPlayers cards: aCollectionOfCards 
 ]
 
 { #category : #accessig }
@@ -20,13 +21,26 @@ CardManager >> checkHandOf: aPlayer [
 	^playerHands at: aPlayer
 ]
 
+{ #category : #action }
+CardManager >> drawCard: aPlayer [ 
+	(self checkHandOf: aPlayer) add: (deckOfCards drawCard).
+
+
+]
+
 { #category : #initialization }
-CardManager >> initializeWithPlayers: aCollectionOfPlayers cards: aCard [ 
-	| hand |
+CardManager >> initializeWithPlayers: aCollectionOfPlayers cards: aDeckOfCards [
+	| hand randomCard |
+	deckOfCards := aDeckOfCards.
 	playerHands := Dictionary new.
 	hand := OrderedCollection new.
-	hand add: aCard.
-	hand add: aCard.
+	hand add: aDeckOfCards drawCard.
+	hand add: aDeckOfCards drawCard.
 	aCollectionOfPlayers
 		do: [ :aPlayer | playerHands add: aPlayer -> hand ]
+]
+
+{ #category : #playing }
+CardManager >> utilizeCard: aCard from: aPlayer [ 
+	(self checkHandOf: aPlayer) remove: aCard
 ]
