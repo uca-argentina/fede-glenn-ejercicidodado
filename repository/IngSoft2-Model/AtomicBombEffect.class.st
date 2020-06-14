@@ -5,7 +5,6 @@ Class {
 }
 
 { #category : #apply }
-AtomicBombEffect >> applyTo: somePlayers [
-	somePlayers
-		do: [ :aPlayer | aPlayer moveToZero ]
+AtomicBombEffect >> applyTo: aGame [
+	aGame applyAtomicBombEffect
 ]

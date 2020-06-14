@@ -41,6 +41,20 @@ Game class >> withSpaces: anInteger withDice: aDie withPlayers: somePlayers with
 ]
 
 { #category : #'effect application' }
+Game >> applyAtomicBombEffect [
+	positionTracker moveAllToStart.
+]
+
+{ #category : #'effect application' }
+Game >> applyMoonWalkEffect: aMoonWalkEffect [
+	turnManager allPlayersButActual
+		do: [ :aPlayer | 
+			positionTracker
+				moveBackwards: aPlayer
+				spaces: aMoonWalkEffect backingSpaces ]
+]
+
+{ #category : #'effect application' }
 Game >> applySpeedUpEffect [
 	positionTracker move: (turnManager currentTurnPlayer) havingRolled: 4.
 ]

@@ -55,9 +55,16 @@ PositionTracker >> move: aPlayer havingRolled: anInteger [
 ]
 
 { #category : #movement }
+PositionTracker >> moveAllToStart [
+	scoreBoard
+		keysAndValuesDo:
+			[ :player :locker | self moveBackwards: player spaces: (board howFarFromStart: locker) ]
+]
+
+{ #category : #movement }
 PositionTracker >> moveBackwards: aPlayer spaces: anInteger [ 
 	| actualPosition newPosition |
 	actualPosition := self inWhichPositionIs: aPlayer.
-	newPosition := board get: (anInteger negated) from: actualPosition.
+	newPosition := board getBack: (anInteger) from: actualPosition.
 	scoreBoard add: aPlayer -> newPosition  
 ]

@@ -47,6 +47,21 @@ Board >> get: positionsToMove from: actualLocker [
 	^ newPosition
 ]
 
+{ #category : #accessing }
+Board >> getBack: positionsToMove from: actualLocker [
+	| newPosition |
+	(board indexOf: actualLocker) <= positionsToMove
+		ifTrue: [ newPosition := self startingLocker  ]
+		ifFalse: [ newPosition := board
+				at: (board indexOf: actualLocker) - positionsToMove ].
+	^ newPosition
+]
+
+{ #category : #position }
+Board >> howFarFromStart: aLocker [ 
+	^(aLocker position -1) 
+]
+
 { #category : #initialization }
 Board >> initializeWithSpaces: amountOfSpaces laps: amountOfLaps effect: arrayOfEffects [
 	(amountOfSpaces < 0 or: amountOfLaps < 0)
