@@ -2,146 +2,106 @@ Class {
 	#name : #Board,
 	#superclass : #Object,
 	#instVars : [
-		'spaces',
-		'players',
-		'dice',
-		'laps',
-		'effects'
+		'board'
 	],
 	#category : #'IngSoft2-Model'
 }
 
 { #category : #'instance creation' }
-Board class >> withSpaces: anInteger withDice: aDie withPlayers: somePlayers withLaps: aLapNumber [
+Board class >> withSpaces: amountOfSpaces Laps: amountOfLaps [
+	^ self new
+		initializeWithSpaces: amountOfSpaces
+		laps: amountOfLaps
+		effect: (Array with: (NoEffect withProbability: 1))
+]
+
+{ #category : #'instance creation - old' }
+Board class >> withSpaces: anInteger Laps: numberOfLaps effects: arrayOfEffects [
 	^ self new
 		initializeWithSpaces: anInteger
-		Dice: aDie
-		Players: somePlayers
-		Laps: aLapNumber
-		Effects: (Array with: (NoEffect withProbability: 1)).
-]
-
-{ #category : #'instance creation' }
-Board class >> withSpaces: anInteger withDice: aDie withPlayers: somePlayers withLaps: aLapNumber withEffect: anEffect [ 
-	^ self new
-		initializeWithSpaces: anInteger
-		Dice: aDie
-		Players: somePlayers
-		Laps: aLapNumber
-		Effects: anEffect.
-		
-]
-
-{ #category : #action }
-Board >> advance: aPlayer [
-	| rolled effect |
-	rolled := dice roll.
-	effect := self selectEffect.
-	(self isAboutToWin: aPlayer havingRolled: rolled)
-		ifTrue: [ aPlayer move: spaces - aPlayer position ]
-		ifFalse: [ aPlayer move: rolled ].
-	effect applyTo: players.
-	self skipToNextTurn
-]
-
-{ #category : #action }
-Board >> assertIsTurnOf: aPlayer [
-	(self isTurnOf: aPlayer)
-		ifFalse: [ TurnError signal: 'This is not the player turn' ]
-]
-
-{ #category : #information }
-Board >> boardLaps [
-	^ laps
-]
-
-{ #category : #information }
-Board >> boardSpaces [
-	^ spaces
-]
-
-{ #category : #state }
-Board >> hasFinished [
-	^players anySatisfy: [ :aPlayer | aPlayer position >= spaces ]
-
-	
+		laps: numberOfLaps
+		effect: arrayOfEffects
 ]
 
 { #category : #initialization }
-Board >> initializeWithSpaces: amountOfSpaces Dice: aDie Players: somePlayers Laps: aLapNumber Effects: someEffect [
-	players := somePlayers asOrderedCollection.
-	self verifyAndSetSpaces: amountOfSpaces.
-	dice := aDie.
-	laps := aLapNumber.
-	self verifyAndSetEffectsProbability: someEffect.
-	somePlayers do: [ :aPlayer | aPlayer addGame: self ]
+Board >> generateBoardWithSpaces: amountOfSpaces laps: amountOfLaps effect: arrayOfEffects [
+	| arrayOfShuffledEffects count |
+	self padEffects: arrayOfEffects.
+	board := OrderedCollection new.
+	arrayOfShuffledEffects := ProbabilityDistributor createArrayWith: arrayOfEffects size: amountOfLaps * amountOfSpaces.
+	count := 1.
+	1 to: amountOfLaps do: [ :lap | 
+		1 to: amountOfSpaces do: [ :lockerNumber | 
+			board
+				add:
+					(Locker
+						position: lockerNumber
+						lap: lap
+						effect: (arrayOfShuffledEffects at: count)).
+			count := count + 1 ] ]
 ]
 
-{ #category : #action }
-Board >> isAboutToWin: aPlayer havingRolled: result [
-	^ aPlayer currentLap = laps and: (result + aPlayer position > spaces)
+{ #category : #accessing }
+Board >> get: positionsToMove from: actualLocker [
+	| newPosition |
+	(board indexOf: actualLocker) + positionsToMove > board size
+		ifTrue: [ newPosition := self lastLocker ]
+		ifFalse: [ newPosition := board
+				at: (board indexOf: actualLocker) + positionsToMove ].
+	^ newPosition
 ]
 
-{ #category : #testing }
-Board >> isTurnOf: aPlayer [
-	^ (players first) = aPlayer
+{ #category : #accessing }
+Board >> getBack: positionsToMove from: actualLocker [
+	| newPosition |
+	(board indexOf: actualLocker) <= positionsToMove
+		ifTrue: [ newPosition := self startingLocker  ]
+		ifFalse: [ newPosition := board
+				at: (board indexOf: actualLocker) - positionsToMove ].
+	^ newPosition
 ]
 
-{ #category : #action }
-Board >> play: aPlayer [
-	self assertIsTurnOf: aPlayer.
-	self advance: aPlayer
-]
-
-{ #category : #information }
-Board >> scoreBoard [
-	^ players
-		sort: [ :aPlayer :otherPlayer | 
-			(aPlayer position + (aPlayer currentLap * spaces))
-				>= (otherPlayer position + (otherPlayer currentLap * spaces)) ]
-]
-
-{ #category : #selection }
-Board >> selectEffect [
-	| probability base |
-	probability := Random new next.
-	base := 0.
-	^ effects
-		detect: [ :anEffect | 
-			base := base + anEffect probability.
-			probability <= anEffect probability ]
-		ifFound: [ :anEffect | anEffect ]
-		ifNone: [ NoEffect withProbability: 1 ]
-]
-
-{ #category : #action }
-Board >> skipToNextTurn [
-  players addLast: (players removeFirst)
-	
+{ #category : #position }
+Board >> howFarFromStart: aLocker [ 
+	^(aLocker position - 1) 
 ]
 
 { #category : #initialization }
-Board >> verifyAndSetEffectsProbability: anEffect [
-	| totalProbability |
-	totalProbability := anEffect
-		sum: [ :oneEffect | oneEffect probability ].
-	effects := anEffect asOrderedCollection.
-	totalProbability > 1
+Board >> initializeWithSpaces: amountOfSpaces laps: amountOfLaps effect: arrayOfEffects [
+	((self validateSpaces: amountOfSpaces andLaps: amountOfLaps)
+		or: (self validateEffectProbabilities: arrayOfEffects))
 		ifTrue: [ CreationError
-				signal: 'The total effect probability percentage is more than 100%' ]
-		ifFalse: [ effects add: (NoEffect withProbability: 1 - 0.4) ]
+				signal: 'You cannot create a board with invalid values' ]
+		ifFalse: [ self
+				generateBoardWithSpaces: amountOfSpaces
+				laps: amountOfLaps
+				effect: arrayOfEffects asOrderedCollection  ]
+]
+
+{ #category : #accessing }
+Board >> lastLocker [
+	^board last 
 ]
 
 { #category : #initialization }
-Board >> verifyAndSetSpaces: amountOfSpaces [
-	amountOfSpaces < 0
-		ifTrue: [ CreationError
-				signal: 'You cannot create a board with a negative values' ]
-		ifFalse: [ spaces := amountOfSpaces ]
+Board >> padEffects: arrayOfEffects [
+	arrayOfEffects
+		add:
+			(NoEffect
+				withProbability: 1 - (arrayOfEffects sum: [ :anEffect | anEffect probability ]))
 ]
 
-{ #category : #state }
-Board >> winner [
-	^ players
-		detect: [ :aPlayer | (aPlayer currentLap = laps) and: (aPlayer position = spaces) ]
+{ #category : #accessing }
+Board >> startingLocker [
+	^ board first.
+]
+
+{ #category : #verification }
+Board >> validateEffectProbabilities: aCollection [ 
+	 ^(aCollection sum: [ :anObject | anObject probability ]) > 1
+]
+
+{ #category : #initialization }
+Board >> validateSpaces: amountOfSpaces andLaps: amountOfLaps [
+	^ amountOfSpaces < 0 or: amountOfLaps < 0
 ]

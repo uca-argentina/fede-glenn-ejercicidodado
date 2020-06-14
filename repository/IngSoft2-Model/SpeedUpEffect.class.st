@@ -5,6 +5,6 @@ Class {
 }
 
 { #category : #apply }
-SpeedUpEffect >> applyTo: somePlayers [
-	(somePlayers first) move: 4.
+SpeedUpEffect >> applyTo: aGame [
+	aGame applySpeedUpEffect
 ]

@@ -5,346 +5,133 @@ Class {
 }
 
 { #category : #tests }
-BoardTest >> testAPlayerPlaysTwiceFails [
-	| board playerOne playerTwo die |
-	die := LoadedDie withValue: 6.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
-	board := Board
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne with: playerTwo)
-		withLaps: 2.
-	board play: playerOne.
+BoardTest >> testBoardWithProbabilityMoreThanOneHundredFails [
 	self
-		should: [ board play: playerOne ]
-		raise: TurnError
+		should: [ Board
+				withSpaces: 10
+				Laps: 1
+				effects:
+					(Array
+						with: (NoEffect withProbability: 0.6)
+						with: (WormHoleEffect withProbability: 0.5)) ]
+		raise: CreationError
 ]
 
 { #category : #tests }
-BoardTest >> testAtomicBombEffectStaysSameLaps [
-	| board playerOne playerTwo die |
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
-	die := LoadedDie withValue: 6.
-	
-	board := PracticeBoard
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne with: playerTwo)
-		withLaps: 3
-		withEffect: (Array with: (AtomicBombEffect withProbability: 1)).
-	board set: playerOne toPosition: 0 toLap: 1.
-	board set: playerTwo toPosition: 8 toLap: 3.
-	
-	board play: playerOne.
-	self assert: playerOne currentLap equals: 1.
-	self assert: playerTwo currentLap equals: 3.
-
+BoardTest >> testCreateBoardWithNoEffects [
+	| board starting |
+	board := Board
+		withSpaces: 3
+		Laps: 2
+		effects: (Array with: (NoEffect withProbability: 1)).
+	starting := board startingLocker.
+	6
+		timesRepeat:
+			(self
+				assert: (starting := board get: 1 from: starting) effect
+				equals: NoEffect new)
 ]
 
 { #category : #tests }
-BoardTest >> testAtomicBombEffectToStartingPosition [
-	| board playerOne playerTwo die |
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
-	die := LoadedDie withValue: 6.
-	
-	board := PracticeBoard
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne with: playerTwo)
-		withLaps: 1
-		withEffect: (Array with: (AtomicBombEffect withProbability: 1)).
-	board set: playerOne toPosition: 0 toLap: 1.
-	board set: playerTwo toPosition: 8 toLap: 1.
-	
-	board play: playerOne.
-	self assert: playerOne position equals: 0.
-	self assert: playerTwo position equals: 0.
-
-]
-
-{ #category : #tests }
-BoardTest >> testCircularBoard [
-	| board playerOne die |
-	die := LoadedDie withValue: 6.
-	playerOne := Player called: 'Fede'.
+BoardTest >> testCreateBoardWithNoEffectsByDefault [
+	| board result starting actualEffect counter|
 	board := Board
 		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne)
-		withLaps: 2.
-	board play: playerOne.
-	board play: playerOne.
-	self assert: board hasFinished not.
-	self assert: playerOne position equals: 2.
-]
+		Laps: 10
+		effects:
+			(Array
+				with: (WormHoleEffect withProbability: 0.15)).
+	starting := board startingLocker.
+	result := OrderedCollection new.
+	counter := 0.
+	100
+		timesRepeat:
+			[ 
+			actualEffect := (board get: counter from: starting) effect.
+			result add: actualEffect.
+			counter := counter +1].
+	self assert: (result anySatisfy:[:anEffect | anEffect = NoEffect new]).
+	self assert: (result anySatisfy:[:anEffect | anEffect = WormHoleEffect new]).
 
-{ #category : #tests }
-BoardTest >> testMoonWalkEffect [
-	| board playerOne playerTwo die |
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
-	die := LoadedDie withValue: 6.
-	
-	board := PracticeBoard
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne with: playerTwo)
-		withLaps: 1
-		withEffect: (Array with: (MoonWalkEffect withProbability: 1)).
-	board set: playerOne toPosition: 0 toLap: 1.
-	board set: playerTwo toPosition: 8 toLap: 1.
-	
-	board play: playerOne.
-	self assert: playerOne position equals: 6.
-	self assert: playerTwo position equals: 5.
+
+
 
 ]
 
 { #category : #tests }
-BoardTest >> testNoEffect [
-	| board playerOne die |
-	die := LoadedDie withValue: 3.
-	playerOne := Player called: 'Fede'.
+BoardTest >> testCreateBoardWithSeveralEffects [
+	| board result starting actualEffect counter|
+	board := Board
+		withSpaces: 2
+		Laps: 1
+		effects:
+			(Array
+				with: (NoEffect withProbability: 0.5)
+				with: (WormHoleEffect withProbability: 0.5)).
+	starting := board startingLocker.
+	result := OrderedCollection new.
+	counter := 0.
+	2
+		timesRepeat:
+			[ 
+			actualEffect := (board get: counter from: starting) effect.
+			result add: actualEffect.
+			counter := counter +1].
+	self assert: (result anySatisfy:[:anEffect | anEffect = NoEffect new]).
+	self assert: (result anySatisfy:[:anEffect | anEffect = WormHoleEffect new]).
+
+
+
+
+]
+
+{ #category : #tests }
+BoardTest >> testDistribiutionOfEffects [
+	| board result starting actualEffect counter|
 	board := Board
 		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne)
-		withLaps: 1
-		withEffect: (Array with: (NoEffect withProbability: 1)).
-	board play: playerOne.
-	self assert: playerOne position equals: 3.
+		Laps: 10
+		effects:
+			(Array
+				with: (WormHoleEffect withProbability: 0.15)
+				with: (AtomicBombEffect withProbability: 0.02)).
+	starting := board startingLocker.
+	result := OrderedCollection new.
+	counter := 0.
+	100
+		timesRepeat:
+			[ 
+			actualEffect := (board get: counter from: starting) effect.
+			result add: actualEffect.
+			counter := counter +1].
+		
+	self assert:( result count: [ :anEffect | anEffect = NoEffect new ]) identicalTo: 83.
+	self assert: ( result count: [ :anEffect | anEffect = WormHoleEffect  new ]) identicalTo: 15.
+	self assert: ( result count: [ :anEffect | anEffect = AtomicBombEffect new ]) identicalTo: 2.
+
+
+
+]
+
+{ #category : #tests }
+BoardTest >> testGetFollowingLocker [
+	|board starting last|
+	board := Board withSpaces:2 Laps: 1.
+	starting := board startingLocker.
+	last := board lastLocker.
+	self assert: (board get: 1 from: starting) equals: last.
+]
+
+{ #category : #tests }
+BoardTest >> testNotAllowToCreateBoardWithNegativeLaps [
+	self
+		should: [ Board withSpaces:4 Laps: -2. ]
+		raise: CreationError
 ]
 
 { #category : #tests }
 BoardTest >> testNotAllowToCreateBoardWithNegativeSpaces [
-	| playerOne die |
 	self
-		should: [ die := LoadedDie withValue: 6.
-			playerOne := Player called: 'Fede'.
-				Board
-				withSpaces: -4
-				withDice: die
-				withPlayers: (Array with: playerOne)
-				withLaps: 1 ]
+		should: [ Board withSpaces:-4 Laps: 2. ]
 		raise: CreationError
-]
-
-{ #category : #tests }
-BoardTest >> testPlayerCanWinOverTheLimit [
-	| board playerOne die |
-	die := LoadedDie withValue: 6.
-	playerOne := Player called: 'Fede'.
-	board := Board
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne)
-		withLaps: 1.
-	board play: playerOne.
-	self assert: playerOne position equals: 6.
-	self assert: board hasFinished not.
-	board play: playerOne.
-	self assert: playerOne position equals: 10.
-	self assert: board hasFinished
-]
-
-{ #category : #tests }
-BoardTest >> testPlayerEndInLastPosition [
-	| board playerOne die |
-	die := LoadedDie withValue: 6.
-	playerOne := Player called: 'Fede'.
-	board := Board
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne)
-		withLaps: 1.
-	board play: playerOne.
-	self assert: playerOne position equals: 6.
-	self assert: board hasFinished not.
-	board play: playerOne.
-	self assert: playerOne position equals: 10.
-	self assert: board hasFinished
-]
-
-{ #category : #tests }
-BoardTest >> testPlayerPlays [
-	| board playerOne die |
-	die := LoadedDie withValue: 5.
-	playerOne := Player called: 'Fede'.
-	board := Board
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne)
-		withLaps: 2.
-	board play: playerOne.
-	self assert: playerOne position equals: 5
-]
-
-{ #category : #tests }
-BoardTest >> testPlayerPosition [
-	| board playerOne playerTwo playerThree die result |
-	die := LoadedDie withValue: 6.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
-	playerThree := Player called: 'Nicky'.
-	board := Board
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne with: playerTwo with: playerThree)
-		withLaps: 2.
-	board play: playerOne.
-	board play: playerTwo.
-	board play: playerThree.
-	board play: playerOne.
-	result := OrderedCollection new.
-	result add: playerOne.
-	result add: playerTwo.
-	result add: playerThree.
-	self assert: result equals: board scoreBoard
-]
-
-{ #category : #tests }
-BoardTest >> testPlayerRank [
-	| board playerOne playerTwo die |
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
-	die := LoadedDie withValue: 6.
-	board := Board
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne with: playerTwo )
-		withLaps: 1.
-	board play: playerOne.
-	self assert: playerOne position equals: 6.
-	board play: playerTwo.
-	self assert: playerTwo position equals: 6.
-	board play: playerOne.
-	self assert: playerOne rank equals: 1.
-	self assert: playerTwo rank equals: 2.
-]
-
-{ #category : #tests }
-BoardTest >> testPlayerWins [
-	| board playerOne die |
-	die := LoadedDie withValue: 5.
-	playerOne := Player called: 'Fede'.
-	board := Board
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne)
-		withLaps: 1.
-	board play: playerOne.
-	self assert: playerOne position equals: 5.
-	self assert: board hasFinished not.
-	board play: playerOne.
-	self assert: playerOne position equals: 10.
-	self assert: board hasFinished
-]
-
-{ #category : #tests }
-BoardTest >> testPlayingWithTurnsWithThreePlayers [
-	| board playerOne playerTwo playerThree die |
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
-	playerThree := Player called: 'Nicky'.
-	die := LoadedDie withValue: 6.
-	board := Board
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne with: playerTwo with: playerThree)
-		withLaps: 1.
-	board play: playerOne.
-	self assert: playerOne position equals: 6.
-	board play: playerTwo.
-	self assert: playerTwo position equals: 6.
-	board play: playerThree.
-	self assert: playerThree position equals: 6.
-	board play: playerOne.
-	self assert: board winner equals: playerOne
-]
-
-{ #category : #tests }
-BoardTest >> testSpeedUp [
-	| board playerOne die |
-	die := LoadedDie withValue: 3.
-	playerOne := Player called: 'Fede'.
-	board := Board
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne)
-		withLaps: 1
-		withEffect: (Array with: (SpeedUpEffect withProbability: 1)).
-	board play: playerOne.
-	self assert: playerOne position equals: 7.
-]
-
-{ #category : #tests }
-BoardTest >> testSumOfEffectProbabilitiesNotOverOneHundred [
-	| playerOne die  |
-	self
-		should: [ die := LoadedDie withValue: 6.
-			playerOne := Player called: 'Fede'.
-			PracticeBoard
-				withSpaces: 10
-				withDice: die
-				withPlayers: (Array with: playerOne)
-				withLaps: 1
-				withEffect: (Array with: (MoonWalkEffect withProbability: 0.5) with: (WormHoleEffect withProbability: 0.6))]
-		raise: CreationError
-]
-
-{ #category : #tests }
-BoardTest >> testWormHoleEffect [
-	| board playerOne die |
-	die := LoadedDie withValue: 6.
-	playerOne := Player called: 'Fede'.
-	board := Board
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne)
-		withLaps: 1
-		withEffect: (Array with: (WormHoleEffect withProbability: 1)).
-	board play: playerOne.
-	self assert: playerOne position equals: 2.
-]
-
-{ #category : #tests }
-BoardTest >> testWormHoleEffectLimitMove [
-	| board playerOne die |
-	die := LoadedDie withValue: 3.
-	playerOne := Player called: 'Fede'.
-	board := Board
-		withSpaces: 10
-		withDice: die
-		withPlayers: (Array with: playerOne)
-		withLaps: 1
-		withEffect: (Array with: (WormHoleEffect withProbability: 1)).
-	board play: playerOne.
-	self assert: playerOne position equals: 0.
-]
-
-{ #category : #tests }
-BoardTest >> testWormholeEffectProbability [
-	| board playerOne die lastPosition wormHoleCounter noEffectCounter |
-	die := LoadedDie withValue: 4.
-	wormHoleCounter := 0.
-	noEffectCounter := 0.
-	playerOne := Player called: 'Fede'.
-	board := Board
-		withSpaces: 1000
-		withDice: die
-		withPlayers: (Array with: playerOne)
-		withLaps: 10
-		withEffect: (Array with: (WormHoleEffect withProbability: 0.4)).
-	lastPosition := 0.
-	1000
-		timesRepeat: [ board play: playerOne.
-			playerOne position = lastPosition
-				ifTrue: [ wormHoleCounter := wormHoleCounter + 1 ]
-				ifFalse: [ noEffectCounter := noEffectCounter + 1 ].
-			lastPosition := playerOne position ].
-	self assert: (wormHoleCounter between: 350 and: 450).
-	self assert: 1000 - wormHoleCounter equals: noEffectCounter
 ]

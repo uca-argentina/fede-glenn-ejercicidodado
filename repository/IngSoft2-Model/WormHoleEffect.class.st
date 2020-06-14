@@ -5,10 +5,7 @@ Class {
 }
 
 { #category : #apply }
-WormHoleEffect >> applyTo: somePlayers [
-	| currentPlayer |
-	currentPlayer := somePlayers first.
-	currentPlayer position >= 4
-		ifTrue:[ currentPlayer  moveBackwards: 4]
-		ifFalse:[currentPlayer moveToZero].
+WormHoleEffect >> applyTo: aGame [
+	aGame applyWormHoleEffect
+	
 ]
