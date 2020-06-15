@@ -58,6 +58,11 @@ CardManager >> isCard: aCard inHandOf: aPlayer [
 			ifFalse: [MissingCardError signal:'No esta en la mano del jugador']
 ]
 
+{ #category : #effects }
+CardManager >> takePermanentEffect: aPermanentCard [  
+	permanentCardsPlayed remove: aPermanentCard ifAbsent: [MissingActiveCardEffect signal:'there is no active effect targeted' ].
+]
+
 { #category : #playing }
 CardManager >> utilizeCard: aCard from: aPlayer [ 
 	self utilizeCard: aCard from: aPlayer to: aPlayer

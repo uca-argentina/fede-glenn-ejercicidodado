@@ -64,6 +64,107 @@ GameTest >> testAtomicBombEffectWithAnotherPlayerInStartingPosition [
 ]
 
 { #category : #tests }
+GameTest >> testCancellationCard [
+	| board playerOne die game deckOfCards playerTwo |
+	die := LoadedDie withValue: 1.
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	deckOfCards := Deck
+		withCards: (Array with: SpeedCard new with: CancellationCard new).
+	board := Board
+		withSpaces: 100
+		Laps: 1
+		effects: (Array with: (DrawCardEffect withProbability: 1)).
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne with: playerTwo)
+		cards: deckOfCards.
+	10
+		timesRepeat: [ game play: playerOne.
+			game play: playerTwo ].
+	game playCard: SpeedCard new from: playerOne to: playerTwo.
+	game play: playerOne.
+	game
+		playCard: CancellationCard new
+		from: playerTwo
+		to: SpeedCard new
+		targetedTo: playerTwo.
+	game play: playerTwo.
+	self
+		assert: (game inWhichPositionIs: playerTwo)
+		equals: (Locker position: 12 lap: 1).
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 12 lap: 1)
+]
+
+{ #category : #tests }
+GameTest >> testCancellationCardWithNoPermanentCardsActive [
+	| board playerOne die game deckOfCards playerTwo |
+	die := LoadedDie withValue: 1.
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	deckOfCards := Deck withCards: (Array with: CancellationCard new).
+	board := Board
+		withSpaces: 10
+		Laps: 1
+		effects: (Array with: (DrawCardEffect withProbability: 1)).
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne)
+		cards: deckOfCards.
+	self
+		should: [ game
+				playCard: CancellationCard new
+				from: playerOne
+				to: SpeedCard new
+				targetedTo: playerOne ]
+		raise: MissingActiveCardEffect
+]
+
+{ #category : #tests }
+GameTest >> testCancellationCardWithTwoEqualActiveEffects [
+	| board playerOne die game deckOfCards playerTwo |
+	die := LoadedDie withValue: 1.
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	deckOfCards := Deck
+		withCards: (Array with: SpeedCard new with: CancellationCard new).
+	board := Board
+		withSpaces: 100
+		Laps: 1
+		effects: (Array with: (DrawCardEffect withProbability: 1)).
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne with: playerTwo)
+		cards: deckOfCards.
+	10
+		timesRepeat: [ game play: playerOne.
+			game play: playerTwo ].
+		
+	game playCard: SpeedCard new from: playerOne to: playerTwo.
+	game play: playerOne.
+	
+	game playCard: SpeedCard new from: playerTwo to: playerTwo.
+	game
+		playCard: CancellationCard new
+		from: playerOne
+		to: SpeedCard new
+		targetedTo: playerTwo.
+	game play: playerTwo.
+
+	self
+		assert: (game inWhichPositionIs: playerTwo)
+		equals: (Locker position: 13 lap: 1).
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 12 lap: 1)
+]
+
+{ #category : #tests }
 GameTest >> testCannotPlayCardOutOfTurn [
 	| board playerOne die game deckOfCards playerTwo |
 	die := LoadedDie withValue: 2.
@@ -437,6 +538,35 @@ GameTest >> testSpeedUp [
 	game play: playerOne.
 	
 	self assert: (game inWhichPositionIs: playerOne)  equals: (Locker position: 6 lap: 1).
+]
+
+{ #category : #tests }
+GameTest >> testTargetTwoCardAtAPlayer [
+	| board playerOne die game deckOfCards playerTwo |
+	die := LoadedDie withValue: 1.
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	deckOfCards := Deck
+		withCards: (Array with: SpeedCard new).
+	board := Board
+		withSpaces: 100
+		Laps: 1
+		effects: (Array with: (DrawCardEffect withProbability: 1)).
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne with: playerTwo)
+		cards: deckOfCards.
+	game playCard: SpeedCard new from: playerOne to: playerTwo.
+	game play: playerOne.
+	game playCard: SpeedCard new from: playerTwo to: playerTwo.
+	game play: playerTwo.
+	self
+		assert: (game inWhichPositionIs: playerTwo)
+		equals: (Locker position: 4 lap: 1).
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 2 lap: 1)
 ]
 
 { #category : #tests }

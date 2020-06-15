@@ -122,6 +122,12 @@ Game >> playCard: aCard from: aPlayer to: targetedPlayer [
 	cardManager utilizeCard: aCard from: aPlayer to: targetedPlayer
 ]
 
+{ #category : #'card playing' }
+Game >> playCard: aCancellationCard from: aPlayer to: aPermanentCard targetedTo: aTargetedPlayer [
+	aPermanentCard target: aTargetedPlayer .
+	cardManager takePermanentEffect: aPermanentCard.
+]
+
 { #category : #play }
 Game >> playTurn: aPlayer [ 
 	| rolled currentLocker|
