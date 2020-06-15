@@ -54,22 +54,33 @@ Game >> applyMoonWalkEffect: aMoonWalkEffect [
 ]
 
 { #category : #'card application' }
-Game >> applyOverloadCard [
-	(cardManager activeCardEffect
-		select: [ :aCard | aCard = OverloadCard new ])
-		detect: [ :aCard | aCard target = turnManager currentTurnPlayer ]
-		ifFound: [ positionTracker
-				moveBackwards: turnManager currentTurnPlayer
-				spaces: 2 ]
+Game >> applyOverloadCard: aPlayer [
+	aPlayer = (turnManager currentTurnPlayer)
+		ifTrue: [ (cardManager activeCardEffect
+				select: [ :aCard | aCard = OverloadCard new ])
+				detect: [ :aCard | aCard target = turnManager currentTurnPlayer ]
+				ifFound: [ positionTracker
+						moveBackwards: turnManager currentTurnPlayer
+						spaces: 2 ] ]
 ]
 
 { #category : #'card application' }
-Game >> applySpeedCard [
-	(cardManager activeCardEffect
-		select: [ :aCard | aCard = SpeedCard new ])
-		detect: [ :aCard | aCard target = turnManager currentTurnPlayer ]
-		ifFound:
-			[ positionTracker move: turnManager currentTurnPlayer havingRolled: 1 ]
+Game >> applyRedoCard: aRedoCard [ 
+	|lastPlayedCard |
+	lastPlayedCard := cardManager lastPlayedCard.
+	lastPlayedCard isPermanent
+		ifTrue: [ cardManager replayLastPermanentEffectTarget: (aRedoCard target) ]
+		ifFalse: [ lastPlayedCard applyTo: self.]
+]
+
+{ #category : #'card application' }
+Game >> applySpeedCard: aPlayer [
+	aPlayer = turnManager currentTurnPlayer
+		ifTrue: [ (cardManager activeCardEffect
+				select: [ :aCard | aCard = SpeedCard new ])
+				detect: [ :aCard | aCard target = turnManager currentTurnPlayer ]
+				ifFound:
+					[ positionTracker move: turnManager currentTurnPlayer havingRolled: 1 ] ]
 ]
 
 { #category : #'effect application' }

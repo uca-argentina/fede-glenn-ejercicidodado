@@ -9,7 +9,7 @@ Class {
 
 { #category : #'card application' }
 SpeedCard >> applyTo: aGame [ 
-	aGame applySpeedCard.
+	aGame applySpeedCard: target.
 ]
 
 { #category : #classification }

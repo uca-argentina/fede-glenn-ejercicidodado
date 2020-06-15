@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'playerHands',
 		'deckOfCards',
-		'permanentCardsPlayed'
+		'permanentCardsPlayed',
+		'lastPlayed'
 	],
 	#classInstVars : [
 		'playerHands'
@@ -67,6 +68,16 @@ CardManager >> isCard: aCard inHandOf: aPlayer [
 			ifFalse: [MissingCardError signal:'No esta en la mano del jugador']
 ]
 
+{ #category : #'as yet unclassified' }
+CardManager >> lastPlayedCard [
+	^lastPlayed
+]
+
+{ #category : #'as yet unclassified' }
+CardManager >> replayLastPermanentEffectTarget: aPlayer [ 
+	permanentCardsPlayed add: ((permanentCardsPlayed last copy) target: aPlayer).
+]
+
 { #category : #effects }
 CardManager >> takePermanentEffect: aPermanentCard [  
 	permanentCardsPlayed remove: aPermanentCard ifAbsent: [MissingActiveCardEffect signal:'there is no active effect targeted' ].
@@ -82,8 +93,8 @@ CardManager >> utilizeCard: aCard from: aPlayer [
 CardManager >> utilizeCard: aCard from: aPlayer to: targetedPlayer [
 	self isCard: aCard inHandOf: aPlayer.
 	(self checkHandOf: aPlayer) remove: aCard.
+	lastPlayed := aCard.
 	aCard isPermanent
-		ifTrue:[
-	aCard target: targetedPlayer.
-	permanentCardsPlayed add: aCard]
+		ifTrue: [ aCard target: targetedPlayer.
+			 permanentCardsPlayed add: aCard ]
 ]

@@ -9,7 +9,7 @@ Class {
 
 { #category : #'card application' }
 OverloadCard >> applyTo: aGame [ 
-	aGame applyOverloadCard.
+	aGame applyOverloadCard: target.
 ]
 
 { #category : #classification }

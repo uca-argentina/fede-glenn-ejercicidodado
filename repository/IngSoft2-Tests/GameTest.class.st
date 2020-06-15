@@ -517,6 +517,110 @@ GameTest >> testPlayingWithTurnsWithThreePlayers [
 ]
 
 { #category : #tests }
+GameTest >> testRedoInstantCard [
+	| board playerOne die game deckOfCards playerTwo cancellationCard |
+	die := LoadedDie withValue: 1.
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	deckOfCards := Deck
+		withCards: (Array with: SpeedCard new with: CancellationCard new).
+	board := Board
+		withSpaces: 100
+		Laps: 1
+		effects: (Array with: (DrawCardEffect withProbability: 1)).
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne with: playerTwo)
+		cards: deckOfCards.
+	10
+		timesRepeat: [ game play: playerOne.
+			game play: playerTwo ].
+	game playCard: SpeedCard new from: playerOne to: playerTwo.
+	game play: playerOne.
+	cancellationCard := CancellationCard new
+		target: (SpeedCard new target: playerTwo).
+	game playCard: cancellationCard from: playerOne.
+	game play: playerTwo.
+	self
+		assert: 5
+		equals: 5.
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 12 lap: 1)
+]
+
+{ #category : #tests }
+GameTest >> testRedoPermanentCard [
+	| board playerOne die game deckOfCards playerTwo redoCard |
+	die := LoadedDie withValue: 1.
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	deckOfCards := Deck
+		withCards: (Array with: SpeedCard new with: RedoCard new).
+	board := Board
+		withSpaces: 100
+		Laps: 1
+		effects: (Array with: (DrawCardEffect withProbability: 1)).
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne with: playerTwo)
+		cards: deckOfCards.
+	10
+		timesRepeat: [ game play: playerOne.
+			game play: playerTwo ].
+		
+	game playCard: SpeedCard new from: playerOne to: playerTwo.
+	game play: playerOne.
+	redoCard := RedoCard new target: playerOne.
+	game playCard: redoCard from: playerOne.
+	game play: playerTwo.
+	game play: playerOne.
+	self
+		assert: (game inWhichPositionIs: playerTwo)
+		equals: (Locker position: 13 lap: 1).
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 14 lap: 1)
+]
+
+{ #category : #tests }
+GameTest >> testRedoPermanentCardOverload [
+	| board playerOne die game deckOfCards playerTwo redoCard |
+	die := LoadedDie withValue: 1.
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	deckOfCards := Deck
+		withCards: (Array with: OverloadCard new with: RedoCard new).
+	board := Board
+		withSpaces: 100
+		Laps: 1
+		effects: (Array with: (DrawCardEffect withProbability: 1)).
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne with: playerTwo)
+		cards: deckOfCards.
+	10
+		timesRepeat: [ game play: playerOne.
+			game play: playerTwo ].
+
+	game playCard: OverloadCard new from: playerOne to: playerTwo.
+	game play: playerOne.
+	redoCard := RedoCard new target: playerOne.
+	game playCard: redoCard from: playerOne.
+	game play: playerTwo.
+	game play: playerOne.
+	self
+		assert: (game inWhichPositionIs: playerTwo)
+		equals: (Locker position: 10 lap: 1).
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 11 lap: 1)
+]
+
+{ #category : #tests }
 GameTest >> testSpeedUp [
 	| board playerOne die game |
 	die := LoadedDie withValue: 1.
