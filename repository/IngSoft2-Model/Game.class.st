@@ -5,7 +5,8 @@ Class {
 		'dice',
 		'positionTracker',
 		'turnManager',
-		'cardManager'
+		'cardManager',
+		'lastEffectApplied'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -74,6 +75,14 @@ Game >> applyRedoCard: aRedoCard [
 ]
 
 { #category : #'card application' }
+Game >> applyRepeatCar: aPlayer [
+   turnManager specialTurn: aPlayer.
+	self lastEffectApplied applyTo: self.
+	turnManager endSpecialTurn: aPlayer.
+	
+]
+
+{ #category : #'card application' }
 Game >> applySpeedCard: aPlayer [
 	aPlayer = turnManager currentTurnPlayer
 		ifTrue: [ (cardManager activeCardEffect
@@ -109,11 +118,17 @@ Game >> inWhichPositionIs: aPlayer [
 ]
 
 { #category : #initialization }
-Game >> initializeWithBoard: aBoard dice: aDice players: aCollectionOfPlayers cards: aDeck [ 
+Game >> initializeWithBoard: aBoard dice: aDice players: aCollectionOfPlayers cards: aDeck [
 	dice := aDice.
 	positionTracker := PositionTracker withBoard: aBoard Players: aCollectionOfPlayers.
 	turnManager := TurnManager organize: aCollectionOfPlayers asOrderedCollection.
-	cardManager := CardManager dealCardsTo: aCollectionOfPlayers with: aDeck. 
+	cardManager := CardManager dealCardsTo: aCollectionOfPlayers with: aDeck.
+	lastEffectApplied := NoEffect new.
+]
+
+{ #category : #history }
+Game >> lastEffectApplied [
+	^lastEffectApplied
 ]
 
 { #category : #action }
@@ -151,6 +166,7 @@ Game >> playTurn: aPlayer [
 	cardManager activeCardEffect do: [:aCard | aCard applyTo: self].
 	currentLocker := positionTracker inWhichPositionIs: aPlayer.
 	currentLocker effect applyTo: self.
+	lastEffectApplied := currentLocker effect.
 
 
 ]

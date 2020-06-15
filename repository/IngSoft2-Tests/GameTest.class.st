@@ -621,6 +621,62 @@ GameTest >> testRedoPermanentCardOverload [
 ]
 
 { #category : #tests }
+GameTest >> testRepeatMoonWalkEffect [
+	| board playerOne die game deckOfCards playerTwo |
+	die := LoadedDie withValue: 8.
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	deckOfCards := Deck withCards: (Array with: RepeatCard new).
+	board := Board
+		withSpaces: 100
+		Laps: 1
+		effects: (Array with: (MoonWalkEffect withProbability: 1 goBack: 4)).
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne with: playerTwo)
+		cards: deckOfCards.
+	game play: playerOne.
+	game play: playerTwo.
+	game playCard: (RepeatCard new target: playerOne) from: playerOne.
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 5 lap: 1).
+	self
+		assert: (game inWhichPositionIs: playerTwo)
+		equals: (Locker position: 5 lap: 1)
+]
+
+{ #category : #tests }
+GameTest >> testRepeatSpeedupEffect [
+	| board playerOne die game deckOfCards playerTwo |
+	die := LoadedDie withValue: 1.
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	deckOfCards := Deck
+		withCards: (Array with: RepeatCard new).
+	board := Board
+		withSpaces: 100
+		Laps: 1
+		effects: (Array with: (SpeedUpEffect  withProbability: 1)).
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne with: playerTwo)
+		cards: deckOfCards.
+
+
+	game play: playerOne.
+	game playCard: (RepeatCard new target: playerTwo) from: playerTwo.
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 6 lap: 1).
+	self
+		assert: (game inWhichPositionIs: playerTwo)
+		equals: (Locker position: 5 lap: 1)
+]
+
+{ #category : #tests }
 GameTest >> testSpeedUp [
 	| board playerOne die game |
 	die := LoadedDie withValue: 1.
