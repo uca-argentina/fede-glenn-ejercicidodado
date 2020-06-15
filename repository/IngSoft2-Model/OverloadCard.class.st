@@ -12,6 +12,11 @@ OverloadCard >> applyTo: aGame [
 	aGame applyOverloadCard.
 ]
 
+{ #category : #classification }
+OverloadCard >> isPermanent [
+	^true
+]
+
 { #category : #targeting }
 OverloadCard >> target [
 	^ target

@@ -12,6 +12,11 @@ SpeedCard >> applyTo: aGame [
 	aGame applySpeedCard.
 ]
 
+{ #category : #classification }
+SpeedCard >> isPermanent [
+	^true
+]
+
 { #category : #targeting }
 SpeedCard >> target [
 	^ target

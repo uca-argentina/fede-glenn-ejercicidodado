@@ -65,7 +65,7 @@ GameTest >> testAtomicBombEffectWithAnotherPlayerInStartingPosition [
 
 { #category : #tests }
 GameTest >> testCancellationCard [
-	| board playerOne die game deckOfCards playerTwo |
+	| board playerOne die game deckOfCards playerTwo cancellationCard |
 	die := LoadedDie withValue: 1.
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
@@ -85,11 +85,9 @@ GameTest >> testCancellationCard [
 			game play: playerTwo ].
 	game playCard: SpeedCard new from: playerOne to: playerTwo.
 	game play: playerOne.
-	game
-		playCard: CancellationCard new
-		from: playerTwo
-		to: SpeedCard new
-		targetedTo: playerTwo.
+	cancellationCard := CancellationCard new
+		target: (SpeedCard new target: playerTwo).
+	game playCard: cancellationCard from: playerOne.
 	game play: playerTwo.
 	self
 		assert: (game inWhichPositionIs: playerTwo)
@@ -101,10 +99,9 @@ GameTest >> testCancellationCard [
 
 { #category : #tests }
 GameTest >> testCancellationCardWithNoPermanentCardsActive [
-	| board playerOne die game deckOfCards playerTwo |
+	| board playerOne die game deckOfCards cancellation |
 	die := LoadedDie withValue: 1.
 	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
 	deckOfCards := Deck withCards: (Array with: CancellationCard new).
 	board := Board
 		withSpaces: 10
@@ -115,12 +112,9 @@ GameTest >> testCancellationCardWithNoPermanentCardsActive [
 		Dice: die
 		Players: (Array with: playerOne)
 		cards: deckOfCards.
+	cancellation := CancellationCard new target: SpeedCard new.
 	self
-		should: [ game
-				playCard: CancellationCard new
-				from: playerOne
-				to: SpeedCard new
-				targetedTo: playerOne ]
+		should: [ game playCard: cancellation from: playerOne ]
 		raise: MissingActiveCardEffect
 ]
 

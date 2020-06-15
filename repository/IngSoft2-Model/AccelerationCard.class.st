@@ -12,6 +12,11 @@ AccelerationCard >> applyTo: aGame [
 	aGame applyAccelerationCard
 ]
 
+{ #category : #calssification }
+AccelerationCard >> isPermanent [
+	^true
+]
+
 { #category : #targeting }
 AccelerationCard >> target: aPlayer [ 
 	target:= aPlayer 

@@ -35,6 +35,11 @@ Game >> applyAtomicBombEffect [
 ]
 
 { #category : #'effect application' }
+Game >> applyCancellationCard: aPermanentCard [ 
+	cardManager takePermanentEffect: aPermanentCard.
+]
+
+{ #category : #'effect application' }
 Game >> applyDrawCardEffect [
 	cardManager drawCardFor: (turnManager currentTurnPlayer)
 ]
@@ -108,12 +113,11 @@ Game >> play: aPlayer [
 ]
 
 { #category : #playing }
-Game >> playCard: aCard from: aPlayer [ 
-	self playCard: aCard from: aPlayer to: aPlayer
-
-
-
-
+Game >> playCard: aCard from: aPlayer [
+	aCard isPermanent
+		ifTrue: [ self playCard: aCard from: aPlayer to: aPlayer ]
+		ifFalse: [ aCard applyTo: self.
+			cardManager utilizeCard: aCard from: aPlayer ]
 ]
 
 { #category : #play }
