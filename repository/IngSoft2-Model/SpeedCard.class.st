@@ -1,5 +1,5 @@
 Class {
-	#name : #OverloadCard,
+	#name : #SpeedCard,
 	#superclass : #CardEffect,
 	#instVars : [
 		'target'
@@ -8,16 +8,16 @@ Class {
 }
 
 { #category : #'card application' }
-OverloadCard >> applyTo: aGame [ 
-	aGame applyOverloadCard.
+SpeedCard >> applyTo: aGame [ 
+	aGame applySpeedCard.
 ]
 
 { #category : #targeting }
-OverloadCard >> target [
+SpeedCard >> target [
 	^ target
 ]
 
-{ #category : #'as yet unclassified' }
-OverloadCard >> target: aPlayer [ 
+{ #category : #targeting }
+SpeedCard >> target: aPlayer [
 	target := aPlayer
 ]

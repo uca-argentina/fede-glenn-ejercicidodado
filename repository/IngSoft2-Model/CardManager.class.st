@@ -60,7 +60,14 @@ CardManager >> isCard: aCard inHandOf: aPlayer [
 
 { #category : #playing }
 CardManager >> utilizeCard: aCard from: aPlayer [ 
+	self utilizeCard: aCard from: aPlayer to: aPlayer
+	
+]
+
+{ #category : #'card application' }
+CardManager >> utilizeCard: aCard from: aPlayer to: targetedPlayer [
 	self isCard: aCard inHandOf: aPlayer.
 	(self checkHandOf: aPlayer) remove: aCard.
+	aCard target: targetedPlayer.
 	permanentCardsPlayed add: aCard 
 ]

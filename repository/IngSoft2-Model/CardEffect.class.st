@@ -8,3 +8,14 @@ Class {
 CardEffect >> = otherCardEffect [
 	^self class = otherCardEffect class
 ]
+
+{ #category : #comparing }
+CardEffect >> == otherCard [
+^self class == otherCard class
+
+]
+
+{ #category : #comparing }
+CardEffect >> hash [
+^self class hash
+]

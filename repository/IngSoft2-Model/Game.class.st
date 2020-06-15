@@ -48,6 +48,25 @@ Game >> applyMoonWalkEffect: aMoonWalkEffect [
 				spaces: aMoonWalkEffect backingSpaces ]
 ]
 
+{ #category : #'card application' }
+Game >> applyOverloadCard [
+	(cardManager activeCardEffect
+		select: [ :aCard | aCard = OverloadCard new ])
+		detect: [ :aCard | aCard target = turnManager currentTurnPlayer ]
+		ifFound: [ positionTracker
+				moveBackwards: turnManager currentTurnPlayer
+				spaces: 2 ]
+]
+
+{ #category : #'card application' }
+Game >> applySpeedCard [
+	(cardManager activeCardEffect
+		select: [ :aCard | aCard = SpeedCard new ])
+		detect: [ :aCard | aCard target = turnManager currentTurnPlayer ]
+		ifFound:
+			[ positionTracker move: turnManager currentTurnPlayer havingRolled: 1 ]
+]
+
 { #category : #'effect application' }
 Game >> applySpeedUpEffect [
 	positionTracker move: (turnManager currentTurnPlayer) havingRolled: 4.
@@ -90,8 +109,7 @@ Game >> play: aPlayer [
 
 { #category : #playing }
 Game >> playCard: aCard from: aPlayer [ 
-	turnManager isTurnOf: aPlayer.
-	cardManager utilizeCard: aCard from: aPlayer.
+	self playCard: aCard from: aPlayer to: aPlayer
 
 
 
@@ -99,11 +117,17 @@ Game >> playCard: aCard from: aPlayer [
 ]
 
 { #category : #play }
+Game >> playCard: aCard from: aPlayer to: targetedPlayer [
+	turnManager isTurnOf: aPlayer.
+	cardManager utilizeCard: aCard from: aPlayer to: targetedPlayer
+]
+
+{ #category : #play }
 Game >> playTurn: aPlayer [ 
 	| rolled currentLocker|
-	cardManager activeCardEffect do: [:aCard | aCard applyTo: self].
 	rolled := dice roll.
 	positionTracker move: aPlayer havingRolled: rolled.
+	cardManager activeCardEffect do: [:aCard | aCard applyTo: self].
 	currentLocker := positionTracker inWhichPositionIs: aPlayer.
 	currentLocker effect applyTo: self.
 

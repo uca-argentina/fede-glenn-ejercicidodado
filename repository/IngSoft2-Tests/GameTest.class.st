@@ -261,6 +261,54 @@ GameTest >> testPlayCardAcceleration [
 ]
 
 { #category : #tests }
+GameTest >> testPlayOverloadCard [
+	| board playerOne die game deckOfCards playerTwo |
+	die := LoadedDie withValue: 5.
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	deckOfCards := Deck withCards: (Array with: OverloadCard  new).
+	board := Board withSpaces: 6 Laps: 2.
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne with: playerTwo)
+		cards: deckOfCards.
+	game playCard: OverloadCard  new from: playerOne to: playerTwo.
+	game play: playerOne.
+	game play: playerTwo.
+	self
+		assert: (game inWhichPositionIs: playerTwo)
+		equals: (Locker position: 4  lap: 1).
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 6 lap: 1)
+]
+
+{ #category : #tests }
+GameTest >> testPlaySpeedCard [
+	| board playerOne die game deckOfCards playerTwo |
+	die := LoadedDie withValue: 2.
+	playerOne := Player called: 'Fede'.
+	playerTwo := Player called: 'Glenn'.
+	deckOfCards := Deck withCards: (Array with: SpeedCard new).
+	board := Board withSpaces: 5 Laps: 1.
+	game := Game
+		withBoard: board
+		Dice: die
+		Players: (Array with: playerOne with: playerTwo)
+		cards: deckOfCards.
+	game playCard: SpeedCard new from: playerOne to: playerTwo.
+	game play: playerOne.
+	game play: playerTwo.
+	self
+		assert: (game inWhichPositionIs: playerTwo)
+		equals: (Locker position: 4 lap: 1).
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 3 lap: 1)
+]
+
+{ #category : #tests }
 GameTest >> testPlayWithSeveralCards [
 	| board playerOne die game deckOfCards finalHand |
 	die := LoadedDie withValue: 1.
