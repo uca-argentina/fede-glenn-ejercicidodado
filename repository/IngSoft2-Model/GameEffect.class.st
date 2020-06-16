@@ -17,16 +17,6 @@ GameEffect >> = otherEffect [
 	^self class == otherEffect class
 ]
 
-{ #category : #comparing }
-GameEffect >> == otherEffect [
-	^self class == otherEffect class
-]
-
-{ #category : #comparing }
-GameEffect >> hash [
-	^self class hash
-]
-
 { #category : #initialization }
 GameEffect >> initializeWithProbability: aFloat [
 	probability := aFloat

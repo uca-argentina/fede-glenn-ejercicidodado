@@ -131,10 +131,23 @@ Game >> lastEffectApplied [
 	^lastEffectApplied
 ]
 
+{ #category : #play }
+Game >> makePlayOf: aPlayer [ 
+	| rolled currentLocker|
+	rolled := dice roll.
+	positionTracker move: aPlayer havingRolled: rolled.
+	cardManager activeCardEffect do: [:aCard | aCard applyTo: self].
+	currentLocker := positionTracker inWhichPositionIs: aPlayer.
+	currentLocker effect applyTo: self.
+	lastEffectApplied := currentLocker effect.
+
+
+]
+
 { #category : #action }
 Game >> play: aPlayer [
 	turnManager isTurnOf:  aPlayer.
-	self playTurn: aPlayer. 
+	self makePlayOf: aPlayer. 
 	turnManager alreadyPlayed: aPlayer.
 ]
 
@@ -150,19 +163,6 @@ Game >> playCard: aCard from: aPlayer [
 Game >> playCard: aCard from: aPlayer to: targetedPlayer [
 	turnManager isTurnOf: aPlayer.
 	cardManager utilizeCard: aCard from: aPlayer to: targetedPlayer
-]
-
-{ #category : #play }
-Game >> playTurn: aPlayer [ 
-	| rolled currentLocker|
-	rolled := dice roll.
-	positionTracker move: aPlayer havingRolled: rolled.
-	cardManager activeCardEffect do: [:aCard | aCard applyTo: self].
-	currentLocker := positionTracker inWhichPositionIs: aPlayer.
-	currentLocker effect applyTo: self.
-	lastEffectApplied := currentLocker effect.
-
-
 ]
 
 { #category : #ranking }

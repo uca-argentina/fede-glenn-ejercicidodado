@@ -112,7 +112,7 @@ GameTest >> testCancellationCardWithNoPermanentCardsActive [
 	game := Game
 		withBoard: board
 		dice: die
-		players: {playerOne }
+		players: {playerOne}
 		cards: deckOfCards.
 	cancellation := CancellationCard new target: SpeedCard new.
 	self

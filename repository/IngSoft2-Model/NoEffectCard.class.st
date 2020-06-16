@@ -16,8 +16,3 @@ NoEffectCard >> applyTo: aGame [
 NoEffectCard >> isPermanent [
 	^false
 ]
-
-{ #category : #targeting }
-NoEffectCard >> target: aPlayer [ 
-	target := aPlayer
-]
