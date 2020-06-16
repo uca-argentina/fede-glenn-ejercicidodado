@@ -13,16 +13,13 @@ DiceTest >> testNoNegativeDie [
 ]
 
 { #category : #tests }
-DiceTest >> testRollDice [ 
-	|result dice dieOne dieTwo dieGroup |
-	dieOne := Die withSides: 6.
-	dieTwo := Die withSides: 4.
-	dieGroup := OrderedCollection new.
-	dieGroup add: dieOne.
-	dieGroup add: dieTwo.
-	dice:= Dice newGroup: dieGroup.
+DiceTest >> testRollDice [
+	| result dice dieGroup |
+	dieGroup := {(Die withSides: 6).
+	(Die withSides: 4)}.
+	dice := Dice newGroup: dieGroup.
 	result := dice roll.
-	self assert: (result between:2 and:10).
+	self assert: (result between: 2 and: 10)
 ]
 
 { #category : #tests }

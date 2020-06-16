@@ -14,7 +14,7 @@ TurnManager class >> organize: somePlayers [
 
 { #category : #accessing }
 TurnManager >> allPlayersButActual [
-	^players allButFirst.
+	^ players select: [ :aPlayer | aPlayer ~= players first ]
 ]
 
 { #category : #turn }
@@ -27,6 +27,11 @@ TurnManager >> currentTurnPlayer [
 	^players first
 ]
 
+{ #category : #turn }
+TurnManager >> endSpecialTurn: aPlayer [ 
+	players removeFirst.
+]
+
 { #category : #initialization }
 TurnManager >> initializeWithPlayers: somePlayers [ 
 	players := somePlayers asOrderedCollection.
@@ -36,4 +41,9 @@ TurnManager >> initializeWithPlayers: somePlayers [
 TurnManager >> isTurnOf: aPlayer [
 	aPlayer = players first
 		ifFalse: [ TurnError signal: 'This is not the player turn'  ]
+]
+
+{ #category : #turn }
+TurnManager >> specialTurn: aPlayer [
+	players addFirst: aPlayer.
 ]
