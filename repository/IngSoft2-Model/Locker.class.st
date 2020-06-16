@@ -34,19 +34,9 @@ Locker >> = otherLocker [
 	^ position == otherLocker position and: lap == otherLocker lap
 ]
 
-{ #category : #comparing }
-Locker >> == otherLocker [
-	^ position == otherLocker position and: lap == otherLocker lap
-]
-
 { #category : #accessing }
 Locker >> effect [
 	^ effect
-]
-
-{ #category : #comparing }
-Locker >> hash [
-	^ self species hash bitXor: (self position hash bitXor: self lap hash)
 ]
 
 { #category : #initialization }

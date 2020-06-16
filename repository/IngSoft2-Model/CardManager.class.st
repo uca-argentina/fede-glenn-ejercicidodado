@@ -18,15 +18,6 @@ CardManager class >> dealCardsTo: aCollectionOfPlayers with: aDeck [
 	^self new initializeWithPlayers: aCollectionOfPlayers cards: aDeck 
 ]
 
-{ #category : #'as yet unclassified' }
-CardManager >> SutilizeCard: aCard from: aPlayer to: targetedPlayer [
-	self isCard: aCard inHandOf: aPlayer.
-	(self checkHandOf: aPlayer) remove: aCard.
-	aCard isPermanent
-		ifTrue: [ aCard target: targetedPlayer.
-			permanentCardsPlayed add: aCard ]
-]
-
 { #category : #accessing }
 CardManager >> activeCardEffect [
 	^permanentCardsPlayed
