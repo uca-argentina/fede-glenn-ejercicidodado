@@ -23,6 +23,11 @@ MoonWalkEffect >> backingSpaces [
 ]
 
 { #category : #initialization }
+MoonWalkEffect >> initializeWithProbability: anInteger [
+	self initializeWithProbability: anInteger goBack: 0
+]
+
+{ #category : #initialization }
 MoonWalkEffect >> initializeWithProbability: anInteger goBack: anInteger2 [ 
 	probability := anInteger.
 	stepsBack := anInteger2.

@@ -11,9 +11,8 @@ BoardTest >> testBoardWithProbabilityMoreThanOneHundredFails [
 				withSpaces: 10
 				Laps: 1
 				effects:
-					(Array
-						with: (NoEffect withProbability: 0.6)
-						with: (WormHoleEffect withProbability: 0.5)) ]
+					{(NoEffect withProbability: 0.6).
+					(WormHoleEffect withProbability: 0.5)} ]
 		raise: CreationError
 ]
 
@@ -23,7 +22,7 @@ BoardTest >> testCreateBoardWithNoEffects [
 	board := Board
 		withSpaces: 3
 		Laps: 2
-		effects: (Array with: (NoEffect withProbability: 1)).
+		effects: {(NoEffect withProbability: 1)}.
 	starting := board startingLocker.
 	6
 		timesRepeat:
@@ -34,83 +33,71 @@ BoardTest >> testCreateBoardWithNoEffects [
 
 { #category : #tests }
 BoardTest >> testCreateBoardWithNoEffectsByDefault [
-	| board result starting actualEffect counter|
+	| board result starting actualEffect counter |
 	board := Board
 		withSpaces: 10
 		Laps: 10
-		effects:
-			(Array
-				with: (WormHoleEffect withProbability: 0.15)).
+		effects: {(WormHoleEffect withProbability: 0.15)}.
 	starting := board startingLocker.
 	result := OrderedCollection new.
 	counter := 0.
 	100
-		timesRepeat:
-			[ 
-			actualEffect := (board get: counter from: starting) effect.
+		timesRepeat: [ actualEffect := (board get: counter from: starting) effect.
 			result add: actualEffect.
-			counter := counter +1].
-	self assert: (result anySatisfy:[:anEffect | anEffect = NoEffect new]).
-	self assert: (result anySatisfy:[:anEffect | anEffect = WormHoleEffect new]).
-
-
-
-
+			counter := counter + 1 ].
+	self
+		assert: (result anySatisfy: [ :anEffect | anEffect = NoEffect new ]).
+	self
+		assert: (result anySatisfy: [ :anEffect | anEffect = WormHoleEffect new ])
 ]
 
 { #category : #tests }
 BoardTest >> testCreateBoardWithSeveralEffects [
-	| board result starting actualEffect counter|
+	| board result starting actualEffect counter |
 	board := Board
 		withSpaces: 2
 		Laps: 1
 		effects:
-			(Array
-				with: (NoEffect withProbability: 0.5)
-				with: (WormHoleEffect withProbability: 0.5)).
+			{(NoEffect withProbability: 0.5).
+			(WormHoleEffect withProbability: 0.5)}.
 	starting := board startingLocker.
 	result := OrderedCollection new.
 	counter := 0.
 	2
-		timesRepeat:
-			[ 
-			actualEffect := (board get: counter from: starting) effect.
+		timesRepeat: [ actualEffect := (board get: counter from: starting) effect.
 			result add: actualEffect.
-			counter := counter +1].
-	self assert: (result anySatisfy:[:anEffect | anEffect = NoEffect new]).
-	self assert: (result anySatisfy:[:anEffect | anEffect = WormHoleEffect new]).
-
-
-
-
+			counter := counter + 1 ].
+	self
+		assert: (result anySatisfy: [ :anEffect | anEffect = NoEffect new ]).
+	self
+		assert: (result anySatisfy: [ :anEffect | anEffect = WormHoleEffect new ])
 ]
 
 { #category : #tests }
 BoardTest >> testDistribiutionOfEffects [
-	| board result starting actualEffect counter|
+	| board result starting actualEffect counter |
 	board := Board
 		withSpaces: 10
 		Laps: 10
 		effects:
-			(Array
-				with: (WormHoleEffect withProbability: 0.15)
-				with: (AtomicBombEffect withProbability: 0.02)).
+			{(WormHoleEffect withProbability: 0.15).
+			(AtomicBombEffect withProbability: 0.02)}.
 	starting := board startingLocker.
 	result := OrderedCollection new.
 	counter := 0.
 	100
-		timesRepeat:
-			[ 
-			actualEffect := (board get: counter from: starting) effect.
+		timesRepeat: [ actualEffect := (board get: counter from: starting) effect.
 			result add: actualEffect.
-			counter := counter +1].
-		
-	self assert:( result count: [ :anEffect | anEffect = NoEffect new ]) identicalTo: 83.
-	self assert: ( result count: [ :anEffect | anEffect = WormHoleEffect  new ]) identicalTo: 15.
-	self assert: ( result count: [ :anEffect | anEffect = AtomicBombEffect new ]) identicalTo: 2.
-
-
-
+			counter := counter + 1 ].
+	self
+		assert: (result count: [ :anEffect | anEffect = NoEffect new ])
+		identicalTo: 83.
+	self
+		assert: (result count: [ :anEffect | anEffect = WormHoleEffect new ])
+		identicalTo: 15.
+	self
+		assert: (result count: [ :anEffect | anEffect = AtomicBombEffect new ])
+		identicalTo: 2
 ]
 
 { #category : #tests }

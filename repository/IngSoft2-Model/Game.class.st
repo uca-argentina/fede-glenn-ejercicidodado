@@ -11,11 +11,6 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #'instance creation' }
-Game class >> withBoard: aBoard Dice: dice Players: aCollectionOfPlayers cards: aCollectionOfCards [ 
-	^self new initializeWithBoard: aBoard dice: dice  players: aCollectionOfPlayers cards: aCollectionOfCards 
-]
-
 { #category : #initialization }
 Game class >> withBoard: aBoard dice: aDie players: somePlayers [ 
 	^ self new
@@ -23,6 +18,11 @@ Game class >> withBoard: aBoard dice: aDie players: somePlayers [
 		dice: aDie
 		players: somePlayers
 		cards: (Deck withCards: (Array with: NoEffectCard new)).
+]
+
+{ #category : #'instance creation' }
+Game class >> withBoard: aBoard dice: dice players: aCollectionOfPlayers cards: aCollectionOfCards [ 
+	^self new initializeWithBoard: aBoard dice: dice  players: aCollectionOfPlayers cards: aCollectionOfCards 
 ]
 
 { #category : #'card application' }
@@ -37,7 +37,7 @@ Game >> applyAtomicBombEffect [
 
 { #category : #'effect application' }
 Game >> applyCancellationCard: aPermanentCard [ 
-	cardManager takePermanentEffect: aPermanentCard.
+	cardManager removeActiveCard: aPermanentCard.
 ]
 
 { #category : #'effect application' }

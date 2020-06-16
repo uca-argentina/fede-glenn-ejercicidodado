@@ -12,7 +12,7 @@ CancellationCard >> applyTo: aGame [
 	aGame applyCancellationCard: target.
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #classification }
 CancellationCard >> isPermanent [
 	^false
 ]

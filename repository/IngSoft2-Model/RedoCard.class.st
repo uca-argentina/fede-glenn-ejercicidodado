@@ -7,12 +7,12 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #applcation }
+{ #category : #'effect applcation' }
 RedoCard >> applyTo: aGame [ 
 	aGame applyRedoCard: self.
 ]
 
-{ #category : #'as yet unclassifiedclassification' }
+{ #category : #classification }
 RedoCard >> isPermanent [
 	^false
 ]

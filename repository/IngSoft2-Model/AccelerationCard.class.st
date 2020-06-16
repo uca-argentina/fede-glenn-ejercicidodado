@@ -12,7 +12,7 @@ AccelerationCard >> applyTo: aGame [
 	aGame applyAccelerationCard
 ]
 
-{ #category : #calssification }
+{ #category : #classification }
 AccelerationCard >> isPermanent [
 	^true
 ]

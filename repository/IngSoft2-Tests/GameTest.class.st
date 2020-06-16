@@ -14,7 +14,7 @@ GameTest >> testAPlayerPlaysTwiceFails [
 	game := Game
 		withBoard: board
 		dice: die
-		players: (Array with: playerOne with: playerTwo).
+		players: {playerOne . playerTwo}.
 	game play: playerOne.
 	self
 		should: [ game play: playerOne ]
@@ -29,11 +29,11 @@ GameTest >> testAtomicBombEffect [
 	board := Board
 		withSpaces: 2
 		Laps: 3
-		effects: (Array with: (AtomicBombEffect withProbability: 1)).
+		effects: {AtomicBombEffect withProbability: 1}.
 	game := Game
 		withBoard: board
 		dice: die
-		players: (Array with: playerOne).
+		players: {playerOne}.
 	
 	game play: playerOne.
 	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position: 1 lap: 3).
@@ -50,11 +50,11 @@ GameTest >> testAtomicBombEffectWithAnotherPlayerInStartingPosition [
 	board := Board
 		withSpaces: 5
 		Laps: 2
-		effects: (Array with: (AtomicBombEffect withProbability: 1)).
+		effects: {AtomicBombEffect withProbability: 1}.
 	game := Game
 		withBoard: board
 		dice: die
-		players: (Array with: playerOne with: playerTwo).
+		players: {playerOne . playerTwo}.
 	
 	game play: playerOne.
 	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position: 1 lap: 2).
@@ -70,15 +70,17 @@ GameTest >> testCancellationCard [
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
 	deckOfCards := Deck
-		withCards: (Array with: SpeedCard new with: CancellationCard new).
+		withCards:
+			{SpeedCard new.
+			CancellationCard new}.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: (Array with: (DrawCardEffect withProbability: 1)).
+		effects: {(DrawCardEffect withProbability: 1)}.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with: playerTwo)
+		dice: die
+		players: {playerOne . playerTwo}
 		cards: deckOfCards.
 	10
 		timesRepeat: [ game play: playerOne.
@@ -102,15 +104,15 @@ GameTest >> testCancellationCardWithNoPermanentCardsActive [
 	| board playerOne die game deckOfCards cancellation |
 	die := LoadedDie withValue: 1.
 	playerOne := Player called: 'Fede'.
-	deckOfCards := Deck withCards: (Array with: CancellationCard new).
+	deckOfCards := Deck withCards: { CancellationCard new}.
 	board := Board
 		withSpaces: 10
 		Laps: 1
-		effects: (Array with: (DrawCardEffect withProbability: 1)).
+		effects: {DrawCardEffect withProbability: 1}.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne)
+		dice: die
+		players: {playerOne }
 		cards: deckOfCards.
 	cancellation := CancellationCard new target: SpeedCard new.
 	self
@@ -125,27 +127,30 @@ GameTest >> testCancellationCardWithTwoEqualActiveEffects [
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
 	deckOfCards := Deck
-		withCards: (Array with: SpeedCard new with: CancellationCard new).
+		withCards:
+			{SpeedCard new.
+			CancellationCard new}.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: (Array with: (DrawCardEffect withProbability: 1)).
+		effects: {(DrawCardEffect withProbability: 1)}.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with: playerTwo)
+		dice: die
+		players:
+			{playerOne.
+			playerTwo}
 		cards: deckOfCards.
 	10
 		timesRepeat: [ game play: playerOne.
 			game play: playerTwo ].
-		
 	game playCard: SpeedCard new from: playerOne to: playerTwo.
 	game play: playerOne.
-	
 	game playCard: SpeedCard new from: playerTwo to: playerTwo.
-	game playCard: (CancellationCard new target: (SpeedCard new target: playerTwo)) from: playerOne.
+	game
+		playCard: (CancellationCard new target: (SpeedCard new target: playerTwo))
+		from: playerOne.
 	game play: playerTwo.
-
 	self
 		assert: (game inWhichPositionIs: playerTwo)
 		equals: (Locker position: 13 lap: 1).
@@ -160,14 +165,16 @@ GameTest >> testCannotPlayCardOutOfTurn [
 	die := LoadedDie withValue: 2.
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
-	deckOfCards := Deck withCards: (Array with: AccelerationCard new).
+	deckOfCards := Deck withCards: {AccelerationCard new}.
 	board := Board withSpaces: 5 Laps: 1.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with: playerTwo)
+		dice: die
+		players:
+			{playerOne.
+			playerTwo}
 		cards: deckOfCards.
-		self
+	self
 		should: [ game playCard: AccelerationCard new from: playerTwo ]
 		raise: TurnError
 ]
@@ -177,14 +184,14 @@ GameTest >> testCannotPlayCardThatIsNotInHand [
 	| board playerOne die game deckOfCards |
 	die := LoadedDie withValue: 2.
 	playerOne := Player called: 'Fede'.
-	deckOfCards := Deck withCards:(Array with: NoEffectCard new).
+	deckOfCards := Deck withCards: {NoEffectCard new}.
 	board := Board
 		withSpaces: 5
 		Laps: 1.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne)
+		dice: die
+		players: { playerOne}
 		cards: deckOfCards.
 		self
 		should: [ game playCard: AccelerationCard new from: playerOne ]
@@ -200,7 +207,7 @@ GameTest >> testCompleteOneLap [
 	game := Game
 		withBoard: board
 		dice: die
-		players: (Array with: playerOne).
+		players: {playerOne}.
 	game play: playerOne.
 	game play: playerOne.
 	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position: 3 lap: 2).
@@ -211,15 +218,15 @@ GameTest >> testDrawCardEffect [
 	| board playerOne die game deckOfCards |
 	die := LoadedDie withValue: 2.
 	playerOne := Player called: 'Fede'.
-	deckOfCards := Deck withCards: (Array with: NoEffectCard new).
+	deckOfCards := Deck withCards: {NoEffectCard new}.
 	board := Board
 		withSpaces: 5
 		Laps: 1
-		effects: (Array with: (DrawCardEffect withProbability: 1)).
+		effects: {(DrawCardEffect withProbability: 1)}.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne)
+		dice: die
+		players: {playerOne}
 		cards: deckOfCards.
 	game play: playerOne.
 	self assert: (game checkHandOf: playerOne) size equals: 3
@@ -227,7 +234,7 @@ GameTest >> testDrawCardEffect [
 
 { #category : #tests }
 GameTest >> testGameScoreBoard [
-	| board playerOne playerTwo die result game|
+	| board playerOne playerTwo die result game |
 	die := LoadedDie withValue: 6.
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
@@ -235,15 +242,14 @@ GameTest >> testGameScoreBoard [
 	game := Game
 		withBoard: board
 		dice: die
-		players: (Array with: playerOne with: playerTwo).
+		players:
+			{playerOne.
+			playerTwo}.
 	game play: playerOne.
 	game play: playerTwo.
 	game play: playerOne.
-	
-	result := OrderedCollection new.
-	result add: playerOne.
-	result add: playerTwo.
-	
+	result := {playerOne.
+	playerTwo} asOrderedCollection .
 	self assert: result equals: game scoreBoard
 ]
 
@@ -252,14 +258,14 @@ GameTest >> testHandOutTwoCardsInitially [
 	| game board playerOne die deckOfCards |
 	die := LoadedDie withValue: 5.
 	playerOne := Player called: 'Fede'.
-	board := Board withSpaces:10 Laps: 2.
-	deckOfCards := Deck withCards:(Array with: NoEffectCard new).
+	board := Board withSpaces: 10 Laps: 2.
+	deckOfCards := Deck withCards: {NoEffectCard new}.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne)
+		dice: die
+		players: {playerOne}
 		cards: deckOfCards.
-	self assert: (game checkHandOf: playerOne) size equals: 2.
+	self assert: (game checkHandOf: playerOne) size equals: 2
 ]
 
 { #category : #tests }
@@ -271,17 +277,21 @@ GameTest >> testMoonWalkEffect [
 	board := Board
 		withSpaces: 10
 		Laps: 1
-		effects: (Array with: (MoonWalkEffect withProbability: 1 goBack: 2)).
+		effects: {(MoonWalkEffect withProbability: 1 goBack: 2)}.
 	game := Game
 		withBoard: board
 		dice: die
-		players: (Array with: playerOne with: playerTwo).
-	
+		players:
+			{playerOne.
+			playerTwo}.
 	game play: playerOne.
-	game play: playerTwo. 
-	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position: 5 lap: 1).
-	self assert: (game inWhichPositionIs: playerTwo) equals: (Locker position: 7 lap: 1).
-
+	game play: playerTwo.
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 5 lap: 1).
+	self
+		assert: (game inWhichPositionIs: playerTwo)
+		equals: (Locker position: 7 lap: 1)
 ]
 
 { #category : #tests }
@@ -292,20 +302,12 @@ GameTest >> testNoEffect [
 	board := Board
 		withSpaces: 10
 		Laps: 1
-		effects: (Array with: (NoEffect withProbability: 1)).
-	game := Game
-		withBoard: board
-		dice: die
-		players: (Array with: playerOne).
-		
+		effects: {(NoEffect withProbability: 1)}.
+	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
-	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position: 4 lap:1).
-	
-
-
-
-
-
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 4 lap: 1)
 ]
 
 { #category : #tests }
@@ -313,14 +315,12 @@ GameTest >> testPlayCard [
 	| board playerOne die game deckOfCards |
 	die := LoadedDie withValue: 2.
 	playerOne := Player called: 'Fede'.
-	deckOfCards := Deck withCards:(Array with: NoEffectCard new).
-	board := Board
-		withSpaces: 5
-		Laps: 1.
+	deckOfCards := Deck withCards: {NoEffectCard new}.
+	board := Board withSpaces: 5 Laps: 1.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne)
+		dice: die
+		players: {playerOne}
 		cards: deckOfCards.
 	game play: playerOne.
 	game playCard: NoEffectCard new from: playerOne.
@@ -333,12 +333,12 @@ GameTest >> testPlayCardAcceleration [
 	die := LoadedDie withValue: 2.
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
-	deckOfCards := Deck withCards: (Array with: AccelerationCard new).
+	deckOfCards := Deck withCards: {AccelerationCard new}.
 	board := Board withSpaces: 5 Laps: 1.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with: playerTwo)
+		dice: die
+		players: {playerOne . playerTwo}
 		cards: deckOfCards.
 	game playCard: AccelerationCard new from: playerOne.
 	game play: playerOne.
@@ -357,19 +357,21 @@ GameTest >> testPlayOverloadCard [
 	die := LoadedDie withValue: 5.
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
-	deckOfCards := Deck withCards: (Array with: OverloadCard  new).
+	deckOfCards := Deck withCards: {OverloadCard new}.
 	board := Board withSpaces: 6 Laps: 2.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with: playerTwo)
+		dice: die
+		players:
+			{playerOne.
+			playerTwo}
 		cards: deckOfCards.
-	game playCard: OverloadCard  new from: playerOne to: playerTwo.
+	game playCard: OverloadCard new from: playerOne to: playerTwo.
 	game play: playerOne.
 	game play: playerTwo.
 	self
 		assert: (game inWhichPositionIs: playerTwo)
-		equals: (Locker position: 4  lap: 1).
+		equals: (Locker position: 4 lap: 1).
 	self
 		assert: (game inWhichPositionIs: playerOne)
 		equals: (Locker position: 6 lap: 1)
@@ -381,12 +383,14 @@ GameTest >> testPlaySpeedCard [
 	die := LoadedDie withValue: 2.
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
-	deckOfCards := Deck withCards: (Array with: SpeedCard new).
+	deckOfCards := Deck withCards: {SpeedCard new}.
 	board := Board withSpaces: 5 Laps: 1.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with: playerTwo)
+		dice: die
+		players:
+			{playerOne.
+			playerTwo}
 		cards: deckOfCards.
 	game playCard: SpeedCard new from: playerOne to: playerTwo.
 	game play: playerOne.
@@ -403,20 +407,23 @@ GameTest >> testPlaySpeedCard [
 GameTest >> testPlayWithSeveralCards [
 	| board playerOne die game deckOfCards finalHand |
 	die := LoadedDie withValue: 1.
-	deckOfCards := Deck withCards: (Array with: NoEffectCard new with: OverloadCard new).
+	deckOfCards := Deck
+		withCards:
+			{NoEffectCard new.
+			OverloadCard new}.
 	playerOne := Player called: 'Fede'.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: (Array with: (DrawCardEffect withProbability: 1)).
-	game := Game 
+		effects: {(DrawCardEffect withProbability: 1)}.
+	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne)
+		dice: die
+		players: {playerOne}
 		cards: deckOfCards.
-	90 timesRepeat: [game play: playerOne].
+	90 timesRepeat: [ game play: playerOne ].
 	finalHand := game checkHandOf: playerOne.
-	self assert: (finalHand size) equals: 92.
+	self assert: finalHand size equals: 92.
 	self
 		assert: (finalHand anySatisfy: [ :aCard | aCard = NoEffectCard new ]).
 	self
@@ -425,16 +432,15 @@ GameTest >> testPlayWithSeveralCards [
 
 { #category : #tests }
 GameTest >> testPlayerDoesNotCrossLastLocker [
-	|board playerOne die game|
+	| board playerOne die game |
 	die := LoadedDie withValue: 12.
 	playerOne := Player called: 'Fede'.
 	board := Board withSpaces: 10 Laps: 1.
-	game := Game
-		withBoard: board
-		dice: die
-		players: (Array with: playerOne).
+	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
-	self assert: (game inWhichPositionIs: playerOne) equals: (board lastLocker).
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: board lastLocker
 ]
 
 { #category : #tests }
@@ -442,19 +448,17 @@ GameTest >> testPlayerPlays [
 	| game board playerOne die |
 	die := LoadedDie withValue: 5.
 	playerOne := Player called: 'Fede'.
-	board := Board withSpaces:10 Laps: 2.
-	game := Game
-		withBoard: board
-		dice: die
-		players: (Array with: playerOne).
+	board := Board withSpaces: 10 Laps: 2.
+	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
-	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position: 6 lap: 1).
-	
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 6 lap: 1)
 ]
 
 { #category : #tests }
 GameTest >> testPlayerRank [
-	| board playerOne playerTwo die game|
+	| board playerOne playerTwo die game |
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
 	die := LoadedDie withValue: 6.
@@ -462,13 +466,14 @@ GameTest >> testPlayerRank [
 	game := Game
 		withBoard: board
 		dice: die
-		players: (Array with: playerOne with:playerTwo).
+		players:
+			{playerOne.
+			playerTwo}.
 	game play: playerOne.
 	game play: playerTwo.
 	game play: playerOne.
-	
 	self assert: (game rankOf: playerOne) equals: 1.
-	self assert: (game rankOf: playerTwo) equals: 2.
+	self assert: (game rankOf: playerTwo) equals: 2
 ]
 
 { #category : #tests }
@@ -477,10 +482,7 @@ GameTest >> testPlayerWins [
 	die := LoadedDie withValue: 6.
 	playerOne := Player called: 'Fede'.
 	board := Board withSpaces: 10 Laps: 1.
-	game := Game
-		withBoard: board
-		dice: die
-		players: (Array with: playerOne).
+	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
 	self assert: game hasAWinner not.
 	game play: playerOne.
@@ -501,15 +503,24 @@ GameTest >> testPlayingWithTurnsWithThreePlayers [
 	game := Game
 		withBoard: board
 		dice: die
-		players: (Array with: playerOne with:playerTwo with: playerThree ).
+		players:
+			{playerOne.
+			playerTwo.
+			playerThree}.
 	game play: playerOne.
-	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position:7 lap:1).
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 7 lap: 1).
 	game play: playerTwo.
-	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position:7 lap:1).
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 7 lap: 1).
 	game play: playerThree.
-	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position:7 lap:1).
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 7 lap: 1).
 	game play: playerOne.
-	self assert: game hasAWinner 
+	self assert: game hasAWinner
 ]
 
 { #category : #tests }
@@ -519,26 +530,31 @@ GameTest >> testRedoInstantCard [
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
 	deckOfCards := Deck
-		withCards: (Array with: RedoCard  new with: CancellationCard new with: SpeedCard new).
+		withCards:
+			{RedoCard new.
+			CancellationCard new.
+			SpeedCard new}.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: (Array with: (DrawCardEffect withProbability: 1)).
+		effects: {(DrawCardEffect withProbability: 1)}.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with: playerTwo)
+		dice: die
+		players: (Array with: playerOne with: playerTwo)
 		cards: deckOfCards.
 	15
 		timesRepeat: [ game play: playerOne.
 			game play: playerTwo ].
-		
 	game playCard: SpeedCard new from: playerOne to: playerOne.
 	game playCard: SpeedCard new from: playerOne to: playerOne.
-	game playCard: (CancellationCard new target: (SpeedCard new target: playerOne)) from: playerTwo.
-	game playCard: (RedoCard new target: (SpeedCard new target: playerOne)) from: playerTwo.
+	game
+		playCard: (CancellationCard new target: (SpeedCard new target: playerOne))
+		from: playerTwo.
+	game
+		playCard: (RedoCard new target: (SpeedCard new target: playerOne))
+		from: playerTwo.
 	game play: playerOne.
-
 	self
 		assert: (game inWhichPositionIs: playerTwo)
 		equals: (Locker position: 16 lap: 1).
@@ -554,20 +570,23 @@ GameTest >> testRedoPermanentCard [
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
 	deckOfCards := Deck
-		withCards: (Array with: SpeedCard new with: RedoCard new).
+		withCards:
+			{SpeedCard new.
+			RedoCard new}.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: (Array with: (DrawCardEffect withProbability: 1)).
+		effects: {(DrawCardEffect withProbability: 1)}.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with: playerTwo)
+		dice: die
+		players:
+			{playerOne.
+			playerTwo}
 		cards: deckOfCards.
 	10
 		timesRepeat: [ game play: playerOne.
 			game play: playerTwo ].
-		
 	game playCard: SpeedCard new from: playerOne to: playerTwo.
 	game play: playerOne.
 	redoCard := RedoCard new target: playerOne.
@@ -589,20 +608,23 @@ GameTest >> testRedoPermanentCardOverload [
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
 	deckOfCards := Deck
-		withCards: (Array with: OverloadCard new with: RedoCard new).
+		withCards:
+			{OverloadCard new.
+			RedoCard new}.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: (Array with: (DrawCardEffect withProbability: 1)).
+		effects: {(DrawCardEffect withProbability: 1)}.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with: playerTwo)
+		dice: die
+		players:
+			{playerOne.
+			playerTwo}
 		cards: deckOfCards.
 	10
 		timesRepeat: [ game play: playerOne.
 			game play: playerTwo ].
-
 	game playCard: OverloadCard new from: playerOne to: playerTwo.
 	game play: playerOne.
 	redoCard := RedoCard new target: playerOne.
@@ -623,15 +645,17 @@ GameTest >> testRepeatMoonWalkEffect [
 	die := LoadedDie withValue: 8.
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
-	deckOfCards := Deck withCards: (Array with: RepeatCard new).
+	deckOfCards := Deck withCards: {RepeatCard new}.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: (Array with: (MoonWalkEffect withProbability: 1 goBack: 4)).
+		effects: {(MoonWalkEffect withProbability: 1 goBack: 4)}.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with: playerTwo)
+		dice: die
+		players:
+			{playerOne.
+			playerTwo}
 		cards: deckOfCards.
 	game play: playerOne.
 	game play: playerTwo.
@@ -650,19 +674,18 @@ GameTest >> testRepeatSpeedupEffect [
 	die := LoadedDie withValue: 1.
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
-	deckOfCards := Deck
-		withCards: (Array with: RepeatCard new).
+	deckOfCards := Deck withCards: {RepeatCard new}.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: (Array with: (SpeedUpEffect  withProbability: 1)).
+		effects: {(SpeedUpEffect withProbability: 1)}.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with: playerTwo)
+		dice: die
+		players:
+			{playerOne.
+			playerTwo}
 		cards: deckOfCards.
-
-
 	game play: playerOne.
 	game playCard: (RepeatCard new target: playerTwo) from: playerTwo.
 	self
@@ -681,14 +704,12 @@ GameTest >> testSpeedUp [
 	board := Board
 		withSpaces: 10
 		Laps: 1
-		effects: (Array with: (SpeedUpEffect withProbability: 1)).
-	game := Game
-		withBoard: board
-		dice: die
-		players: (Array with: playerOne).
+		effects: {(SpeedUpEffect withProbability: 1)}.
+	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
-	
-	self assert: (game inWhichPositionIs: playerOne)  equals: (Locker position: 6 lap: 1).
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 6 lap: 1)
 ]
 
 { #category : #tests }
@@ -697,16 +718,17 @@ GameTest >> testTargetTwoCardAtAPlayer [
 	die := LoadedDie withValue: 1.
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
-	deckOfCards := Deck
-		withCards: (Array with: SpeedCard new).
+	deckOfCards := Deck withCards: {SpeedCard new}.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: (Array with: (DrawCardEffect withProbability: 1)).
+		effects: {(DrawCardEffect withProbability: 1)}.
 	game := Game
 		withBoard: board
-		Dice: die
-		Players: (Array with: playerOne with: playerTwo)
+		dice: die
+		players:
+			{playerOne.
+			playerTwo}
 		cards: deckOfCards.
 	game playCard: SpeedCard new from: playerOne to: playerTwo.
 	game play: playerOne.
@@ -728,14 +750,12 @@ GameTest >> testWormHoleEffect [
 	board := Board
 		withSpaces: 10
 		Laps: 1
-		effects: (Array with: (WormHoleEffect withProbability: 1)).
-	game := Game
-		withBoard: board
-		dice: die
-		players: (Array with: playerOne).
+		effects: {(WormHoleEffect withProbability: 1)}.
+	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
-	
-	self assert: (game inWhichPositionIs: playerOne)  equals: (Locker position: 3 lap: 1).
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 3 lap: 1)
 ]
 
 { #category : #tests }
@@ -746,12 +766,10 @@ GameTest >> testWormHoleEffectLimitMove [
 	board := Board
 		withSpaces: 10
 		Laps: 1
-		effects: (Array with: (WormHoleEffect withProbability: 1)).
-	game := Game
-		withBoard: board
-		dice: die
-		players: (Array with: playerOne).
+		effects: {(WormHoleEffect withProbability: 1)}.
+	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
-	
-	self assert: (game inWhichPositionIs: playerOne)  equals: (Locker position: 1 lap: 1).
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 1 lap: 1)
 ]

@@ -12,7 +12,7 @@ RepeatCard >> applyTo: aGame [
 	aGame applyRepeatCar: target.
 ]
 
-{ #category : #clasification }
+{ #category : #classification }
 RepeatCard >> isPermanent [
 	^false
 ]

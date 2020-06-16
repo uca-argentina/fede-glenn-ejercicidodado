@@ -7,11 +7,7 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #application }
-NoEffectCard class >> applyTo: aGame [ 
-]
-
-{ #category : #application }
+{ #category : #'effect application' }
 NoEffectCard >> applyTo: aGame [ 
 	^ self
 ]

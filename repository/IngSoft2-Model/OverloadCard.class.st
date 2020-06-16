@@ -7,7 +7,7 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #'card application' }
+{ #category : #'effect application' }
 OverloadCard >> applyTo: aGame [ 
 	aGame applyOverloadCard: target.
 ]
@@ -22,7 +22,7 @@ OverloadCard >> target [
 	^ target
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #targeting }
 OverloadCard >> target: aPlayer [ 
 	target := aPlayer
 ]
