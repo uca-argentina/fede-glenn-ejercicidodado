@@ -6,19 +6,19 @@ Class {
 
 { #category : #tests }
 GameTest >> testAPlayerPlaysTwiceFails [
-	| board playerOne playerTwo die game|
+	| board playerOne playerTwo die game |
 	die := LoadedDie withValue: 6.
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
-	board := Board withSpaces:10 Laps: 2.
+	board := Board withSpaces: 10 Laps: 2.
 	game := Game
 		withBoard: board
 		dice: die
-		players: {playerOne . playerTwo}.
+		players:
+			{playerOne.
+			playerTwo}.
 	game play: playerOne.
-	self
-		should: [ game play: playerOne ]
-		raise: TurnError
+	self should: [ game play: playerOne ] raise: TurnError
 ]
 
 { #category : #tests }
@@ -29,16 +29,12 @@ GameTest >> testAtomicBombEffect [
 	board := Board
 		withSpaces: 2
 		Laps: 3
-		effects: {AtomicBombEffect withProbability: 1}.
-	game := Game
-		withBoard: board
-		dice: die
-		players: {playerOne}.
-	
+		effects: {(AtomicBombEffect withProbability: 1)}.
+	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
-	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position: 1 lap: 3).
-
-
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 1 lap: 3)
 ]
 
 { #category : #tests }
@@ -50,17 +46,20 @@ GameTest >> testAtomicBombEffectWithAnotherPlayerInStartingPosition [
 	board := Board
 		withSpaces: 5
 		Laps: 2
-		effects: {AtomicBombEffect withProbability: 1}.
+		effects: {(AtomicBombEffect withProbability: 1)}.
 	game := Game
 		withBoard: board
 		dice: die
-		players: {playerOne . playerTwo}.
-	
+		players:
+			{playerOne.
+			playerTwo}.
 	game play: playerOne.
-	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position: 1 lap: 2).
-	self assert: (game inWhichPositionIs: playerTwo) equals: (Locker position: 1 lap: 1).
-
-
+	self
+		assert: (game inWhichPositionIs: playerOne)
+		equals: (Locker position: 1 lap: 2).
+	self
+		assert: (game inWhichPositionIs: playerTwo)
+		equals: (Locker position: 1 lap: 1)
 ]
 
 { #category : #tests }
@@ -80,7 +79,9 @@ GameTest >> testCancellationCard [
 	game := Game
 		withBoard: board
 		dice: die
-		players: {playerOne . playerTwo}
+		players:
+			{playerOne.
+			playerTwo}
 		cards: deckOfCards.
 	10
 		timesRepeat: [ game play: playerOne.
@@ -104,11 +105,11 @@ GameTest >> testCancellationCardWithNoPermanentCardsActive [
 	| board playerOne die game deckOfCards cancellation |
 	die := LoadedDie withValue: 1.
 	playerOne := Player called: 'Fede'.
-	deckOfCards := Deck withCards: { CancellationCard new}.
+	deckOfCards := Deck withCards: {CancellationCard new}.
 	board := Board
 		withSpaces: 10
 		Laps: 1
-		effects: {DrawCardEffect withProbability: 1}.
+		effects: {(DrawCardEffect withProbability: 1)}.
 	game := Game
 		withBoard: board
 		dice: die
@@ -185,15 +186,13 @@ GameTest >> testCannotPlayCardThatIsNotInHand [
 	die := LoadedDie withValue: 2.
 	playerOne := Player called: 'Fede'.
 	deckOfCards := Deck withCards: {NoEffectCard new}.
-	board := Board
-		withSpaces: 5
-		Laps: 1.
+	board := Board withSpaces: 5 Laps: 1.
 	game := Game
 		withBoard: board
 		dice: die
-		players: { playerOne}
+		players: {playerOne}
 		cards: deckOfCards.
-		self
+	self
 		should: [ game playCard: AccelerationCard new from: playerOne ]
 		raise: MissingCardError
 ]
@@ -249,7 +248,7 @@ GameTest >> testGameScoreBoard [
 	game play: playerTwo.
 	game play: playerOne.
 	result := {playerOne.
-	playerTwo} asOrderedCollection .
+	playerTwo} asOrderedCollection.
 	self assert: result equals: game scoreBoard
 ]
 
@@ -338,7 +337,9 @@ GameTest >> testPlayCardAcceleration [
 	game := Game
 		withBoard: board
 		dice: die
-		players: {playerOne . playerTwo}
+		players:
+			{playerOne.
+			playerTwo}
 		cards: deckOfCards.
 	game playCard: AccelerationCard new from: playerOne.
 	game play: playerOne.
