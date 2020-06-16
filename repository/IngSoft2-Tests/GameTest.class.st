@@ -143,11 +143,7 @@ GameTest >> testCancellationCardWithTwoEqualActiveEffects [
 	game play: playerOne.
 	
 	game playCard: SpeedCard new from: playerTwo to: playerTwo.
-	game
-		playCard: CancellationCard new
-		from: playerOne
-		to: SpeedCard new
-		targetedTo: playerTwo.
+	game playCard: (CancellationCard new target: (SpeedCard new target: playerTwo)) from: playerOne.
 	game play: playerTwo.
 
 	self
@@ -518,12 +514,12 @@ GameTest >> testPlayingWithTurnsWithThreePlayers [
 
 { #category : #tests }
 GameTest >> testRedoInstantCard [
-	| board playerOne die game deckOfCards playerTwo cancellationCard |
+	| board playerOne die game deckOfCards playerTwo |
 	die := LoadedDie withValue: 1.
 	playerOne := Player called: 'Fede'.
 	playerTwo := Player called: 'Glenn'.
 	deckOfCards := Deck
-		withCards: (Array with: SpeedCard new with: CancellationCard new).
+		withCards: (Array with: RedoCard  new with: CancellationCard new with: SpeedCard new).
 	board := Board
 		withSpaces: 100
 		Laps: 1
@@ -533,21 +529,22 @@ GameTest >> testRedoInstantCard [
 		Dice: die
 		Players: (Array with: playerOne with: playerTwo)
 		cards: deckOfCards.
-	10
+	15
 		timesRepeat: [ game play: playerOne.
 			game play: playerTwo ].
-	game playCard: SpeedCard new from: playerOne to: playerTwo.
+		
+	game playCard: SpeedCard new from: playerOne to: playerOne.
+	game playCard: SpeedCard new from: playerOne to: playerOne.
+	game playCard: (CancellationCard new target: (SpeedCard new target: playerOne)) from: playerTwo.
+	game playCard: (RedoCard new target: (SpeedCard new target: playerOne)) from: playerTwo.
 	game play: playerOne.
-	cancellationCard := CancellationCard new
-		target: (SpeedCard new target: playerTwo).
-	game playCard: cancellationCard from: playerOne.
-	game play: playerTwo.
+
 	self
-		assert: 5
-		equals: 5.
+		assert: (game inWhichPositionIs: playerTwo)
+		equals: (Locker position: 16 lap: 1).
 	self
 		assert: (game inWhichPositionIs: playerOne)
-		equals: (Locker position: 12 lap: 1)
+		equals: (Locker position: 17 lap: 1)
 ]
 
 { #category : #tests }
