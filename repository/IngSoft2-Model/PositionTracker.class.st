@@ -29,7 +29,7 @@ PositionTracker >> inWhichPositionIs: aPlayer [
 	^scoreBoard at: aPlayer.
 ]
 
-{ #category : #initiali }
+{ #category : #initialization }
 PositionTracker >> initializeWithBoard: aBoard players: somePlayers [
 	| startingPosition |
 	board := aBoard.

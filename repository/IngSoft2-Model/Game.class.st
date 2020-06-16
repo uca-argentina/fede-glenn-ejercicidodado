@@ -151,7 +151,7 @@ Game >> play: aPlayer [
 	turnManager alreadyPlayed: aPlayer.
 ]
 
-{ #category : #playing }
+{ #category : #play }
 Game >> playCard: aCard from: aPlayer [
 	aCard isPermanent
 		ifTrue: [ self playCard: aCard from: aPlayer to: aPlayer ]
