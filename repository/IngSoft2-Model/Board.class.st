@@ -28,7 +28,9 @@ Board >> generateBoardWithSpaces: amountOfSpaces laps: amountOfLaps effect: arra
 	| arrayOfShuffledEffects count |
 	self padEffects: arrayOfEffects.
 	board := OrderedCollection new.
-	arrayOfShuffledEffects := ProbabilityDistributor createArrayWith: arrayOfEffects size: amountOfLaps * amountOfSpaces.
+	arrayOfShuffledEffects := ProbabilityDistributor new
+		createArrayWith: arrayOfEffects
+		size: amountOfLaps * amountOfSpaces.
 	count := 1.
 	1 to: amountOfLaps do: [ :lap | 
 		1 to: amountOfSpaces do: [ :lockerNumber | 

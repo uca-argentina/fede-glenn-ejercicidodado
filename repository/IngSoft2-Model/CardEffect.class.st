@@ -8,3 +8,8 @@ Class {
 CardEffect >> = otherCardEffect [
 	^self class = otherCardEffect class
 ]
+
+{ #category : #operations }
+CardEffect >> applyTo: aGame [
+	^ self subclassResponsibility
+]

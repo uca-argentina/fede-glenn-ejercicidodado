@@ -4,12 +4,27 @@ Class {
 	#category : #'IngSoft2-Tests'
 }
 
+{ #category : #setup }
+GameTest >> fede [
+	^'Fede'
+]
+
+{ #category : #setup }
+GameTest >> glenn [
+	^'Glenn'
+]
+
+{ #category : #setup }
+GameTest >> nicky [
+	^ 'Nicky'
+]
+
 { #category : #tests }
 GameTest >> testAPlayerPlaysTwiceFails [
 	| board playerOne playerTwo die game |
 	die := LoadedDie withValue: 6.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
+	playerOne := self fede.
+	playerTwo := self glenn.
 	board := Board withSpaces: 10 Laps: 2.
 	game := Game
 		withBoard: board
@@ -24,7 +39,7 @@ GameTest >> testAPlayerPlaysTwiceFails [
 { #category : #tests }
 GameTest >> testAtomicBombEffect [
 	| board playerOne die game |
-	playerOne := Player called: 'Fede'.
+	playerOne := self fede.
 	die := LoadedDie withValue: 4.
 	board := Board
 		withSpaces: 2
@@ -40,8 +55,8 @@ GameTest >> testAtomicBombEffect [
 { #category : #tests }
 GameTest >> testAtomicBombEffectWithAnotherPlayerInStartingPosition [
 	| board playerOne die game playerTwo |
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
+	playerOne := self fede.
+	playerTwo := self glenn.
 	die := LoadedDie withValue: 7.
 	board := Board
 		withSpaces: 5
@@ -66,8 +81,8 @@ GameTest >> testAtomicBombEffectWithAnotherPlayerInStartingPosition [
 GameTest >> testCancellationCard [
 	| board playerOne die game deckOfCards playerTwo cancellationCard |
 	die := LoadedDie withValue: 1.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
+	playerOne := self fede.
+	playerTwo := self glenn.
 	deckOfCards := Deck
 		withCards:
 			{SpeedCard new.
@@ -104,7 +119,7 @@ GameTest >> testCancellationCard [
 GameTest >> testCancellationCardWithNoPermanentCardsActive [
 	| board playerOne die game deckOfCards cancellation |
 	die := LoadedDie withValue: 1.
-	playerOne := Player called: 'Fede'.
+	playerOne := self fede.
 	deckOfCards := Deck withCards: {CancellationCard new}.
 	board := Board
 		withSpaces: 10
@@ -125,8 +140,8 @@ GameTest >> testCancellationCardWithNoPermanentCardsActive [
 GameTest >> testCancellationCardWithTwoEqualActiveEffects [
 	| board playerOne die game deckOfCards playerTwo |
 	die := LoadedDie withValue: 1.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
+	playerOne := self fede.
+	playerTwo := self glenn.
 	deckOfCards := Deck
 		withCards:
 			{SpeedCard new.
@@ -161,11 +176,28 @@ GameTest >> testCancellationCardWithTwoEqualActiveEffects [
 ]
 
 { #category : #tests }
-GameTest >> testCannotPlayCardOutOfTurn [
+GameTest >> testCannotPlayCardThatIsNotInHand [
+	| board playerOne die game deckOfCards |
+	die := LoadedDie withValue: 2.
+	playerOne := self fede.
+	deckOfCards := Deck withCards: {NoEffectCard new}.
+	board := Board withSpaces: 5 Laps: 1.
+	game := Game
+		withBoard: board
+		dice: die
+		players: {playerOne}
+		cards: deckOfCards.
+	self
+		should: [ game playCard: AccelerationCard new from: playerOne ]
+		raise: MissingCardError
+]
+
+{ #category : #tests }
+GameTest >> testCannotPlayPermanentCardOutOfTurn [
 	| board playerOne die game deckOfCards playerTwo |
 	die := LoadedDie withValue: 2.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
+	playerOne := self fede.
+	playerTwo := self glenn.
 	deckOfCards := Deck withCards: {AccelerationCard new}.
 	board := Board withSpaces: 5 Laps: 1.
 	game := Game
@@ -181,27 +213,10 @@ GameTest >> testCannotPlayCardOutOfTurn [
 ]
 
 { #category : #tests }
-GameTest >> testCannotPlayCardThatIsNotInHand [
-	| board playerOne die game deckOfCards |
-	die := LoadedDie withValue: 2.
-	playerOne := Player called: 'Fede'.
-	deckOfCards := Deck withCards: {NoEffectCard new}.
-	board := Board withSpaces: 5 Laps: 1.
-	game := Game
-		withBoard: board
-		dice: die
-		players: {playerOne}
-		cards: deckOfCards.
-	self
-		should: [ game playCard: AccelerationCard new from: playerOne ]
-		raise: MissingCardError
-]
-
-{ #category : #tests }
 GameTest >> testCompleteOneLap [
 	| board playerOne die game|
 	die := LoadedDie withValue: 6.
-	playerOne := Player called: 'Fede'.
+	playerOne := self fede.
 	board := Board withSpaces:10 Laps: 2.
 	game := Game
 		withBoard: board
@@ -216,7 +231,7 @@ GameTest >> testCompleteOneLap [
 GameTest >> testDrawCardEffect [
 	| board playerOne die game deckOfCards |
 	die := LoadedDie withValue: 2.
-	playerOne := Player called: 'Fede'.
+	playerOne := self fede.
 	deckOfCards := Deck withCards: {NoEffectCard new}.
 	board := Board
 		withSpaces: 5
@@ -235,8 +250,8 @@ GameTest >> testDrawCardEffect [
 GameTest >> testGameScoreBoard [
 	| board playerOne playerTwo die result game |
 	die := LoadedDie withValue: 6.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
+	playerOne := self fede.
+	playerTwo := self glenn.
 	board := Board withSpaces: 10 Laps: 2.
 	game := Game
 		withBoard: board
@@ -256,7 +271,7 @@ GameTest >> testGameScoreBoard [
 GameTest >> testHandOutTwoCardsInitially [
 	| game board playerOne die deckOfCards |
 	die := LoadedDie withValue: 5.
-	playerOne := Player called: 'Fede'.
+	playerOne := self fede.
 	board := Board withSpaces: 10 Laps: 2.
 	deckOfCards := Deck withCards: {NoEffectCard new}.
 	game := Game
@@ -270,8 +285,8 @@ GameTest >> testHandOutTwoCardsInitially [
 { #category : #tests }
 GameTest >> testMoonWalkEffect [
 	| board playerOne playerTwo die game |
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
+	playerOne := self fede.
+	playerTwo := self glenn.
 	die := LoadedDie withValue: 6.
 	board := Board
 		withSpaces: 10
@@ -297,7 +312,7 @@ GameTest >> testMoonWalkEffect [
 GameTest >> testNoEffect [
 	| board playerOne die game |
 	die := LoadedDie withValue: 3.
-	playerOne := Player called: 'Fede'.
+	playerOne := self fede.
 	board := Board
 		withSpaces: 10
 		Laps: 1
@@ -313,7 +328,7 @@ GameTest >> testNoEffect [
 GameTest >> testPlayCard [
 	| board playerOne die game deckOfCards |
 	die := LoadedDie withValue: 2.
-	playerOne := Player called: 'Fede'.
+	playerOne := self fede.
 	deckOfCards := Deck withCards: {NoEffectCard new}.
 	board := Board withSpaces: 5 Laps: 1.
 	game := Game
@@ -330,8 +345,8 @@ GameTest >> testPlayCard [
 GameTest >> testPlayCardAcceleration [
 	| board playerOne die game deckOfCards playerTwo |
 	die := LoadedDie withValue: 2.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
+	playerOne := self fede.
+	playerTwo := self glenn.
 	deckOfCards := Deck withCards: {AccelerationCard new}.
 	board := Board withSpaces: 5 Laps: 1.
 	game := Game
@@ -356,8 +371,8 @@ GameTest >> testPlayCardAcceleration [
 GameTest >> testPlayOverloadCard [
 	| board playerOne die game deckOfCards playerTwo |
 	die := LoadedDie withValue: 5.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
+	playerOne := self fede.
+	playerTwo := self glenn.
 	deckOfCards := Deck withCards: {OverloadCard new}.
 	board := Board withSpaces: 6 Laps: 2.
 	game := Game
@@ -382,8 +397,8 @@ GameTest >> testPlayOverloadCard [
 GameTest >> testPlaySpeedCard [
 	| board playerOne die game deckOfCards playerTwo |
 	die := LoadedDie withValue: 2.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
+	playerOne := self fede.
+	playerTwo := self glenn.
 	deckOfCards := Deck withCards: {SpeedCard new}.
 	board := Board withSpaces: 5 Laps: 1.
 	game := Game
@@ -412,7 +427,7 @@ GameTest >> testPlayWithSeveralCards [
 		withCards:
 			{NoEffectCard new.
 			OverloadCard new}.
-	playerOne := Player called: 'Fede'.
+	playerOne := self fede.
 	board := Board
 		withSpaces: 100
 		Laps: 1
@@ -435,7 +450,7 @@ GameTest >> testPlayWithSeveralCards [
 GameTest >> testPlayerDoesNotCrossLastLocker [
 	| board playerOne die game |
 	die := LoadedDie withValue: 12.
-	playerOne := Player called: 'Fede'.
+	playerOne := self fede.
 	board := Board withSpaces: 10 Laps: 1.
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
@@ -448,7 +463,7 @@ GameTest >> testPlayerDoesNotCrossLastLocker [
 GameTest >> testPlayerPlays [
 	| game board playerOne die |
 	die := LoadedDie withValue: 5.
-	playerOne := Player called: 'Fede'.
+	playerOne := self fede.
 	board := Board withSpaces: 10 Laps: 2.
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
@@ -460,8 +475,8 @@ GameTest >> testPlayerPlays [
 { #category : #tests }
 GameTest >> testPlayerRank [
 	| board playerOne playerTwo die game |
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
+	playerOne := self fede.
+	playerTwo := self glenn.
 	die := LoadedDie withValue: 6.
 	board := Board withSpaces: 10 Laps: 1.
 	game := Game
@@ -481,7 +496,7 @@ GameTest >> testPlayerRank [
 GameTest >> testPlayerWins [
 	| board playerOne die game |
 	die := LoadedDie withValue: 6.
-	playerOne := Player called: 'Fede'.
+	playerOne := self fede.
 	board := Board withSpaces: 10 Laps: 1.
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
@@ -496,9 +511,9 @@ GameTest >> testPlayerWins [
 { #category : #tests }
 GameTest >> testPlayingWithTurnsWithThreePlayers [
 	| board playerOne playerTwo playerThree die game |
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
-	playerThree := Player called: 'Nicky'.
+	playerOne := self fede.
+	playerTwo := self glenn.
+	playerThree := self nicky.
 	die := LoadedDie withValue: 6.
 	board := Board withSpaces: 10 Laps: 1.
 	game := Game
@@ -528,8 +543,8 @@ GameTest >> testPlayingWithTurnsWithThreePlayers [
 GameTest >> testRedoInstantCard [
 	| board playerOne die game deckOfCards playerTwo |
 	die := LoadedDie withValue: 1.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
+	playerOne := self fede.
+	playerTwo := self glenn.
 	deckOfCards := Deck
 		withCards:
 			{RedoCard new.
@@ -568,8 +583,8 @@ GameTest >> testRedoInstantCard [
 GameTest >> testRedoPermanentCard [
 	| board playerOne die game deckOfCards playerTwo redoCard |
 	die := LoadedDie withValue: 1.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
+	playerOne := self fede.
+	playerTwo := self glenn.
 	deckOfCards := Deck
 		withCards:
 			{SpeedCard new.
@@ -606,8 +621,8 @@ GameTest >> testRedoPermanentCard [
 GameTest >> testRedoPermanentCardOverload [
 	| board playerOne die game deckOfCards playerTwo redoCard |
 	die := LoadedDie withValue: 1.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
+	playerOne := self fede.
+	playerTwo := self glenn.
 	deckOfCards := Deck
 		withCards:
 			{OverloadCard new.
@@ -644,8 +659,8 @@ GameTest >> testRedoPermanentCardOverload [
 GameTest >> testRepeatMoonWalkEffect [
 	| board playerOne die game deckOfCards playerTwo |
 	die := LoadedDie withValue: 8.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
+	playerOne := self fede.
+	playerTwo := self glenn.
 	deckOfCards := Deck withCards: {RepeatCard new}.
 	board := Board
 		withSpaces: 100
@@ -673,8 +688,8 @@ GameTest >> testRepeatMoonWalkEffect [
 GameTest >> testRepeatSpeedupEffect [
 	| board playerOne die game deckOfCards playerTwo |
 	die := LoadedDie withValue: 1.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
+	playerOne := self fede.
+	playerTwo := self glenn.
 	deckOfCards := Deck withCards: {RepeatCard new}.
 	board := Board
 		withSpaces: 100
@@ -701,7 +716,7 @@ GameTest >> testRepeatSpeedupEffect [
 GameTest >> testSpeedUp [
 	| board playerOne die game |
 	die := LoadedDie withValue: 1.
-	playerOne := Player called: 'Fede'.
+	playerOne := self fede.
 	board := Board
 		withSpaces: 10
 		Laps: 1
@@ -717,8 +732,8 @@ GameTest >> testSpeedUp [
 GameTest >> testTargetTwoCardAtAPlayer [
 	| board playerOne die game deckOfCards playerTwo |
 	die := LoadedDie withValue: 1.
-	playerOne := Player called: 'Fede'.
-	playerTwo := Player called: 'Glenn'.
+	playerOne := self fede.
+	playerTwo := self glenn.
 	deckOfCards := Deck withCards: {SpeedCard new}.
 	board := Board
 		withSpaces: 100
@@ -747,7 +762,7 @@ GameTest >> testTargetTwoCardAtAPlayer [
 GameTest >> testWormHoleEffect [
 	| board playerOne die game |
 	die := LoadedDie withValue: 6.
-	playerOne := Player called: 'Fede'.
+	playerOne := self fede.
 	board := Board
 		withSpaces: 10
 		Laps: 1
@@ -763,7 +778,7 @@ GameTest >> testWormHoleEffect [
 GameTest >> testWormHoleEffectLimitMove [
 	| board playerOne die game |
 	die := LoadedDie withValue: 3.
-	playerOne := Player called: 'Fede'.
+	playerOne := self fede.
 	board := Board
 		withSpaces: 10
 		Laps: 1

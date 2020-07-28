@@ -5,8 +5,8 @@ Class {
 }
 
 { #category : #creation }
-ProbabilityDistributor class >> createArrayWith: aCollection size: length [ 
-	^self new createShuffledCollection: aCollection size: length.
+ProbabilityDistributor >> createArrayWith: aCollection size: length [ 
+	^self createShuffledCollection: aCollection size: length.
 ]
 
 { #category : #creation }
