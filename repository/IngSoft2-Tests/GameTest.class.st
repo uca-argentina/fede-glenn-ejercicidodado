@@ -713,7 +713,7 @@ GameTest >> testRepeatSpeedupEffect [
 ]
 
 { #category : #tests }
-GameTest >> testSpeedUp [
+GameTest >> testSpeedUpEffect [
 	| board playerOne die game |
 	die := LoadedDie withValue: 1.
 	playerOne := self fede.
