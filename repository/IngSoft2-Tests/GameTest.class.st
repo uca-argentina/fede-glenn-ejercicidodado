@@ -48,7 +48,7 @@ GameTest >> testAtomicBombEffect [
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 1 lap: 3)
 ]
 
@@ -70,10 +70,10 @@ GameTest >> testAtomicBombEffectWithAnotherPlayerInStartingPosition [
 			playerTwo}.
 	game play: playerOne.
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 1 lap: 2).
 	self
-		assert: (game inWhichPositionIs: playerTwo)
+		assert: (game positionOf: playerTwo)
 		equals: (Locker position: 1 lap: 1)
 ]
 
@@ -108,10 +108,10 @@ GameTest >> testCancellationCard [
 	game playCard: cancellationCard from: playerOne.
 	game play: playerTwo.
 	self
-		assert: (game inWhichPositionIs: playerTwo)
+		assert: (game positionOf: playerTwo)
 		equals: (Locker position: 12 lap: 1).
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 12 lap: 1)
 ]
 
@@ -168,10 +168,10 @@ GameTest >> testCancellationCardWithTwoEqualActiveEffects [
 		from: playerOne.
 	game play: playerTwo.
 	self
-		assert: (game inWhichPositionIs: playerTwo)
+		assert: (game positionOf: playerTwo)
 		equals: (Locker position: 13 lap: 1).
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 12 lap: 1)
 ]
 
@@ -224,7 +224,7 @@ GameTest >> testCompleteOneLap [
 		players: {playerOne}.
 	game play: playerOne.
 	game play: playerOne.
-	self assert: (game inWhichPositionIs: playerOne) equals: (Locker position: 3 lap: 2).
+	self assert: (game positionOf: playerOne) equals: (Locker position: 3 lap: 2).
 ]
 
 { #category : #tests }
@@ -301,10 +301,10 @@ GameTest >> testMoonWalkEffect [
 	game play: playerOne.
 	game play: playerTwo.
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 5 lap: 1).
 	self
-		assert: (game inWhichPositionIs: playerTwo)
+		assert: (game positionOf: playerTwo)
 		equals: (Locker position: 7 lap: 1)
 ]
 
@@ -320,7 +320,7 @@ GameTest >> testNoEffect [
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 4 lap: 1)
 ]
 
@@ -360,10 +360,10 @@ GameTest >> testPlayCardAcceleration [
 	game play: playerOne.
 	game play: playerTwo.
 	self
-		assert: (game inWhichPositionIs: playerTwo)
+		assert: (game positionOf: playerTwo)
 		equals: (Locker position: 4 lap: 1).
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 4 lap: 1)
 ]
 
@@ -386,10 +386,10 @@ GameTest >> testPlayOverloadCard [
 	game play: playerOne.
 	game play: playerTwo.
 	self
-		assert: (game inWhichPositionIs: playerTwo)
+		assert: (game positionOf: playerTwo)
 		equals: (Locker position: 4 lap: 1).
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 6 lap: 1)
 ]
 
@@ -412,10 +412,10 @@ GameTest >> testPlaySpeedCard [
 	game play: playerOne.
 	game play: playerTwo.
 	self
-		assert: (game inWhichPositionIs: playerTwo)
+		assert: (game positionOf: playerTwo)
 		equals: (Locker position: 4 lap: 1).
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 3 lap: 1)
 ]
 
@@ -455,7 +455,7 @@ GameTest >> testPlayerDoesNotCrossLastLocker [
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: board lastLocker
 ]
 
@@ -468,7 +468,7 @@ GameTest >> testPlayerPlays [
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 6 lap: 1)
 ]
 
@@ -503,7 +503,7 @@ GameTest >> testPlayerWins [
 	self assert: game hasAWinner not.
 	game play: playerOne.
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: board lastLocker.
 	self assert: game hasAWinner
 ]
@@ -525,15 +525,15 @@ GameTest >> testPlayingWithTurnsWithThreePlayers [
 			playerThree}.
 	game play: playerOne.
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 7 lap: 1).
 	game play: playerTwo.
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 7 lap: 1).
 	game play: playerThree.
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 7 lap: 1).
 	game play: playerOne.
 	self assert: game hasAWinner
@@ -572,10 +572,10 @@ GameTest >> testRedoInstantCard [
 		from: playerTwo.
 	game play: playerOne.
 	self
-		assert: (game inWhichPositionIs: playerTwo)
+		assert: (game positionOf: playerTwo)
 		equals: (Locker position: 16 lap: 1).
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 17 lap: 1)
 ]
 
@@ -610,10 +610,10 @@ GameTest >> testRedoPermanentCard [
 	game play: playerTwo.
 	game play: playerOne.
 	self
-		assert: (game inWhichPositionIs: playerTwo)
+		assert: (game positionOf: playerTwo)
 		equals: (Locker position: 13 lap: 1).
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 14 lap: 1)
 ]
 
@@ -648,10 +648,10 @@ GameTest >> testRedoPermanentCardOverload [
 	game play: playerTwo.
 	game play: playerOne.
 	self
-		assert: (game inWhichPositionIs: playerTwo)
+		assert: (game positionOf: playerTwo)
 		equals: (Locker position: 10 lap: 1).
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 11 lap: 1)
 ]
 
@@ -677,10 +677,10 @@ GameTest >> testRepeatMoonWalkEffect [
 	game play: playerTwo.
 	game playCard: (RepeatCard new target: playerOne) from: playerOne.
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 5 lap: 1).
 	self
-		assert: (game inWhichPositionIs: playerTwo)
+		assert: (game positionOf: playerTwo)
 		equals: (Locker position: 5 lap: 1)
 ]
 
@@ -705,10 +705,10 @@ GameTest >> testRepeatSpeedupEffect [
 	game play: playerOne.
 	game playCard: (RepeatCard new target: playerTwo) from: playerTwo.
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 6 lap: 1).
 	self
-		assert: (game inWhichPositionIs: playerTwo)
+		assert: (game positionOf: playerTwo)
 		equals: (Locker position: 5 lap: 1)
 ]
 
@@ -724,7 +724,7 @@ GameTest >> testSpeedUp [
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 6 lap: 1)
 ]
 
@@ -751,10 +751,10 @@ GameTest >> testTargetTwoCardAtAPlayer [
 	game playCard: SpeedCard new from: playerTwo to: playerTwo.
 	game play: playerTwo.
 	self
-		assert: (game inWhichPositionIs: playerTwo)
+		assert: (game positionOf: playerTwo)
 		equals: (Locker position: 4 lap: 1).
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 2 lap: 1)
 ]
 
@@ -770,7 +770,7 @@ GameTest >> testWormHoleEffect [
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 3 lap: 1)
 ]
 
@@ -786,6 +786,6 @@ GameTest >> testWormHoleEffectLimitMove [
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
 	self
-		assert: (game inWhichPositionIs: playerOne)
+		assert: (game positionOf: playerOne)
 		equals: (Locker position: 1 lap: 1)
 ]

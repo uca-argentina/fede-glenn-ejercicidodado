@@ -112,11 +112,6 @@ Game >> hasAWinner [
 	^ positionTracker isThereAWinner
 ]
 
-{ #category : #accessing }
-Game >> inWhichPositionIs: aPlayer [ 
-	^positionTracker inWhichPositionIs: aPlayer 
-]
-
 { #category : #initialization }
 Game >> initializeWithBoard: aBoard dice: aDice players: aCollectionOfPlayers cards: aDeck [
 	dice := aDice.
@@ -137,7 +132,7 @@ Game >> makePlayOf: aPlayer [
 	rolled := dice roll.
 	positionTracker move: aPlayer havingRolled: rolled.
 	cardManager activeCardEffect do: [:aCard | aCard applyTo: self].
-	currentLocker := positionTracker inWhichPositionIs: aPlayer.
+	currentLocker := positionTracker positionOf: aPlayer.
 	currentLocker effect applyTo: self.
 	lastEffectApplied := currentLocker effect.
 
@@ -146,7 +141,7 @@ Game >> makePlayOf: aPlayer [
 
 { #category : #action }
 Game >> play: aPlayer [
-	turnManager isTurnOf:  aPlayer.
+	turnManager assertIsTurnOf:  aPlayer.
 	self makePlayOf: aPlayer. 
 	turnManager alreadyPlayed: aPlayer.
 ]
@@ -161,8 +156,13 @@ Game >> playCard: aCard from: aPlayer [
 
 { #category : #play }
 Game >> playCard: aCard from: aPlayer to: targetedPlayer [
-	turnManager isTurnOf: aPlayer.
+	turnManager assertIsTurnOf: aPlayer.
 	cardManager utilizeCard: aCard from: aPlayer to: targetedPlayer
+]
+
+{ #category : #accessing }
+Game >> positionOf: aPlayer [ 
+	^positionTracker positionOf: aPlayer 
 ]
 
 { #category : #ranking }

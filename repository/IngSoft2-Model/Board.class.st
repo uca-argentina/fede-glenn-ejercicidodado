@@ -99,8 +99,8 @@ Board >> startingLocker [
 ]
 
 { #category : #verification }
-Board >> validateEffectProbabilities: aCollection [ 
-	 ^(aCollection sum: [ :anObject | anObject probability ]) > 1
+Board >> validateEffectProbabilities: aSumOfEffectProbailities [ 
+	 ^(aSumOfEffectProbailities sum: [ :anObject | anObject probability ]) > 1
 ]
 
 { #category : #initialization }

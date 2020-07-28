@@ -24,11 +24,6 @@ PositionTracker >> getPlayersInOrderByLocker [
 	^ result
 ]
 
-{ #category : #accessing }
-PositionTracker >> inWhichPositionIs: aPlayer [ 
-	^scoreBoard at: aPlayer.
-]
-
 { #category : #initialization }
 PositionTracker >> initializeWithBoard: aBoard players: somePlayers [
 	| startingPosition |
@@ -49,7 +44,7 @@ PositionTracker >> isThereAWinner [
 { #category : #movement }
 PositionTracker >> move: aPlayer havingRolled: anInteger [
 	| actualPosition newPosition |
-	actualPosition := self inWhichPositionIs: aPlayer.
+	actualPosition := self positionOf: aPlayer.
 	newPosition := board get: anInteger from: actualPosition.
 	scoreBoard add: aPlayer -> newPosition
 ]
@@ -64,7 +59,12 @@ PositionTracker >> moveAllToStart [
 { #category : #movement }
 PositionTracker >> moveBackwards: aPlayer spaces: anInteger [ 
 	| actualPosition newPosition |
-	actualPosition := self inWhichPositionIs: aPlayer.
+	actualPosition := self positionOf: aPlayer.
 	newPosition := board getBack: (anInteger) from: actualPosition.
 	scoreBoard add: aPlayer -> newPosition  
+]
+
+{ #category : #accessing }
+PositionTracker >> positionOf: aPlayer [ 
+	^scoreBoard at: aPlayer.
 ]
