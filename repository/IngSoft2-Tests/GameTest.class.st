@@ -243,6 +243,7 @@ GameTest >> testDrawCardEffect [
 		players: {playerOne}
 		cards: deckOfCards.
 	game play: playerOne.
+	
 	self assert: (game checkHandOf: playerOne) size equals: 3
 ]
 

@@ -75,6 +75,11 @@ CardManager >> replayLastPermanentEffectTarget: aPlayer [
 ]
 
 { #category : #action }
+CardManager >> take: aCard from: aPlayer [
+	(self checkHandOf: aPlayer) remove: aCard
+]
+
+{ #category : #action }
 CardManager >> utilizeCard: aCard from: aPlayer [ 
 	self utilizeCard: aCard from: aPlayer to: aPlayer
 	
@@ -83,7 +88,7 @@ CardManager >> utilizeCard: aCard from: aPlayer [
 { #category : #action }
 CardManager >> utilizeCard: aCard from: aPlayer to: targetedPlayer [
 	self isCard: aCard inHandOf: aPlayer.
-	(self checkHandOf: aPlayer) remove: aCard.
+	self take: aCard from: aPlayer.
 	lastPlayed := aCard.
 	aCard isPermanent
 		ifFalse: [ ^ self ].
