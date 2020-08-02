@@ -55,3 +55,9 @@ Locker >> lap [
 Locker >> position [
 	^position
 ]
+
+{ #category : #printing }
+Locker >> printString [
+	^'Locker con pos: ',position asString,' lap: ',lap asString,' effect: ',effect asString
+	
+]
