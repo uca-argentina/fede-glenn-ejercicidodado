@@ -12,12 +12,15 @@ Class {
 }
 
 { #category : #initialization }
-Game class >> withBoard: aBoard dice: aDie players: somePlayers [ 
+Game class >> withBoard: aBoard dice: aDie players: somePlayers [
+	| cards |
+	cards := OrderedCollection new.
+	somePlayers size * 2 timesRepeat: [ cards add: NoEffectCard new ].
 	^ self new
 		initializeWithBoard: aBoard
 		dice: aDie
 		players: somePlayers
-		cards: (Deck withCards: (Array with: NoEffectCard new)).
+		cards: (Deck with: cards)
 ]
 
 { #category : #'instance creation' }
@@ -77,7 +80,7 @@ Game >> applyRedoCard: aRedoCard [
 { #category : #'card application' }
 Game >> applyRepeatCar: aPlayer [
    turnManager specialTurn: aPlayer.
-	self lastEffectApplied applyTo: self.
+	lastEffectApplied applyTo: self.
 	turnManager endSpecialTurn: aPlayer.
 	
 ]
