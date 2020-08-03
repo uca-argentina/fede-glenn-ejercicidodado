@@ -1,8 +1,30 @@
 Class {
 	#name : #GameTest,
 	#superclass : #TestCase,
+	#instVars : [
+		'playerOne',
+		'playerTwo',
+		'playerThree'
+	],
 	#category : #'IngSoft2-Tests'
 }
+
+{ #category : #probability }
+GameTest >> elements: elements probability: probabilities amount: amount [
+	| result index |
+	result := OrderedCollection new.
+	index := 1.
+	elements size
+		timesRepeat: [ result
+				add:
+					(ProbabilityWrapper
+						with: (elements at: index)
+						probability: (probabilities at: index)).
+			index := index + 1 ].
+	^ ProbabilityDistributor new
+		createShuffledCollection: result
+		size: amount
+]
 
 { #category : #setup }
 GameTest >> fede [
@@ -17,6 +39,14 @@ GameTest >> glenn [
 { #category : #setup }
 GameTest >> nicky [
 	^ 'Nicky'
+]
+
+{ #category : #running }
+GameTest >> setUp [
+	"Hooks that subclasses may override to define the fixture of test."
+	playerOne := 'Fede'.
+	playerTwo := 'Glenn'.
+	playerThree := 'Nicky'.
 ]
 
 { #category : #tests }
@@ -44,7 +74,7 @@ GameTest >> testAtomicBombEffect [
 	board := Board
 		withSpaces: 2
 		Laps: 3
-		effects: {(AtomicBombEffect withProbability: 1)}.
+		effects: {(ProbabilityWrapper with: AtomicBombEffect new probability: 1)}.
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
 	self
@@ -61,7 +91,7 @@ GameTest >> testAtomicBombEffectWithAnotherPlayerInStartingPosition [
 	board := Board
 		withSpaces: 5
 		Laps: 2
-		effects: {(AtomicBombEffect withProbability: 1)}.
+		effects: {(ProbabilityWrapper with: AtomicBombEffect new probability: 1)}.
 	game := Game
 		withBoard: board
 		dice: die
@@ -79,18 +109,17 @@ GameTest >> testAtomicBombEffectWithAnotherPlayerInStartingPosition [
 
 { #category : #tests }
 GameTest >> testCancellationCard [
-	| board playerOne die game deckOfCards playerTwo cancellationCard |
+	| board playerOne die game deckOfCards playerTwo cancellationCard cards |
 	die := LoadedDie withValue: 1.
 	playerOne := self fede.
 	playerTwo := self glenn.
-	deckOfCards := Deck
-		withCards:
-			{SpeedCard new.
-			CancellationCard new}.
+	cards := self
+		elements: {SpeedCard new . CancellationCard new} probability: {0.5 . 0.5} amount: 30.
+	deckOfCards := Deck with: cards.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: {(DrawCardEffect withProbability: 1)}.
+		effects: {(ProbabilityWrapper with: DrawCardEffect new probability: 1)}.
 	game := Game
 		withBoard: board
 		dice: die
@@ -120,11 +149,12 @@ GameTest >> testCancellationCardWithNoPermanentCardsActive [
 	| board playerOne die game deckOfCards cancellation |
 	die := LoadedDie withValue: 1.
 	playerOne := self fede.
-	deckOfCards := Deck withCards: {CancellationCard new}.
+	deckOfCards := Deck
+		with: (self elements: {CancellationCard new} probability: {0.5} amount: 30).
 	board := Board
 		withSpaces: 10
 		Laps: 1
-		effects: {(DrawCardEffect withProbability: 1)}.
+		effects: {(ProbabilityWrapper with: DrawCardEffect new probability: 1)}.
 	game := Game
 		withBoard: board
 		dice: die
@@ -138,18 +168,17 @@ GameTest >> testCancellationCardWithNoPermanentCardsActive [
 
 { #category : #tests }
 GameTest >> testCancellationCardWithTwoEqualActiveEffects [
-	| board playerOne die game deckOfCards playerTwo |
+	| board playerOne die game deckOfCards playerTwo cards |
 	die := LoadedDie withValue: 1.
 	playerOne := self fede.
 	playerTwo := self glenn.
-	deckOfCards := Deck
-		withCards:
-			{SpeedCard new.
-			CancellationCard new}.
+	cards := self
+		elements: {SpeedCard new . CancellationCard new} probability: {0.5 . 0.5} amount: 30.
+	deckOfCards := Deck with: cards.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: {(DrawCardEffect withProbability: 1)}.
+		effects: {(ProbabilityWrapper with: DrawCardEffect new probability: 1)}.
 	game := Game
 		withBoard: board
 		dice: die
@@ -180,7 +209,7 @@ GameTest >> testCannotPlayCardThatIsNotInHand [
 	| board playerOne die game deckOfCards |
 	die := LoadedDie withValue: 2.
 	playerOne := self fede.
-	deckOfCards := Deck withCards: {NoEffectCard new}.
+	deckOfCards := Deck with: {NoEffectCard new . NoEffectCard new}.
 	board := Board withSpaces: 5 Laps: 1.
 	game := Game
 		withBoard: board
@@ -198,7 +227,12 @@ GameTest >> testCannotPlayPermanentCardOutOfTurn [
 	die := LoadedDie withValue: 2.
 	playerOne := self fede.
 	playerTwo := self glenn.
-	deckOfCards := Deck withCards: {AccelerationCard new}.
+	deckOfCards := Deck
+		with:
+			{AccelerationCard new.
+			AccelerationCard new.
+			AccelerationCard new.
+			AccelerationCard new}.
 	board := Board withSpaces: 5 Laps: 1.
 	game := Game
 		withBoard: board
@@ -232,18 +266,21 @@ GameTest >> testDrawCardEffect [
 	| board playerOne die game deckOfCards |
 	die := LoadedDie withValue: 2.
 	playerOne := self fede.
-	deckOfCards := Deck withCards: {NoEffectCard new}.
+	deckOfCards := Deck
+		with:
+			{NoEffectCard new.
+			NoEffectCard new.
+			NoEffectCard new}.
 	board := Board
 		withSpaces: 5
 		Laps: 1
-		effects: {(DrawCardEffect withProbability: 1)}.
+		effects: {(ProbabilityWrapper with: DrawCardEffect new probability: 1)}.
 	game := Game
 		withBoard: board
 		dice: die
 		players: {playerOne}
 		cards: deckOfCards.
 	game play: playerOne.
-	
 	self assert: (game checkHandOf: playerOne) size equals: 3
 ]
 
@@ -274,7 +311,7 @@ GameTest >> testHandOutTwoCardsInitially [
 	die := LoadedDie withValue: 5.
 	playerOne := self fede.
 	board := Board withSpaces: 10 Laps: 2.
-	deckOfCards := Deck withCards: {NoEffectCard new}.
+	deckOfCards := Deck withCards: {NoEffectCard new . NoEffectCard new}.
 	game := Game
 		withBoard: board
 		dice: die
@@ -292,7 +329,7 @@ GameTest >> testMoonWalkEffect [
 	board := Board
 		withSpaces: 10
 		Laps: 1
-		effects: {(MoonWalkEffect withProbability: 1 goBack: 2)}.
+		effects: {(ProbabilityWrapper with: (MoonWalkEffect goBack: 2) probability: 1)}.
 	game := Game
 		withBoard: board
 		dice: die
@@ -317,7 +354,7 @@ GameTest >> testNoEffect [
 	board := Board
 		withSpaces: 10
 		Laps: 1
-		effects: {(NoEffect withProbability: 1)}.
+		effects: {(ProbabilityWrapper with: NoEffect new probability: 1)}.
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
 	self
@@ -330,7 +367,7 @@ GameTest >> testPlayCard [
 	| board playerOne die game deckOfCards |
 	die := LoadedDie withValue: 2.
 	playerOne := self fede.
-	deckOfCards := Deck withCards: {NoEffectCard new}.
+	deckOfCards := Deck with: {NoEffectCard new . NoEffectCard new}.
 	board := Board withSpaces: 5 Laps: 1.
 	game := Game
 		withBoard: board
@@ -348,7 +385,12 @@ GameTest >> testPlayCardAcceleration [
 	die := LoadedDie withValue: 2.
 	playerOne := self fede.
 	playerTwo := self glenn.
-	deckOfCards := Deck withCards: {AccelerationCard new}.
+	deckOfCards := Deck
+		with:
+			{AccelerationCard new.
+			AccelerationCard new.
+			AccelerationCard new.
+			AccelerationCard new}.
 	board := Board withSpaces: 5 Laps: 1.
 	game := Game
 		withBoard: board
@@ -374,7 +416,12 @@ GameTest >> testPlayOverloadCard [
 	die := LoadedDie withValue: 5.
 	playerOne := self fede.
 	playerTwo := self glenn.
-	deckOfCards := Deck withCards: {OverloadCard new}.
+	deckOfCards := Deck
+		with:
+			{OverloadCard new.
+			OverloadCard new.
+			OverloadCard new.
+			OverloadCard new}.
 	board := Board withSpaces: 6 Laps: 2.
 	game := Game
 		withBoard: board
@@ -400,7 +447,12 @@ GameTest >> testPlaySpeedCard [
 	die := LoadedDie withValue: 2.
 	playerOne := self fede.
 	playerTwo := self glenn.
-	deckOfCards := Deck withCards: {SpeedCard new}.
+	deckOfCards := Deck
+		with:
+			{SpeedCard new.
+			SpeedCard new.
+			SpeedCard new.
+			SpeedCard new}.
 	board := Board withSpaces: 5 Laps: 1.
 	game := Game
 		withBoard: board
@@ -422,17 +474,15 @@ GameTest >> testPlaySpeedCard [
 
 { #category : #tests }
 GameTest >> testPlayWithSeveralCards [
-	| board playerOne die game deckOfCards finalHand |
+	| board playerOne die game deckOfCards finalHand cards |
 	die := LoadedDie withValue: 1.
-	deckOfCards := Deck
-		withCards:
-			{NoEffectCard new.
-			OverloadCard new}.
+	cards := self elements: {NoEffectCard new . OverloadCard new} probability: {0.5 . 0.5} amount: 100.
+	deckOfCards := Deck with: cards.
 	playerOne := self fede.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: {(DrawCardEffect withProbability: 1)}.
+		effects: {(ProbabilityWrapper with: DrawCardEffect new probability: 1)}.
 	game := Game
 		withBoard: board
 		dice: die
@@ -542,23 +592,28 @@ GameTest >> testPlayingWithTurnsWithThreePlayers [
 
 { #category : #tests }
 GameTest >> testRedoInstantCard [
-	| board playerOne die game deckOfCards playerTwo |
+	| board playerOne die game deckOfCards playerTwo cards |
 	die := LoadedDie withValue: 1.
 	playerOne := self fede.
 	playerTwo := self glenn.
-	deckOfCards := Deck
-		withCards:
+	cards := self
+		elements:
 			{RedoCard new.
 			CancellationCard new.
-			SpeedCard new}.
+			SpeedCard new}
+		probability: {0.4 . 0.3 . 0.3}
+		amount: 300.
+	deckOfCards := Deck with: cards.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: {(DrawCardEffect withProbability: 1)}.
+		effects: {(ProbabilityWrapper with: DrawCardEffect new probability: 1)}.
 	game := Game
 		withBoard: board
 		dice: die
-		players: (Array with: playerOne with: playerTwo)
+		players:
+			{playerOne.
+			playerTwo}
 		cards: deckOfCards.
 	15
 		timesRepeat: [ game play: playerOne.
@@ -582,18 +637,19 @@ GameTest >> testRedoInstantCard [
 
 { #category : #tests }
 GameTest >> testRedoPermanentCard [
-	| board playerOne die game deckOfCards playerTwo redoCard |
+	| board die game deckOfCards redoCard cards |
 	die := LoadedDie withValue: 1.
-	playerOne := self fede.
-	playerTwo := self glenn.
-	deckOfCards := Deck
-		withCards:
+	cards := self
+		elements:
 			{SpeedCard new.
-			RedoCard new}.
+			RedoCard new}
+		probability: {0.5 . 0.5}
+		amount: 30.
+	deckOfCards := Deck with: cards.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: {(DrawCardEffect withProbability: 1)}.
+		effects: {(ProbabilityWrapper with: DrawCardEffect new probability: 1)}.
 	game := Game
 		withBoard: board
 		dice: die
@@ -620,18 +676,19 @@ GameTest >> testRedoPermanentCard [
 
 { #category : #tests }
 GameTest >> testRedoPermanentCardOverload [
-	| board playerOne die game deckOfCards playerTwo redoCard |
+	| board die game deckOfCards redoCard cards |
 	die := LoadedDie withValue: 1.
-	playerOne := self fede.
-	playerTwo := self glenn.
-	deckOfCards := Deck
-		withCards:
+	cards := self
+		elements:
 			{OverloadCard new.
-			RedoCard new}.
+			RedoCard new}
+		probability: {0.5 . 0.5}
+		amount: 50.
+	deckOfCards := Deck with: cards.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: {(DrawCardEffect withProbability: 1)}.
+		effects: {(ProbabilityWrapper with: DrawCardEffect new probability: 1)}.
 	game := Game
 		withBoard: board
 		dice: die
@@ -658,15 +715,17 @@ GameTest >> testRedoPermanentCardOverload [
 
 { #category : #tests }
 GameTest >> testRepeatMoonWalkEffect [
-	| board playerOne die game deckOfCards playerTwo |
+	| board die game deckOfCards cards |
 	die := LoadedDie withValue: 8.
-	playerOne := self fede.
-	playerTwo := self glenn.
-	deckOfCards := Deck withCards: {RepeatCard new}.
+	cards := self
+		elements: {RepeatCard new}
+		probability: {0.5}
+		amount: 50.
+	deckOfCards := Deck with: cards.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: {(MoonWalkEffect withProbability: 1 goBack: 4)}.
+		effects: {(ProbabilityWrapper with: (MoonWalkEffect goBack: 2) probability: 1)}.
 	game := Game
 		withBoard: board
 		dice: die
@@ -679,23 +738,25 @@ GameTest >> testRepeatMoonWalkEffect [
 	game playCard: (RepeatCard new target: playerOne) from: playerOne.
 	self
 		assert: (game positionOf: playerOne)
-		equals: (Locker position: 5 lap: 1).
+		equals: (Locker position: 7 lap: 1 effect: MoonWalkEffect new).
 	self
 		assert: (game positionOf: playerTwo)
-		equals: (Locker position: 5 lap: 1)
+		equals: (Locker position: 7 lap: 1 effect: MoonWalkEffect new)
 ]
 
 { #category : #tests }
 GameTest >> testRepeatSpeedupEffect [
-	| board playerOne die game deckOfCards playerTwo |
+	| board die game deckOfCards cards |
 	die := LoadedDie withValue: 1.
-	playerOne := self fede.
-	playerTwo := self glenn.
-	deckOfCards := Deck withCards: {RepeatCard new}.
+	cards := self
+		elements: {RepeatCard new}
+		probability: {0.5}
+		amount: 50.
+	deckOfCards := Deck with: cards.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: {(SpeedUpEffect withProbability: 1)}.
+		effects: {(ProbabilityWrapper with: SpeedUpEffect new probability: 1)}.
 	game := Game
 		withBoard: board
 		dice: die
@@ -715,13 +776,12 @@ GameTest >> testRepeatSpeedupEffect [
 
 { #category : #tests }
 GameTest >> testSpeedUpEffect [
-	| board playerOne die game |
+	| board die game |
 	die := LoadedDie withValue: 1.
-	playerOne := self fede.
 	board := Board
 		withSpaces: 10
 		Laps: 1
-		effects: {(SpeedUpEffect withProbability: 1)}.
+		effects: {(ProbabilityWrapper with: SpeedUpEffect new probability: 1)}.
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
 	self
@@ -731,15 +791,17 @@ GameTest >> testSpeedUpEffect [
 
 { #category : #tests }
 GameTest >> testTargetTwoCardAtAPlayer [
-	| board playerOne die game deckOfCards playerTwo |
+	| board die game deckOfCards cards |
 	die := LoadedDie withValue: 1.
-	playerOne := self fede.
-	playerTwo := self glenn.
-	deckOfCards := Deck withCards: {SpeedCard new}.
+	cards := self
+		elements: {SpeedCard new}
+		probability: {1}
+		amount: 50.
+	deckOfCards := Deck with: cards.
 	board := Board
 		withSpaces: 100
 		Laps: 1
-		effects: {(DrawCardEffect withProbability: 1)}.
+		effects: {(ProbabilityWrapper with: DrawCardEffect new probability: 1)}.
 	game := Game
 		withBoard: board
 		dice: die
@@ -767,7 +829,7 @@ GameTest >> testWormHoleEffect [
 	board := Board
 		withSpaces: 10
 		Laps: 1
-		effects: {(WormHoleEffect withProbability: 1)}.
+		effects: {(ProbabilityWrapper with: WormHoleEffect new probability: 1)}.
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
 	self
@@ -783,7 +845,7 @@ GameTest >> testWormHoleEffectLimitMove [
 	board := Board
 		withSpaces: 10
 		Laps: 1
-		effects: {(WormHoleEffect withProbability: 1)}.
+		effects: {(ProbabilityWrapper with: WormHoleEffect new probability: 1)}.
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
 	self

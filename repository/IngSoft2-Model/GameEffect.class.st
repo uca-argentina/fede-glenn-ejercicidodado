@@ -7,11 +7,6 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #probability }
-GameEffect class >> withProbability: aFloat [
-	^ self new initializeWithProbability: aFloat
-]
-
 { #category : #comparing }
 GameEffect >> = otherEffect [
 	^self class == otherEffect class

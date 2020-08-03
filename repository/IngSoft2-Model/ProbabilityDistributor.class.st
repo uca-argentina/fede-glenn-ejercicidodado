@@ -9,16 +9,34 @@ ProbabilityDistributor >> createArrayWith: aCollection size: length [
 	^self createShuffledCollection: aCollection size: length.
 ]
 
+{ #category : #instantiation }
+ProbabilityDistributor >> createShuffledCollection: aCollection defaultElement: defaultElement size: anInteger [
+	| paddedCollection totalProbability |
+	paddedCollection := aCollection asOrderedCollection.
+	totalProbability := aCollection
+		sum: [ :aProbableObject | aProbableObject probability ].
+	totalProbability <= 1
+		ifTrue: [ paddedCollection
+				add:
+					(ProbabilityWrapper
+						with: defaultElement
+						probability: (1 - totalProbability round: 3)) ]
+		ifFalse: [ CreationError signal: 'Probability over 1' ].
+	^ self createShuffledCollection: paddedCollection size: anInteger
+]
+
 { #category : #creation }
-ProbabilityDistributor >> createShuffledCollection: aCollection size: length [
-	"Recieves a collection of objects that understand #probability and returns a shuffled OrderedCollection distributed with the probability of each object"
+ProbabilityDistributor >> createShuffledCollection: probableObjects size: length [
+	"Recieves a collection of probable objects with element and probability"
 
 	| result |
 	result := OrderedCollection new.
-	aCollection
-		do: [ :anObject | 
+	probableObjects
+		do: [ :aProbableObject | 
 			result
-				add: anObject
-				withOccurrences: (anObject probability * length) truncated ].
+				add: aProbableObject element
+				withOccurrences: (aProbableObject probability * length) truncated ].
+	result size = length
+		ifFalse: [ result add: probableObjects last element ].
 	^ result shuffle
 ]

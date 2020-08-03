@@ -11,8 +11,8 @@ BoardTest >> testBoardWithProbabilityMoreThanOneHundredFails [
 				withSpaces: 10
 				Laps: 1
 				effects:
-					{(NoEffect withProbability: 0.6).
-					(WormHoleEffect withProbability: 0.5)} ]
+					{(ProbabilityWrapper with: AtomicBombEffect new probability: 0.6).
+					(ProbabilityWrapper with: WormHoleEffect new probability: 0.5)} ]
 		raise: CreationError
 ]
 
@@ -22,7 +22,7 @@ BoardTest >> testCreateBoardWithNoEffects [
 	board := Board
 		withSpaces: 3
 		Laps: 2
-		effects: {(NoEffect withProbability: 1)}.
+		effects: {ProbabilityWrapper with: NoEffect new probability: 1}.
 	starting := board startingLocker.
 	6
 		timesRepeat:
@@ -37,7 +37,7 @@ BoardTest >> testCreateBoardWithNoEffectsByDefault [
 	board := Board
 		withSpaces: 10
 		Laps: 10
-		effects: {(WormHoleEffect withProbability: 0.15)}.
+		effects: {(ProbabilityWrapper with: WormHoleEffect new probability: 0.15)}.
 	starting := board startingLocker.
 	result := OrderedCollection new.
 	counter := 0.
@@ -58,8 +58,8 @@ BoardTest >> testCreateBoardWithSeveralEffects [
 		withSpaces: 2
 		Laps: 1
 		effects:
-			{(NoEffect withProbability: 0.5).
-			(WormHoleEffect withProbability: 0.5)}.
+			{(ProbabilityWrapper with: NoEffect new probability: 0.5).
+			(ProbabilityWrapper with: WormHoleEffect new probability: 0.5)}.
 	starting := board startingLocker.
 	result := OrderedCollection new.
 	counter := 0.
@@ -80,8 +80,8 @@ BoardTest >> testDistribiutionOfEffects [
 		withSpaces: 10
 		Laps: 10
 		effects:
-			{(WormHoleEffect withProbability: 0.15).
-			(AtomicBombEffect withProbability: 0.02)}.
+			{(ProbabilityWrapper with: AtomicBombEffect new probability: 0.02).
+			(ProbabilityWrapper with: WormHoleEffect new probability: 0.15)}.
 	starting := board startingLocker.
 	result := OrderedCollection new.
 	counter := 0.
