@@ -206,9 +206,8 @@ GameTest >> testCancellationCardWithTwoEqualActiveEffects [
 
 { #category : #tests }
 GameTest >> testCannotPlayCardThatIsNotInHand [
-	| board playerOne die game deckOfCards |
+	| board die game deckOfCards |
 	die := LoadedDie withValue: 2.
-	playerOne := self fede.
 	deckOfCards := Deck with: {NoEffectCard new . NoEffectCard new}.
 	board := Board withSpaces: 5 Laps: 1.
 	game := Game
@@ -218,7 +217,7 @@ GameTest >> testCannotPlayCardThatIsNotInHand [
 		cards: deckOfCards.
 	self
 		should: [ game playCard: AccelerationCard new from: playerOne ]
-		raise: MissingCardError
+		raise: EmptyDeckError
 ]
 
 { #category : #tests }

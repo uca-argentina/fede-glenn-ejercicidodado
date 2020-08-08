@@ -4,12 +4,7 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #creation }
-ProbabilityDistributor >> createArrayWith: aCollection size: length [ 
-	^self createShuffledCollection: aCollection size: length.
-]
-
-{ #category : #instantiation }
+{ #category : #creating }
 ProbabilityDistributor >> createShuffledCollection: aCollection defaultElement: defaultElement size: anInteger [
 	| paddedCollection totalProbability |
 	paddedCollection := aCollection asOrderedCollection.
@@ -25,7 +20,7 @@ ProbabilityDistributor >> createShuffledCollection: aCollection defaultElement: 
 	^ self createShuffledCollection: paddedCollection size: anInteger
 ]
 
-{ #category : #creation }
+{ #category : #creating }
 ProbabilityDistributor >> createShuffledCollection: probableObjects size: length [
 	"Recieves a collection of probable objects with element and probability"
 
