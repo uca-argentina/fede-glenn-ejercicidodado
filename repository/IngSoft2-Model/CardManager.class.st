@@ -5,7 +5,8 @@ Class {
 		'playerHands',
 		'deckOfCards',
 		'permanentCardsPlayed',
-		'lastPlayed'
+		'lastPlayed',
+		'discardDeck'
 	],
 	#classInstVars : [
 		'playerHands'
@@ -38,15 +39,16 @@ CardManager >> createInitialHand: aDeckOfCards [
 ]
 
 { #category : #action }
-CardManager >> drawCardFor: aPlayer [ 
-	(self checkHandOf: aPlayer) add: (deckOfCards drawCard).
-
-
+CardManager >> drawCardFor: aPlayer [
+	self isDeckEmpty
+		ifTrue: [ deckOfCards mixWith: discardDeck ].
+	(self checkHandOf: aPlayer) add: deckOfCards drawCard
 ]
 
 { #category : #initialization }
 CardManager >> initializeWithPlayers: aCollectionOfPlayers cards: aDeckOfCards [
 	deckOfCards := aDeckOfCards.
+	discardDeck := Deck withCards: { }.
 	playerHands := Dictionary new.
 	permanentCardsPlayed := OrderedCollection new. 
 	aCollectionOfPlayers
@@ -56,7 +58,12 @@ CardManager >> initializeWithPlayers: aCollectionOfPlayers cards: aDeckOfCards [
 { #category : #checking }
 CardManager >> isCard: aCard inHandOf: aPlayer [ 
 	((playerHands at: aPlayer) includes: aCard)
-			ifFalse: [MissingCardError signal:'No esta en la mano del jugador']
+			ifFalse: [EmptyDeckError  signal:'Card is not in players hand']
+]
+
+{ #category : #information }
+CardManager >> isDeckEmpty [
+	^ deckOfCards isEmpty
 ]
 
 { #category : #accessing }
@@ -75,8 +82,11 @@ CardManager >> replayLastPermanentEffectTarget: aPlayer [
 ]
 
 { #category : #action }
-CardManager >> take: aCard from: aPlayer [
-	(self checkHandOf: aPlayer) remove: aCard
+CardManager >> take: cardPlayed from: aPlayer [
+	|playedCard|
+	playedCard := (self checkHandOf: aPlayer) remove: cardPlayed.
+	discardDeck putAtBottom: playedCard.
+	
 ]
 
 { #category : #action }

@@ -206,9 +206,8 @@ GameTest >> testCancellationCardWithTwoEqualActiveEffects [
 
 { #category : #tests }
 GameTest >> testCannotPlayCardThatIsNotInHand [
-	| board playerOne die game deckOfCards |
+	| board die game deckOfCards |
 	die := LoadedDie withValue: 2.
-	playerOne := self fede.
 	deckOfCards := Deck with: {NoEffectCard new . NoEffectCard new}.
 	board := Board withSpaces: 5 Laps: 1.
 	game := Game
@@ -218,7 +217,7 @@ GameTest >> testCannotPlayCardThatIsNotInHand [
 		cards: deckOfCards.
 	self
 		should: [ game playCard: AccelerationCard new from: playerOne ]
-		raise: MissingCardError
+		raise: EmptyDeckError
 ]
 
 { #category : #tests }
@@ -408,6 +407,31 @@ GameTest >> testPlayCardAcceleration [
 	self
 		assert: (game positionOf: playerOne)
 		equals: (Locker position: 4 lap: 1)
+]
+
+{ #category : #tests }
+GameTest >> testPlayCardAfterDeckIsEmpty [
+	| board die game deckOfCards |
+	die := LoadedDie withValue: 2.
+	deckOfCards := Deck
+		with:
+			{NoEffectCard new.
+			NoEffectCard new}.
+	board := Board
+		withSpaces: 10
+		Laps: 1
+		effects: {(ProbabilityWrapper with: DrawCardEffect new probability: 1)}.
+	game := Game
+		withBoard: board
+		dice: die
+		players: {playerOne}
+		cards: deckOfCards.
+
+	game playCard: NoEffectCard new from: playerOne.
+	game playCard: NoEffectCard new from: playerOne.
+	game play: playerOne.
+	
+	self assert: (game checkHandOf: playerOne) size equals: 1.
 ]
 
 { #category : #tests }

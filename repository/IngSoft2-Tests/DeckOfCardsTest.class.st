@@ -30,6 +30,19 @@ DeckOfCardsTest >> elements: elements probability: probabilities amount: amount 
 ]
 
 { #category : #tests }
+DeckOfCardsTest >> testCannotMixWithEmptyDeck [
+	| cardDistribuiton deckOfCards anotherDeck|
+	cardDistribuiton := self elements: { OverloadCard new } probability: { (1) } amount: 10.
+	
+	deckOfCards := Deck with: cardDistribuiton.
+	anotherDeck := Deck with: {}.
+	
+	self
+		should: [	deckOfCards mixWith: anotherDeck.]
+		raise: EmptyDeckError
+]
+
+{ #category : #tests }
 DeckOfCardsTest >> testDrawCardsWithUniformDistribution [
 	| deckOfCards result cardDistribution |
 	cardDistribution := self
@@ -55,18 +68,20 @@ DeckOfCardsTest >> testDrawFiniteAmountOrCards [
 	deckOfCards := Deck with: cardDistribuiton.
 	result := self draw: 10 from: deckOfCards.
 	self assert: result size equals: 10.
-	self should: [ deckOfCards drawCard ] raise: MissingCardError
+	self should: [ deckOfCards drawCard ] raise: EmptyDeckError
 ]
 
 { #category : #tests }
-DeckOfCardsTest >> testMergeAnEmptyDeckWithAnother [
-	| cardDistribuiton deckOfCards emptyDeck |
-	cardDistribuiton := self elements: { NoEffectCard new . OverloadCard new } probability: { (0.5) . (0.5) } amount: 10.
-	deckOfCards := Deck with: cardDistribuiton.
-	emptyDeck := Deck with: {}.
+DeckOfCardsTest >> testMixADeckWithAnother [
+	| cardDistribuiton deckOfCards anotherDeck anotherCardDistribuiton|
+	cardDistribuiton := self elements: { OverloadCard new } probability: { (1) } amount: 10.
+	anotherCardDistribuiton := self elements: { NoEffectCard new } probability: { (1) } amount: 10.
 	
-	emptyDeck shuffleWith: deckOfCards.
+	deckOfCards := Deck with: cardDistribuiton.
+	anotherDeck := Deck with: anotherCardDistribuiton.
+	
+	deckOfCards mixWith: anotherDeck.
 
-	self assert: emptyDeck cardsLeft equals: 10.
-	self assert: deckOfCards cardsLeft equals: 0.
+	self assert: deckOfCards countCards equals: 20.
+	self assert: anotherDeck countCards equals: 0.
 ]
