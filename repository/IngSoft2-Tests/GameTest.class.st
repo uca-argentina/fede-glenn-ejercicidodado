@@ -410,6 +410,31 @@ GameTest >> testPlayCardAcceleration [
 ]
 
 { #category : #tests }
+GameTest >> testPlayCardAfterDeckIsEmpty [
+	| board die game deckOfCards |
+	die := LoadedDie withValue: 2.
+	deckOfCards := Deck
+		with:
+			{NoEffectCard new.
+			NoEffectCard new}.
+	board := Board
+		withSpaces: 10
+		Laps: 1
+		effects: {(ProbabilityWrapper with: DrawCardEffect new probability: 1)}.
+	game := Game
+		withBoard: board
+		dice: die
+		players: {playerOne}
+		cards: deckOfCards.
+
+	game playCard: NoEffectCard new from: playerOne.
+	game playCard: NoEffectCard new from: playerOne.
+	game play: playerOne.
+	
+	self assert: (game checkHandOf: playerOne) size equals: 1.
+]
+
+{ #category : #tests }
 GameTest >> testPlayOverloadCard [
 	| board playerOne die game deckOfCards playerTwo |
 	die := LoadedDie withValue: 5.
