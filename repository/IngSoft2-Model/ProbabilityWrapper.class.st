@@ -28,8 +28,3 @@ ProbabilityWrapper >> initializeWith: anObject probability: aProbability [
 ProbabilityWrapper >> probability [
 	^ probability
 ]
-
-{ #category : #access }
-ProbabilityWrapper >> value [
-	^ object
-]

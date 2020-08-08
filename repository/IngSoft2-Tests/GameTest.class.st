@@ -23,6 +23,7 @@ GameTest >> elements: elements probability: probabilities amount: amount [
 			index := index + 1 ].
 	^ ProbabilityDistributor new
 		createShuffledCollection: result
+		defaultElement: NoEffectCard new
 		size: amount
 ]
 
@@ -146,9 +147,8 @@ GameTest >> testCancellationCard [
 
 { #category : #tests }
 GameTest >> testCancellationCardWithNoPermanentCardsActive [
-	| board playerOne die game deckOfCards cancellation |
+	| board die game deckOfCards cancellation |
 	die := LoadedDie withValue: 1.
-	playerOne := self fede.
 	deckOfCards := Deck
 		with: (self elements: {CancellationCard new} probability: {0.5} amount: 30).
 	board := Board

@@ -90,14 +90,11 @@ BoardTest >> testDistribiutionOfEffects [
 			result add: actualEffect.
 			counter := counter + 1 ].
 	self
-		assert: (result count: [ :anEffect | anEffect = NoEffect new ])
-		identicalTo: 83.
+		assert: ((result count: [ :anEffect | anEffect = NoEffect new ]) between: 70 and: 90). 
 	self
-		assert: (result count: [ :anEffect | anEffect = WormHoleEffect new ])
-		identicalTo: 15.
+		assert: ((result count: [ :anEffect | anEffect = WormHoleEffect new ]) between: 5 and: 25).
 	self
-		assert: (result count: [ :anEffect | anEffect = AtomicBombEffect new ])
-		identicalTo: 2
+		assert: ((result count: [ :anEffect | anEffect = AtomicBombEffect new ]) between: 0 and: 10).
 ]
 
 { #category : #tests }

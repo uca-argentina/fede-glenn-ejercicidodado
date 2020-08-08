@@ -24,14 +24,16 @@ ProbabilityDistributor >> createShuffledCollection: aCollection defaultElement: 
 ProbabilityDistributor >> createShuffledCollection: probableObjects size: length [
 	"Recieves a collection of probable objects with element and probability"
 
-	| result |
-	result := OrderedCollection new.
-	probableObjects
-		do: [ :aProbableObject | 
-			result
-				add: aProbableObject element
-				withOccurrences: (aProbableObject probability * length) truncated ].
-	result size = length
-		ifFalse: [ result add: probableObjects last element ].
-	^ result shuffle
+	| distributedArray base randy |
+	distributedArray := OrderedCollection new.
+	length
+		timesRepeat: [ randy := Random new next.
+			base := 0.
+			probableObjects
+				detect: [ :probableObject | 
+					base := base + probableObject probability.
+					randy <= base ]
+				ifFound: [ :probableObject | distributedArray add: probableObject element ]
+				ifNone: [ CreationError signal: 'Error with probabilities' ] ].
+	^ distributedArray shuffle.	
 ]
