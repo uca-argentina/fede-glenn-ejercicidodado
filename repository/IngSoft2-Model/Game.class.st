@@ -170,10 +170,10 @@ Game >> positionOf: aPlayer [
 
 { #category : #ranking }
 Game >> rankOf: aPlayer [ 
-	^positionTracker getPlayersInOrderByLocker indexOf: aPlayer.
+	^positionTracker getOrderedPlayers indexOf: aPlayer.
 ]
 
 { #category : #ranking }
 Game >> scoreBoard [
-	^positionTracker getPlayersInOrderByLocker  
+	^positionTracker getOrderedPlayers  
 ]

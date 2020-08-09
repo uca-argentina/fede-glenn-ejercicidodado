@@ -5,7 +5,7 @@ Class {
 }
 
 { #category : #creating }
-ProbabilityDistributor >> createShuffledCollection: aCollection defaultElement: defaultElement size: anInteger [
+ProbabilityDistributor >> getShuffledCollection: aCollection defaultElement: defaultElement size: anInteger [
 	| paddedCollection totalProbability |
 	paddedCollection := aCollection asOrderedCollection.
 	totalProbability := aCollection
@@ -17,13 +17,11 @@ ProbabilityDistributor >> createShuffledCollection: aCollection defaultElement: 
 						with: defaultElement
 						probability: (1 - totalProbability round: 3)) ]
 		ifFalse: [ CreationError signal: 'Probability over 1' ].
-	^ self createShuffledCollection: paddedCollection size: anInteger
+	^ self getShuffledCollection: paddedCollection size: anInteger
 ]
 
 { #category : #creating }
-ProbabilityDistributor >> createShuffledCollection: probableObjects size: length [
-	"Recieves a collection of probable objects with element and probability"
-
+ProbabilityDistributor >> getShuffledCollection: probableObjects size: length [
 	| distributedArray base randy |
 	distributedArray := OrderedCollection new.
 	length

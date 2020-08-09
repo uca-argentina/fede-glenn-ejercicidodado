@@ -22,7 +22,7 @@ GameTest >> elements: elements probability: probabilities amount: amount [
 						probability: (probabilities at: index)).
 			index := index + 1 ].
 	^ ProbabilityDistributor new
-		createShuffledCollection: result
+		getShuffledCollection: result
 		defaultElement: NoEffectCard new
 		size: amount
 ]
@@ -52,10 +52,8 @@ GameTest >> setUp [
 
 { #category : #tests }
 GameTest >> testAPlayerPlaysTwiceFails [
-	| board playerOne playerTwo die game |
+	| board die game |
 	die := LoadedDie withValue: 6.
-	playerOne := self fede.
-	playerTwo := self glenn.
 	board := Board withSpaces: 10 Laps: 2.
 	game := Game
 		withBoard: board
@@ -288,8 +286,7 @@ GameTest >> testGameScoreBoard [
 	game play: playerOne.
 	game play: playerTwo.
 	game play: playerOne.
-	result := {playerOne.
-	playerTwo} asOrderedCollection.
+	result := {playerOne.playerTwo} asOrderedCollection.
 	self assert: result equals: game scoreBoard
 ]
 
@@ -298,7 +295,7 @@ GameTest >> testHandOutTwoCardsInitially [
 	| game board die deckOfCards |
 	die := LoadedDie withValue: 5.
 	board := Board withSpaces: 10 Laps: 2.
-	deckOfCards := Deck withCards: {NoEffectCard new . NoEffectCard new}.
+	deckOfCards := Deck with: {NoEffectCard new . NoEffectCard new}.
 	game := Game
 		withBoard: board
 		dice: die

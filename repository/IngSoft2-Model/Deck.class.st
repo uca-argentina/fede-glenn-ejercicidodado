@@ -7,13 +7,8 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #instantiation }
-Deck class >> with: aCollectionOfCards [
-	^ self new initializeWithCards: aCollectionOfCards
-]
-
 { #category : #'instance creation' }
-Deck class >> withCards: aCollectionOfCards [ 
+Deck class >> with: aCollectionOfCards [ 
 	^self new initializeWithCards: aCollectionOfCards
 ]
 

@@ -25,7 +25,7 @@ DeckOfCardsTest >> elements: elements probability: probabilities amount: amount 
 						probability: (probabilities at: index)).
 			index := index + 1 ].
 	^ ProbabilityDistributor new
-		createShuffledCollection: result
+		getShuffledCollection: result
 		size: amount
 ]
 

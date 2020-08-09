@@ -48,7 +48,7 @@ CardManager >> drawCardFor: aPlayer [
 { #category : #initialization }
 CardManager >> initializeWithPlayers: aCollectionOfPlayers cards: aDeckOfCards [
 	deckOfCards := aDeckOfCards.
-	discardDeck := Deck withCards: { }.
+	discardDeck := Deck with: { }.
 	playerHands := Dictionary new.
 	permanentCardsPlayed := OrderedCollection new. 
 	aCollectionOfPlayers

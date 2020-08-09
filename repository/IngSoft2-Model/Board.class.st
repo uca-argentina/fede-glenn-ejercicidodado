@@ -15,7 +15,7 @@ Board class >> withSpaces: amountOfSpaces Laps: amountOfLaps [
 		effect: {(ProbabilityWrapper with: NoEffect new probability: 1)}
 ]
 
-{ #category : #'instance creation - old' }
+{ #category : #'instance creation' }
 Board class >> withSpaces: anInteger Laps: numberOfLaps effects: arrayOfEffects [
 	^ self new
 		initializeWithSpaces: anInteger
@@ -28,7 +28,7 @@ Board >> generateBoardWithSpaces: amountOfSpaces laps: amountOfLaps effect: arra
 	| arrayOfShuffledEffects count |
 	board := OrderedCollection new.
 	arrayOfShuffledEffects := ProbabilityDistributor new
-		createShuffledCollection: arrayOfEffects
+		getShuffledCollection: arrayOfEffects
 		defaultElement: NoEffect new
 		size: amountOfLaps * amountOfSpaces.
 	count := 1.
