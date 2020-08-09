@@ -35,7 +35,7 @@ Deck >> initializeWithCards: aCollectionOfCards [
 
 { #category : #size }
 Deck >> isEmpty [
-	^ deck size = 0
+	^ deck isEmpty
 ]
 
 { #category : #merging }
@@ -46,7 +46,7 @@ Deck >> mixWith: aDeck [
 	 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 Deck >> putAtBottom: aCard [  
 	deck addLast: aCard
 ]

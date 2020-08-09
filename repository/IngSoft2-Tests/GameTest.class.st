@@ -69,8 +69,7 @@ GameTest >> testAPlayerPlaysTwiceFails [
 
 { #category : #tests }
 GameTest >> testAtomicBombEffect [
-	| board playerOne die game |
-	playerOne := self fede.
+	| board die game |
 	die := LoadedDie withValue: 4.
 	board := Board
 		withSpaces: 2
@@ -85,9 +84,7 @@ GameTest >> testAtomicBombEffect [
 
 { #category : #tests }
 GameTest >> testAtomicBombEffectWithAnotherPlayerInStartingPosition [
-	| board playerOne die game playerTwo |
-	playerOne := self fede.
-	playerTwo := self glenn.
+	| board  die game |
 	die := LoadedDie withValue: 7.
 	board := Board
 		withSpaces: 5
@@ -110,10 +107,8 @@ GameTest >> testAtomicBombEffectWithAnotherPlayerInStartingPosition [
 
 { #category : #tests }
 GameTest >> testCancellationCard [
-	| board playerOne die game deckOfCards playerTwo cancellationCard cards |
+	| board die game deckOfCards cancellationCard cards |
 	die := LoadedDie withValue: 1.
-	playerOne := self fede.
-	playerTwo := self glenn.
 	cards := self
 		elements: {SpeedCard new . CancellationCard new} probability: {0.5 . 0.5} amount: 30.
 	deckOfCards := Deck with: cards.
@@ -168,7 +163,7 @@ GameTest >> testCancellationCardWithNoPermanentCardsActive [
 
 { #category : #tests }
 GameTest >> testCancellationCardWithTwoEqualActiveEffects [
-	| board playerOne die game deckOfCards playerTwo cards |
+	| board die game deckOfCards cards |
 	die := LoadedDie withValue: 1.
 	playerOne := self fede.
 	playerTwo := self glenn.
@@ -222,10 +217,8 @@ GameTest >> testCannotPlayCardThatIsNotInHand [
 
 { #category : #tests }
 GameTest >> testCannotPlayPermanentCardOutOfTurn [
-	| board playerOne die game deckOfCards playerTwo |
+	| board die game deckOfCards |
 	die := LoadedDie withValue: 2.
-	playerOne := self fede.
-	playerTwo := self glenn.
 	deckOfCards := Deck
 		with:
 			{AccelerationCard new.
@@ -247,9 +240,8 @@ GameTest >> testCannotPlayPermanentCardOutOfTurn [
 
 { #category : #tests }
 GameTest >> testCompleteOneLap [
-	| board playerOne die game|
+	| board die game|
 	die := LoadedDie withValue: 6.
-	playerOne := self fede.
 	board := Board withSpaces:10 Laps: 2.
 	game := Game
 		withBoard: board
@@ -262,9 +254,8 @@ GameTest >> testCompleteOneLap [
 
 { #category : #tests }
 GameTest >> testDrawCardEffect [
-	| board playerOne die game deckOfCards |
+	| board die game deckOfCards |
 	die := LoadedDie withValue: 2.
-	playerOne := self fede.
 	deckOfCards := Deck
 		with:
 			{NoEffectCard new.
@@ -285,10 +276,8 @@ GameTest >> testDrawCardEffect [
 
 { #category : #tests }
 GameTest >> testGameScoreBoard [
-	| board playerOne playerTwo die result game |
+	| board die result game |
 	die := LoadedDie withValue: 6.
-	playerOne := self fede.
-	playerTwo := self glenn.
 	board := Board withSpaces: 10 Laps: 2.
 	game := Game
 		withBoard: board
@@ -306,9 +295,8 @@ GameTest >> testGameScoreBoard [
 
 { #category : #tests }
 GameTest >> testHandOutTwoCardsInitially [
-	| game board playerOne die deckOfCards |
+	| game board die deckOfCards |
 	die := LoadedDie withValue: 5.
-	playerOne := self fede.
 	board := Board withSpaces: 10 Laps: 2.
 	deckOfCards := Deck withCards: {NoEffectCard new . NoEffectCard new}.
 	game := Game
@@ -321,9 +309,7 @@ GameTest >> testHandOutTwoCardsInitially [
 
 { #category : #tests }
 GameTest >> testMoonWalkEffect [
-	| board playerOne playerTwo die game |
-	playerOne := self fede.
-	playerTwo := self glenn.
+	| board die game |
 	die := LoadedDie withValue: 6.
 	board := Board
 		withSpaces: 10
@@ -347,9 +333,8 @@ GameTest >> testMoonWalkEffect [
 
 { #category : #tests }
 GameTest >> testNoEffect [
-	| board playerOne die game |
+	| board die game |
 	die := LoadedDie withValue: 3.
-	playerOne := self fede.
 	board := Board
 		withSpaces: 10
 		Laps: 1
@@ -363,9 +348,8 @@ GameTest >> testNoEffect [
 
 { #category : #tests }
 GameTest >> testPlayCard [
-	| board playerOne die game deckOfCards |
+	| board die game deckOfCards |
 	die := LoadedDie withValue: 2.
-	playerOne := self fede.
 	deckOfCards := Deck with: {NoEffectCard new . NoEffectCard new}.
 	board := Board withSpaces: 5 Laps: 1.
 	game := Game
@@ -380,10 +364,8 @@ GameTest >> testPlayCard [
 
 { #category : #tests }
 GameTest >> testPlayCardAcceleration [
-	| board playerOne die game deckOfCards playerTwo |
+	| board die game deckOfCards |
 	die := LoadedDie withValue: 2.
-	playerOne := self fede.
-	playerTwo := self glenn.
 	deckOfCards := Deck
 		with:
 			{AccelerationCard new.
@@ -436,10 +418,8 @@ GameTest >> testPlayCardAfterDeckIsEmpty [
 
 { #category : #tests }
 GameTest >> testPlayOverloadCard [
-	| board playerOne die game deckOfCards playerTwo |
+	| board die game deckOfCards |
 	die := LoadedDie withValue: 5.
-	playerOne := self fede.
-	playerTwo := self glenn.
 	deckOfCards := Deck
 		with:
 			{OverloadCard new.
@@ -467,10 +447,8 @@ GameTest >> testPlayOverloadCard [
 
 { #category : #tests }
 GameTest >> testPlaySpeedCard [
-	| board playerOne die game deckOfCards playerTwo |
+	| board die game deckOfCards |
 	die := LoadedDie withValue: 2.
-	playerOne := self fede.
-	playerTwo := self glenn.
 	deckOfCards := Deck
 		with:
 			{SpeedCard new.
@@ -498,11 +476,10 @@ GameTest >> testPlaySpeedCard [
 
 { #category : #tests }
 GameTest >> testPlayWithSeveralCards [
-	| board playerOne die game deckOfCards finalHand cards |
+	| board die game deckOfCards finalHand cards |
 	die := LoadedDie withValue: 1.
 	cards := self elements: {NoEffectCard new . OverloadCard new} probability: {0.5 . 0.5} amount: 100.
 	deckOfCards := Deck with: cards.
-	playerOne := self fede.
 	board := Board
 		withSpaces: 100
 		Laps: 1
@@ -523,9 +500,8 @@ GameTest >> testPlayWithSeveralCards [
 
 { #category : #tests }
 GameTest >> testPlayerDoesNotCrossLastLocker [
-	| board playerOne die game |
+	| board die game |
 	die := LoadedDie withValue: 12.
-	playerOne := self fede.
 	board := Board withSpaces: 10 Laps: 1.
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
@@ -536,9 +512,8 @@ GameTest >> testPlayerDoesNotCrossLastLocker [
 
 { #category : #tests }
 GameTest >> testPlayerPlays [
-	| game board playerOne die |
+	| game board die |
 	die := LoadedDie withValue: 5.
-	playerOne := self fede.
 	board := Board withSpaces: 10 Laps: 2.
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
@@ -549,9 +524,7 @@ GameTest >> testPlayerPlays [
 
 { #category : #tests }
 GameTest >> testPlayerRank [
-	| board playerOne playerTwo die game |
-	playerOne := self fede.
-	playerTwo := self glenn.
+	| board die game |
 	die := LoadedDie withValue: 6.
 	board := Board withSpaces: 10 Laps: 1.
 	game := Game
@@ -569,9 +542,8 @@ GameTest >> testPlayerRank [
 
 { #category : #tests }
 GameTest >> testPlayerWins [
-	| board playerOne die game |
+	| board die game |
 	die := LoadedDie withValue: 6.
-	playerOne := self fede.
 	board := Board withSpaces: 10 Laps: 1.
 	game := Game withBoard: board dice: die players: {playerOne}.
 	game play: playerOne.
@@ -585,10 +557,7 @@ GameTest >> testPlayerWins [
 
 { #category : #tests }
 GameTest >> testPlayingWithTurnsWithThreePlayers [
-	| board playerOne playerTwo playerThree die game |
-	playerOne := self fede.
-	playerTwo := self glenn.
-	playerThree := self nicky.
+	| board die game |
 	die := LoadedDie withValue: 6.
 	board := Board withSpaces: 10 Laps: 1.
 	game := Game
@@ -616,10 +585,8 @@ GameTest >> testPlayingWithTurnsWithThreePlayers [
 
 { #category : #tests }
 GameTest >> testRedoInstantCard [
-	| board playerOne die game deckOfCards playerTwo cards |
+	| board die game deckOfCards cards |
 	die := LoadedDie withValue: 1.
-	playerOne := self fede.
-	playerTwo := self glenn.
 	cards := self
 		elements:
 			{RedoCard new.
@@ -639,7 +606,7 @@ GameTest >> testRedoInstantCard [
 			{playerOne.
 			playerTwo}
 		cards: deckOfCards.
-	15
+	100
 		timesRepeat: [ game play: playerOne.
 			game play: playerTwo ].
 	game playCard: SpeedCard new from: playerOne to: playerOne.
@@ -653,10 +620,10 @@ GameTest >> testRedoInstantCard [
 	game play: playerOne.
 	self
 		assert: (game positionOf: playerTwo)
-		equals: (Locker position: 16 lap: 1).
+		equals: (Locker position: 100 lap: 1 effect: DrawCardEffect new).
 	self
 		assert: (game positionOf: playerOne)
-		equals: (Locker position: 17 lap: 1)
+		equals: (Locker position: 100 lap: 1 effect: DrawCardEffect new)
 ]
 
 { #category : #tests }
@@ -668,10 +635,10 @@ GameTest >> testRedoPermanentCard [
 			{SpeedCard new.
 			RedoCard new}
 		probability: {0.5 . 0.5}
-		amount: 30.
+		amount: 210.
 	deckOfCards := Deck with: cards.
 	board := Board
-		withSpaces: 100
+		withSpaces: 150
 		Laps: 1
 		effects: {(ProbabilityWrapper with: DrawCardEffect new probability: 1)}.
 	game := Game
@@ -681,7 +648,7 @@ GameTest >> testRedoPermanentCard [
 			{playerOne.
 			playerTwo}
 		cards: deckOfCards.
-	10
+	100
 		timesRepeat: [ game play: playerOne.
 			game play: playerTwo ].
 	game playCard: SpeedCard new from: playerOne to: playerTwo.
@@ -692,10 +659,10 @@ GameTest >> testRedoPermanentCard [
 	game play: playerOne.
 	self
 		assert: (game positionOf: playerTwo)
-		equals: (Locker position: 13 lap: 1).
+		equals: (Locker position: 103 lap: 1 effect: DrawCardEffect new).
 	self
 		assert: (game positionOf: playerOne)
-		equals: (Locker position: 14 lap: 1)
+		equals: (Locker position: 104 lap: 1 effect: DrawCardEffect new)
 ]
 
 { #category : #tests }
@@ -707,10 +674,10 @@ GameTest >> testRedoPermanentCardOverload [
 			{OverloadCard new.
 			RedoCard new}
 		probability: {0.5 . 0.5}
-		amount: 50.
+		amount: 250.
 	deckOfCards := Deck with: cards.
 	board := Board
-		withSpaces: 100
+		withSpaces: 1000
 		Laps: 1
 		effects: {(ProbabilityWrapper with: DrawCardEffect new probability: 1)}.
 	game := Game
@@ -720,7 +687,7 @@ GameTest >> testRedoPermanentCardOverload [
 			{playerOne.
 			playerTwo}
 		cards: deckOfCards.
-	10
+	100
 		timesRepeat: [ game play: playerOne.
 			game play: playerTwo ].
 	game playCard: OverloadCard new from: playerOne to: playerTwo.
@@ -731,10 +698,10 @@ GameTest >> testRedoPermanentCardOverload [
 	game play: playerOne.
 	self
 		assert: (game positionOf: playerTwo)
-		equals: (Locker position: 10 lap: 1).
+		equals: (Locker position: 100 lap: 1 effect: DrawCardEffect new).
 	self
 		assert: (game positionOf: playerOne)
-		equals: (Locker position: 11 lap: 1)
+		equals: (Locker position: 101 lap: 1 effect: DrawCardEffect new)
 ]
 
 { #category : #tests }
@@ -743,7 +710,7 @@ GameTest >> testRepeatMoonWalkEffect [
 	die := LoadedDie withValue: 8.
 	cards := self
 		elements: {RepeatCard new}
-		probability: {0.5}
+		probability: {1}
 		amount: 50.
 	deckOfCards := Deck with: cards.
 	board := Board
@@ -774,7 +741,7 @@ GameTest >> testRepeatSpeedupEffect [
 	die := LoadedDie withValue: 1.
 	cards := self
 		elements: {RepeatCard new}
-		probability: {0.5}
+		probability: {1}
 		amount: 50.
 	deckOfCards := Deck with: cards.
 	board := Board
@@ -847,9 +814,8 @@ GameTest >> testTargetTwoCardAtAPlayer [
 
 { #category : #tests }
 GameTest >> testWormHoleEffect [
-	| board playerOne die game |
+	| board die game |
 	die := LoadedDie withValue: 6.
-	playerOne := self fede.
 	board := Board
 		withSpaces: 10
 		Laps: 1
@@ -863,9 +829,8 @@ GameTest >> testWormHoleEffect [
 
 { #category : #tests }
 GameTest >> testWormHoleEffectLimitMove [
-	| board playerOne die game |
+	| board die game |
 	die := LoadedDie withValue: 3.
-	playerOne := self fede.
 	board := Board
 		withSpaces: 10
 		Laps: 1

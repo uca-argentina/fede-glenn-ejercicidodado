@@ -55,7 +55,7 @@ CardManager >> initializeWithPlayers: aCollectionOfPlayers cards: aDeckOfCards [
 		do: [ :aPlayer | playerHands add: aPlayer -> (self createInitialHand: aDeckOfCards) ] 
 ]
 
-{ #category : #checking }
+{ #category : #accessing }
 CardManager >> isCard: aCard inHandOf: aPlayer [ 
 	((playerHands at: aPlayer) includes: aCard)
 			ifFalse: [EmptyDeckError  signal:'Card is not in players hand']
