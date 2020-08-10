@@ -55,7 +55,7 @@ BoardTest >> testCreateBoardWithNoEffectsByDefault [
 BoardTest >> testCreateBoardWithSeveralEffects [
 	| board result starting actualEffect counter |
 	board := Board
-		withSpaces: 2
+		withSpaces: 100
 		Laps: 1
 		effects:
 			{(ProbabilityWrapper with: NoEffect new probability: 0.5).
@@ -63,7 +63,7 @@ BoardTest >> testCreateBoardWithSeveralEffects [
 	starting := board startingLocker.
 	result := OrderedCollection new.
 	counter := 0.
-	2
+	100
 		timesRepeat: [ actualEffect := (board get: counter from: starting) effect.
 			result add: actualEffect.
 			counter := counter + 1 ].
@@ -90,14 +90,11 @@ BoardTest >> testDistribiutionOfEffects [
 			result add: actualEffect.
 			counter := counter + 1 ].
 	self
-		assert: (result count: [ :anEffect | anEffect = NoEffect new ])
-		identicalTo: 83.
+		assert: ((result count: [ :anEffect | anEffect = NoEffect new ]) between: 70 and: 90). 
 	self
-		assert: (result count: [ :anEffect | anEffect = WormHoleEffect new ])
-		identicalTo: 15.
+		assert: ((result count: [ :anEffect | anEffect = WormHoleEffect new ]) between: 5 and: 25).
 	self
-		assert: (result count: [ :anEffect | anEffect = AtomicBombEffect new ])
-		identicalTo: 2
+		assert: ((result count: [ :anEffect | anEffect = AtomicBombEffect new ]) between: 0 and: 10).
 ]
 
 { #category : #tests }

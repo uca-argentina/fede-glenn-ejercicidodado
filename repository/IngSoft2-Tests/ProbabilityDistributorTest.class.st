@@ -6,37 +6,36 @@ Class {
 
 { #category : #tests }
 ProbabilityDistributorTest >> testGetDistributedArrayOfObjects [
-	| result distributor |
+	| distributor |
 	distributor := ProbabilityDistributor new
-		createShuffledCollection:
+		getShuffledCollection:
 			{(ProbabilityWrapper with: 'Fede' probability: 0.4).
 			(ProbabilityWrapper with: 'Abril' probability: 0.6)}
 		size: 100.
+	self assert: distributor size equals: 100.
 	self
-		assert: (distributor count: [ :name | 'Fede' == name ])
-		equals: 40.
+		assert: ((distributor count: [ :name | 'Fede' == name ]) between: 20 and: 55).
 	self
-		assert: (distributor count: [ :name | 'Abril' == name ])
-		equals: 60
+		assert: ((distributor count: [ :name | 'Abril' == name ]) between: 45 and: 75)
+		
+	
+
 ]
 
 { #category : #tests }
 ProbabilityDistributorTest >> testGetDistributedArrayOfObjectsPadded [
 	| result distributor |
 	distributor := ProbabilityDistributor new
-		createShuffledCollection:
+		getShuffledCollection:
 			{(ProbabilityWrapper with: 'Fede' probability: 0.4).
 			(ProbabilityWrapper with: 'Abril' probability: 0.4)}
 		defaultElement: ''
 		size: 100.
 	self assert: distributor size equals: 100.
 	self
-		assert: (distributor count: [ :name | 'Fede' == name ])
-		equals: 40.
+		assert: ((distributor count: [ :name | 'Fede' == name ]) between: 25 and: 55).
 	self
-		assert: (distributor count: [ :name | 'Abril' == name ])
-		equals: 40.
+		assert: ((distributor count: [ :name | 'Abril' == name ]) between: 25 and: 55).
 	self
-		assert: (distributor count: [ :name | '' == name ])
-		equals: 20
+		assert: ((distributor count: [ :name | '' == name ]) between: 5 and: 35). 
 ]

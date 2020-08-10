@@ -7,13 +7,8 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #instantiation }
-Deck class >> with: aCollectionOfCards [
-	^ self new initializeWithCards: aCollectionOfCards
-]
-
 { #category : #'instance creation' }
-Deck class >> withCards: aCollectionOfCards [ 
+Deck class >> with: aCollectionOfCards [ 
 	^self new initializeWithCards: aCollectionOfCards
 ]
 
@@ -35,7 +30,7 @@ Deck >> initializeWithCards: aCollectionOfCards [
 
 { #category : #size }
 Deck >> isEmpty [
-	^ deck size = 0
+	^ deck isEmpty
 ]
 
 { #category : #merging }
@@ -46,7 +41,7 @@ Deck >> mixWith: aDeck [
 	 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 Deck >> putAtBottom: aCard [  
 	deck addLast: aCard
 ]

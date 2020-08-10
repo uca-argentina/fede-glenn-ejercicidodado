@@ -25,7 +25,7 @@ DeckOfCardsTest >> elements: elements probability: probabilities amount: amount 
 						probability: (probabilities at: index)).
 			index := index + 1 ].
 	^ ProbabilityDistributor new
-		createShuffledCollection: result
+		getShuffledCollection: result
 		size: amount
 ]
 
@@ -54,11 +54,9 @@ DeckOfCardsTest >> testDrawCardsWithUniformDistribution [
 	deckOfCards := Deck with: cardDistribution.
 	result := self draw: 100 from: deckOfCards.
 	self
-		assert: (result count: [ :card | NoEffectCard new = card ])
-		equals: 40.
+		assert: ((result count: [ :card | NoEffectCard new = card ]) between: 30 and: 55).
 	self
-		assert: (result count: [ :card | OverloadCard new = card ])
-		equals: 60
+		assert: ((result count: [ :card | OverloadCard new = card ]) between: 45 and: 75). 
 ]
 
 { #category : #tests }
