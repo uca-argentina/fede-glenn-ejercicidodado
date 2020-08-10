@@ -41,8 +41,10 @@ CardManager >> createInitialHand: aDeckOfCards [
 { #category : #action }
 CardManager >> drawCardFor: aPlayer [
 	self isDeckEmpty
-		ifTrue: [ deckOfCards mixWith: discardDeck ].
-	(self checkHandOf: aPlayer) add: deckOfCards drawCard
+		ifTrue: [ discardDeck isEmpty
+				ifFalse: [ deckOfCards mixWith: discardDeck.
+							  (self checkHandOf: aPlayer) add: deckOfCards drawCard ] ]
+		ifFalse: [ (self checkHandOf: aPlayer) add: deckOfCards drawCard ]
 ]
 
 { #category : #initialization }
