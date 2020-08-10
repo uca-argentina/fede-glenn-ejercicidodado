@@ -344,6 +344,29 @@ GameTest >> testNoEffect [
 ]
 
 { #category : #tests }
+GameTest >> testNotPickingACardWithBothDecksEmpty [
+	| board die game deckOfCards |
+	die := LoadedDie withValue: 2.
+	deckOfCards := Deck
+		with:
+			{NoEffectCard new.
+			NoEffectCard new}.
+	board := Board
+		withSpaces: 10
+		Laps: 1
+		effects: {(ProbabilityWrapper with: DrawCardEffect new probability: 1)}.
+	game := Game
+		withBoard: board
+		dice: die
+		players: {playerOne}
+		cards: deckOfCards.
+
+	game play: playerOne.
+	
+	self assert: (game checkHandOf: playerOne) size equals: 2.
+]
+
+{ #category : #tests }
 GameTest >> testPlayCard [
 	| board die game deckOfCards |
 	die := LoadedDie withValue: 2.
