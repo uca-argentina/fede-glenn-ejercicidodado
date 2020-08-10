@@ -11,3 +11,8 @@ Class {
 GameEffect >> = otherEffect [
 	^self class == otherEffect class
 ]
+
+{ #category : #operations }
+GameEffect >> applyTo: aGame [
+	^ self subclassResponsibility
+]
