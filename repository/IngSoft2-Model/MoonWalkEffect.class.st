@@ -7,9 +7,9 @@ Class {
 	#category : #'IngSoft2-Model'
 }
 
-{ #category : #'instance creation' }
-MoonWalkEffect class >> withProbability: anInteger goBack: anInteger2 [
-	^ self new initializeWithProbability: anInteger goBack: anInteger2
+{ #category : #instantiation }
+MoonWalkEffect class >> goBack: anInteger [
+	^ self new goBack: anInteger
 ]
 
 { #category : #apply }
@@ -22,8 +22,7 @@ MoonWalkEffect >> backingSpaces [
 	^stepsBack 
 ]
 
-{ #category : #initialization }
-MoonWalkEffect >> initializeWithProbability: anInteger goBack: anInteger2 [ 
-	probability := anInteger.
-	stepsBack := anInteger2.
+{ #category : #initializarion }
+MoonWalkEffect >> goBack: anInteger [
+	stepsBack := anInteger
 ]

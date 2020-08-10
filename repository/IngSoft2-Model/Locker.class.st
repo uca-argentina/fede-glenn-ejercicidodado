@@ -11,7 +11,7 @@ Class {
 
 { #category : #'instance creation' }
 Locker class >> position: lockerNumber  lap: lapNumber [ 
-	^ self new initializeWithPosition: lockerNumber lap: lapNumber effect: (NoEffect withProbability: 1).
+	^ self new initializeWithPosition: lockerNumber lap: lapNumber effect: NoEffect new.
 ]
 
 { #category : #'instance creation' }
@@ -54,4 +54,10 @@ Locker >> lap [
 { #category : #private }
 Locker >> position [
 	^position
+]
+
+{ #category : #printing }
+Locker >> printString [
+	^'Locker con pos: ',position asString,' lap: ',lap asString,' effect: ',effect asString
+	
 ]
