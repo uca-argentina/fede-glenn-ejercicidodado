@@ -5,7 +5,8 @@ Class {
 		'playerHands',
 		'deckOfCards',
 		'permanentCardsPlayed',
-		'lastPlayed'
+		'lastPlayed',
+		'discardDeck'
 	],
 	#classInstVars : [
 		'playerHands'
@@ -38,25 +39,33 @@ CardManager >> createInitialHand: aDeckOfCards [
 ]
 
 { #category : #action }
-CardManager >> drawCardFor: aPlayer [ 
-	(self checkHandOf: aPlayer) add: (deckOfCards drawCard).
-
-
+CardManager >> drawCardFor: aPlayer [
+	self isDeckEmpty
+		ifTrue: [ discardDeck isEmpty
+				ifFalse: [ deckOfCards mixWith: discardDeck.
+							  (self checkHandOf: aPlayer) add: deckOfCards drawCard ] ]
+		ifFalse: [ (self checkHandOf: aPlayer) add: deckOfCards drawCard ]
 ]
 
 { #category : #initialization }
 CardManager >> initializeWithPlayers: aCollectionOfPlayers cards: aDeckOfCards [
 	deckOfCards := aDeckOfCards.
+	discardDeck := Deck with: { }.
 	playerHands := Dictionary new.
 	permanentCardsPlayed := OrderedCollection new. 
 	aCollectionOfPlayers
 		do: [ :aPlayer | playerHands add: aPlayer -> (self createInitialHand: aDeckOfCards) ] 
 ]
 
-{ #category : #checking }
+{ #category : #accessing }
 CardManager >> isCard: aCard inHandOf: aPlayer [ 
 	((playerHands at: aPlayer) includes: aCard)
-			ifFalse: [MissingCardError signal:'No esta en la mano del jugador']
+			ifFalse: [EmptyDeckError  signal:'Card is not in players hand']
+]
+
+{ #category : #information }
+CardManager >> isDeckEmpty [
+	^ deckOfCards isEmpty
 ]
 
 { #category : #accessing }
@@ -75,6 +84,14 @@ CardManager >> replayLastPermanentEffectTarget: aPlayer [
 ]
 
 { #category : #action }
+CardManager >> take: cardPlayed from: aPlayer [
+	|playedCard|
+	playedCard := (self checkHandOf: aPlayer) remove: cardPlayed.
+	discardDeck putAtBottom: playedCard.
+	
+]
+
+{ #category : #action }
 CardManager >> utilizeCard: aCard from: aPlayer [ 
 	self utilizeCard: aCard from: aPlayer to: aPlayer
 	
@@ -83,7 +100,7 @@ CardManager >> utilizeCard: aCard from: aPlayer [
 { #category : #action }
 CardManager >> utilizeCard: aCard from: aPlayer to: targetedPlayer [
 	self isCard: aCard inHandOf: aPlayer.
-	(self checkHandOf: aPlayer) remove: aCard.
+	self take: aCard from: aPlayer.
 	lastPlayed := aCard.
 	aCard isPermanent
 		ifFalse: [ ^ self ].

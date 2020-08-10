@@ -14,13 +14,13 @@ PositionTracker class >> withBoard: aBoard Players: somePlayers [
 ]
 
 { #category : #classification }
-PositionTracker >> getPlayersInOrderByLocker [
+PositionTracker >> getOrderedPlayers [
 	| result |
 	result := OrderedCollection new.
 	(scoreBoard associations
 		sort:
-			[ :aAssociation :otherAssociation | otherAssociation value <= aAssociation value ])
-		do: [ :association | result add: association key ].
+			[ :aPlayerPosition :nextPlayerPosition | nextPlayerPosition value <= aPlayerPosition value ])
+		do: [ :aPlayerPosition | result add: aPlayerPosition key ].
 	^ result
 ]
 

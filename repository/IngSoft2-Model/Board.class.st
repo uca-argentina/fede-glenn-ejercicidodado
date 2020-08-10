@@ -12,10 +12,10 @@ Board class >> withSpaces: amountOfSpaces Laps: amountOfLaps [
 	^ self new
 		initializeWithSpaces: amountOfSpaces
 		laps: amountOfLaps
-		effect: (Array with: (NoEffect withProbability: 1))
+		effect: {(ProbabilityWrapper with: NoEffect new probability: 1)}
 ]
 
-{ #category : #'instance creation - old' }
+{ #category : #'instance creation' }
 Board class >> withSpaces: anInteger Laps: numberOfLaps effects: arrayOfEffects [
 	^ self new
 		initializeWithSpaces: anInteger
@@ -26,10 +26,10 @@ Board class >> withSpaces: anInteger Laps: numberOfLaps effects: arrayOfEffects 
 { #category : #initialization }
 Board >> generateBoardWithSpaces: amountOfSpaces laps: amountOfLaps effect: arrayOfEffects [
 	| arrayOfShuffledEffects count |
-	self padEffects: arrayOfEffects.
 	board := OrderedCollection new.
 	arrayOfShuffledEffects := ProbabilityDistributor new
-		createArrayWith: arrayOfEffects
+		getShuffledCollection: arrayOfEffects
+		defaultElement: NoEffect new
 		size: amountOfLaps * amountOfSpaces.
 	count := 1.
 	1 to: amountOfLaps do: [ :lap | 
@@ -70,8 +70,7 @@ Board >> howFarFromStart: aLocker [
 
 { #category : #initialization }
 Board >> initializeWithSpaces: amountOfSpaces laps: amountOfLaps effect: arrayOfEffects [
-	((self validateSpaces: amountOfSpaces andLaps: amountOfLaps)
-		or: (self validateEffectProbabilities: arrayOfEffects))
+	(self validateSpaces: amountOfSpaces andLaps: amountOfLaps)
 		ifTrue: [ CreationError
 				signal: 'You cannot create a board with invalid values' ]
 		ifFalse: [ self
@@ -85,22 +84,9 @@ Board >> lastLocker [
 	^board last 
 ]
 
-{ #category : #initialization }
-Board >> padEffects: arrayOfEffects [
-	arrayOfEffects
-		add:
-			(NoEffect
-				withProbability: 1 - (arrayOfEffects sum: [ :anEffect | anEffect probability ]))
-]
-
 { #category : #accessing }
 Board >> startingLocker [
 	^ board first.
-]
-
-{ #category : #verification }
-Board >> validateEffectProbabilities: aSumOfEffectProbailities [ 
-	 ^(aSumOfEffectProbailities sum: [ :anObject | anObject probability ]) > 1
 ]
 
 { #category : #initialization }
