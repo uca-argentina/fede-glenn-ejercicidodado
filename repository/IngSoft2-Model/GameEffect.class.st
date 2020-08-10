@@ -11,13 +11,3 @@ Class {
 GameEffect >> = otherEffect [
 	^self class == otherEffect class
 ]
-
-{ #category : #initialization }
-GameEffect >> initializeWithProbability: aFloat [
-	probability := aFloat
-]
-
-{ #category : #probability }
-GameEffect >> probability [
-	^ probability
-]
